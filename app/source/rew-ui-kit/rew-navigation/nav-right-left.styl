@@ -1,6 +1,6 @@
 +mobile()
-  body
-    padding-top 71px
+  html.open
+    overflow hidden !important
 
   body.open
     overflow hidden !important
@@ -21,8 +21,8 @@
           width 0
           left 50%
 
-  html.open
-    overflow hidden !important
+  body
+    padding-top 71px
 
   main
     trans()
@@ -37,22 +37,23 @@
       max-width 100%
 
   .nav-panel
-    top 0
-    left 0
-    right 0
-    bottom 0
-    position fixed
     width 100vw
     height 100vh
     transform translateX(100vw)
     background lightblue
     overflow-y: scroll;
     trans()
+    top 0
+    left 0
+    right 0
+    bottom 0
+    position fixed
 
   .menu
     position static
     background lightblue
     flex-wrap wrap
+    height auto
     li
       margin 10px 0
       flex 1 1 100%

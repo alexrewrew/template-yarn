@@ -4,8 +4,12 @@
 
   body.open
     overflow hidden !important
+    nav
+      height 100%
+      overflow scroll !important
     .nav-panel
       transform none
+      position static
     .nav-icon
       span
         &:nth-child(1)
@@ -38,7 +42,6 @@
     left: 0;
     right: 0;
     bottom: 0;
-    overflow-y: scroll;
     transform translateY(-100vh)
     trans()
 
