@@ -1,0 +1,34 @@
+@import '../../utilities/vars'
+@import '../../utilities/mixins'
+
+ul
+  li
+    list-style none
+    ul
+      margin-top $s15
+      margin-left $s20
+
+ul, ol
+  padding 0
+  margin 0
+  li
+    font-family $m-font, sans-serif
+
+ol
+  margin-left $s20
+  li
+    ol
+      margin-top $s15
+
+.ul-regular
+  li
+    position relative
+    padding-left $s20
+    margin-bottom $s20
+    &:before
+      pseudo(block, absolute)
+      width 8px
+      height 1px
+      background $black
+      top 10px
+      left 0

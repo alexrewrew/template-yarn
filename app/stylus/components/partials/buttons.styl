@@ -1,0 +1,25 @@
+@import "../../utilities/vars"
+@import "../../utilities/mixins"
+
+button
+  border none
+  cursor pointer
+  trans()
+  &:focus
+    outline none
+
+.btn
+  display block
+  max-width 320px
+  width 100%
+  text-align center
+  background blue
+  color $white
+  padding $s12 $s15 $s13
+  margin-bottom $s15
+  &:hover
+    color $white
+    background lightblue
+
+.btn-center
+  mcenter()
