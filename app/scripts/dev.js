@@ -11,7 +11,6 @@
         });
 
 
-
         // ========== SELECT ==========
 
         // ----- CHOSEN -----
@@ -41,7 +40,6 @@
         //     prevArrow: "<div class='arrow left'><i class='fa fa-angle-left'></i></div>",
         //     nextArrow: "<div class='arrow right'><i class='fa fa-angle-right'></i></div>",
         //     dots: true
-        //
         // });
         //
         // $(".slider-two").slick({
@@ -103,6 +101,16 @@
         // $(".datepicker").datepicker({
         //     showOtherMonths: true,
         //     selectOtherMonths: true
+        // });
+
+        // ========== FULL PAGE SCROLLING ==========
+
+        // ----- FULL PAGE -----
+        // $('#fullpage').fullpage();
+
+        // ----- SLIM SCROLL -----
+        // $('.slim').slimScroll({
+        //     height: '200px'
         // });
 
         // ========== SCROLLSPY ==========

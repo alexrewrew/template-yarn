@@ -1,17 +1,19 @@
-include ../utilities/_mixins.pug
+include ../utilities/_mixins
 
 doctype html
 
 html
 
-    include ../partials/_head.pug
+    include ../partials/_head
 
     body
-        include ../partials/_navigation.pug
+        include ../partials/_preloader
+
+        include ../partials/_navigation
 
         main
-            include ../partials/headers/_header.pug
+            include ../partials/headers/_header
 
             block content
 
-            include ../partials/_footer.pug
+            include ../partials/_footer

@@ -57,6 +57,25 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script><![endif]-->
   </head>
   <body>
+    <div id="preloader">
+      <div id="preloader-load"></div>
+    </div>
+    <script type="text/javascript">
+      var preloader = document.getElementById("preloader-load");function fadeOutnojquery(el) {
+          el.style.opacity = 1;
+          var interpreloader = setInterval(function () {
+              el.style.opacity = el.style.opacity - 0.05;
+              if (el.style.opacity <= 0.05) {
+                  clearInterval(interpreloader);
+                  preloader.style.display = "none";
+              }
+          }, 16);
+      }window.onload = function () {
+          setTimeout(function () {
+              fadeOutnojquery(preloader);
+          }, 1000);
+      };
+    </script>
     <nav>
       <div class="container">
         <div class="row">
@@ -66,10 +85,10 @@
           </div>
           <div class="col-md-10 nav-panel">
             <ul class="menu">
-              <li><a class="active" href="" title="">Google</a></li>
-              <li><a href="" title="">Facebook</a></li>
-              <li><a href="" title="">Medium</a></li>
-              <li><a href="" title="">Telegram</a></li>
+              <li><a class="active" href="./" title="">Google</a></li>
+              <li><a href="examples.html" title="">Facebook</a></li>
+              <li><a href="./" title="">Medium</a></li>
+              <li><a href="examples.html" title="">Telegram</a></li>
             </ul>
           </div>
         </div>

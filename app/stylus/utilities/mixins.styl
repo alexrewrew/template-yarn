@@ -29,17 +29,13 @@ df($direction)
     flex-direction column
 
 // ----- FONT (font-size, font-color, weight, line-height) -----
-font($sz = false, $clr = false, $wght = false, $lh = false, $ff = false)
+font($sz = false, $wght = false, $lh = false)
   if $sz
     font-size: $sz
-  if $clr
-    color: $clr
   if $wght
     font-weight: $wght
   if $lh
     line-height: $lh
-  if $ff
-    font-family $ff, sans-serif
 
 // ----- PSEUDOELEMENT -----
 pseudo($display, $position)
