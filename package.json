@@ -6,6 +6,7 @@
   "author": "alexrewrew",
   "license": "MIT",
   "dependencies": {
+    "aos": "^2.2.0",
     "browser-sync": "^2.23.6",
     "del": "^3.0.0",
     "eslint": "^4.18.1",
@@ -25,6 +26,7 @@
   },
   "devDependencies": {
     "@fancyapps/fancybox": "^3.2.5",
+    "@fengyuanchen/datepicker": "^0.6.4",
     "animate.css": "latest",
     "bootstrap": "^4.0.0",
     "bowser": "^1.9.2",

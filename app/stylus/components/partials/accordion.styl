@@ -1,8 +1,8 @@
 @import '../../utilities/vars'
 @import '../../utilities/mixins'
 
-.ui-accordion
-  .ui-accordion-header
+.accordion
+  &--heading
     background $white
     color $black
     cursor pointer
@@ -21,11 +21,16 @@
       top calc(50% - 2px)
       right 15px
       trans()
-
-  .ui-state-active
+  &--heading.active
     background blue
     color $white
     &:after
       transform rotate(180deg)
-  .ui-accordion-content
-    padding $s12 $s15 $s13
+
+  &--panel
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+    &-content
+      padding $s12 $s15 $s13
+

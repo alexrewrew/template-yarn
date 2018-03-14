@@ -88,18 +88,56 @@
 
 
         // ========== ACCORDION ==========
-        $("#accordion").accordion({
-            collapsible: true,
-            heightStyle: "content"
-        });
+
+        (function () {
+            var acc = document.getElementsByClassName("accordion--heading");
+            var i;
+
+            for (i = 0; i < acc.length; i++) {
+
+                acc[i].addEventListener("click", function () {
+                    this.classList.toggle("active");
+                    var panel = this.nextElementSibling;
+                    if (panel.style.maxHeight) {
+                        panel.style.maxHeight = null;
+                    } else {
+                        panel.style.maxHeight = panel.scrollHeight + "px";
+                    }
+                });
+            }
+
+
+        })();
 
         // ========== TABS ==========
-        $("#tabs").tabs();
+
+        (function () {
+            $('.tabs li a').click(function (e) {
+                e.preventDefault();
+
+                $('.tabs li a, .tabs-content').removeClass('active');
+
+                var tab = $(this).attr('data-tab');
+
+                $(this).addClass('active');
+
+                tabs(tab);
+            })
+
+            function tabs(tab) {
+                var tabcontent = $('.tabs-content');
+
+                for (var i = 0; i < tabcontent.length; i++) {
+                    if ($(tabcontent[i]).attr('id') == tab) {
+                        $(tabcontent[i]).addClass('active');
+                    }
+                }
+            }
+        })();
+
 
         // ========== DATEPICKER ==========
         $(".datepicker").datepicker({
-            showOtherMonths: true,
-            selectOtherMonths: true
         });
 
         // ========== FULL PAGE SCROLLING ==========
