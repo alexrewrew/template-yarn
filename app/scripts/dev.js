@@ -13,74 +13,74 @@
         // ========== SELECT ==========
 
         // ----- CHOSEN -----
-        // $(".chosen-select").chosen({
-        //     disable_search_threshold: 4,
-        //     no_results_text: "Нічого не знайдено"
-        // });
+        $(".chosen-select").chosen({
+            disable_search_threshold: 4,
+            no_results_text: "Нічого не знайдено"
+        });
 
         // ----- SELECT2 -----
-        // $('.select2-select').select2({
-        //     placeholder: "Choose...",
-        //     allowClear: true
-        //     // dropdownParent: $('.select-select2-container'),
-        //     // minimumResultsForSearch: Infinity
-        // });
+        $('.select2-select').select2({
+            placeholder: "Choose...",
+            allowClear: true
+            // dropdownParent: $('.select-select2-container'),
+            // minimumResultsForSearch: Infinity
+        });
 
         // ========== SLIDER ==========
 
         // ----- SLICK SLIDER COUNTER -----
-        // $('#link3 .slider').on('init reInit afterChange', function (event, slick, currentSlide) {
-        //     var i = (currentSlide ? currentSlide : 0) + 1;
-        //     $('.slider-counter').text(i + '/' + slick.slideCount);
-        // });
+        $('.slider-full').on('init reInit afterChange', function (event, slick, currentSlide) {
+            var i = (currentSlide ? currentSlide : 0) + 1;
+            $('.slider-counter').text(i + '/' + slick.slideCount);
+        });
 
         // ----- SLICK SLIDER -----
-        // $(".slider-full").slick({
-        //     prevArrow: "<div class='arrow left'><i class='fa fa-angle-left'></i></div>",
-        //     nextArrow: "<div class='arrow right'><i class='fa fa-angle-right'></i></div>",
-        //     dots: true
-        // });
-        //
-        // $(".slider-two").slick({
-        //     dots: true,
-        //     slidesToShow: 2,
-        //     slidesToScroll: 1,
-        //     prevArrow: "<div class='arrow left'><i class='fa fa-angle-left'></i></div>",
-        //     nextArrow: "<div class='arrow right'><i class='fa fa-angle-right'></i></div>",
-        //     responsive: [
-        //         {
-        //             breakpoint: 991,
-        //             settings: {
-        //                 slidesToShow: 1,
-        //                 slidesToScroll: 1
-        //             }
-        //         }
-        //     ]
-        // });
-        //
-        // $(".slider-three").slick({
-        //     dots: true,
-        //     slidesToShow: 3,
-        //     slidesToScroll: 2,
-        //     prevArrow: "<div class='arrow left'><i class='fa fa-angle-left'></i></div>",
-        //     nextArrow: "<div class='arrow right'><i class='fa fa-angle-right'></i></div>",
-        //     responsive: [
-        //         {
-        //             breakpoint: 991,
-        //             settings: {
-        //                 slidesToShow: 2,
-        //                 slidesToScroll: 2
-        //             }
-        //         },
-        //         {
-        //             breakpoint: 767,
-        //             settings: {
-        //                 slidesToShow: 1,
-        //                 slidesToScroll: 1
-        //             }
-        //         }
-        //     ],
-        // });
+        $(".slider-full").slick({
+            prevArrow: "<div class='arrow left'><i class='fa fa-angle-left'></i></div>",
+            nextArrow: "<div class='arrow right'><i class='fa fa-angle-right'></i></div>",
+            dots: true
+        });
+
+        $(".slider-two").slick({
+            dots: true,
+            slidesToShow: 2,
+            slidesToScroll: 1,
+            prevArrow: "<div class='arrow left'><i class='fa fa-angle-left'></i></div>",
+            nextArrow: "<div class='arrow right'><i class='fa fa-angle-right'></i></div>",
+            responsive: [
+                {
+                    breakpoint: 991,
+                    settings: {
+                        slidesToShow: 1,
+                        slidesToScroll: 1
+                    }
+                }
+            ]
+        });
+
+        $(".slider-three").slick({
+            dots: true,
+            slidesToShow: 3,
+            slidesToScroll: 2,
+            prevArrow: "<div class='arrow left'><i class='fa fa-angle-left'></i></div>",
+            nextArrow: "<div class='arrow right'><i class='fa fa-angle-right'></i></div>",
+            responsive: [
+                {
+                    breakpoint: 991,
+                    settings: {
+                        slidesToShow: 2,
+                        slidesToScroll: 2
+                    }
+                },
+                {
+                    breakpoint: 767,
+                    settings: {
+                        slidesToShow: 1,
+                        slidesToScroll: 1
+                    }
+                }
+            ],
+        });
 
         // ========== ACCORDION ==========
         $('#accordion').rewAccordion();
@@ -89,7 +89,7 @@
         $('#tabs').rewTabs();
 
         // ========== DATEPICKER ==========
-        // $(".datepicker").datepicker({});
+        $(".datepicker").flatpickr();
 
         // ========== SCROLLSPY ==========
 
@@ -103,15 +103,15 @@
         //     }
         // });
 
-        // ANCHOR LINKS SCROLLING
-        // $(".smooth").click(function (e) {
-        //     e.preventDefault();
-        //     var id = $(this).attr("href"),
-        //         top = $(id).offset().top - 70;
-        //     $("body,html").animate({
-        //         scrollTop: top
-        //     }, 1500);
-        // });
+        // ----- ANCHOR LINKS SCROLLING -----
+        $(".smooth").click(function (e) {
+            e.preventDefault();
+            var id = $(this).attr("href"),
+                top = $(id).offset().top - 70;
+            $("body,html").animate({
+                scrollTop: top
+            }, 1500);
+        });
     });
 
 // ========== !!! RESPONSIVE SCRIPTS !!! ===========

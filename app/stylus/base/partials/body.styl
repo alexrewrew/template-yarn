@@ -1,12 +1,15 @@
 @import '../../utilities/vars'
 @import '../../utilities/mixins'
 
+html
+  font-size 16px
+
 html, body
   overflow-x hidden
 
 body
-  font(16px, 400, normal)
+  font($s16, 400, normal)
   color $black
-  font-family $m-font, $s-font, sans-serif
+  font-family $m-font,  sans-serif
   background $white
 
