@@ -843,11 +843,7 @@ video {
 	        transform: rotate(180deg);
 }
 .accordion--panel {
-	max-height: 0;
-	overflow: hidden;
-	-webkit-transition: max-height .2s ease-out;
-	     -o-transition: max-height .2s ease-out;
-	        transition: max-height .2s ease-out;
+	display: none;
 }
 .accordion--panel-content {
 	padding: .75rem .938rem .813rem;

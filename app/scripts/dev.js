@@ -13,18 +13,18 @@
         // ========== SELECT ==========
 
         // ----- CHOSEN -----
-        $(".chosen-select").chosen({
-            disable_search_threshold: 4,
-            no_results_text: "Нічого не знайдено"
-        });
+        // $(".chosen-select").chosen({
+        //     disable_search_threshold: 4,
+        //     no_results_text: "Нічого не знайдено"
+        // });
 
         // ----- SELECT2 -----
-        $('.select2-select').select2({
-            placeholder: "Choose...",
-            allowClear: true
+        // $('.select2-select').select2({
+        //     placeholder: "Choose...",
+        //     allowClear: true
             //     // dropdownParent: $('.select-select2-container'),
             //     // minimumResultsForSearch: Infinity
-        });
+        // });
 
         // ========== SLIDER ==========
 
@@ -35,52 +35,52 @@
         // });
 
         // ----- SLICK SLIDER -----
-        $(".slider-full").slick({
-            prevArrow: "<div class='arrow left'><i class='fa fa-angle-left'></i></div>",
-            nextArrow: "<div class='arrow right'><i class='fa fa-angle-right'></i></div>",
-            dots: true
-        });
-
-        $(".slider-two").slick({
-            dots: true,
-            slidesToShow: 2,
-            slidesToScroll: 1,
-            prevArrow: "<div class='arrow left'><i class='fa fa-angle-left'></i></div>",
-            nextArrow: "<div class='arrow right'><i class='fa fa-angle-right'></i></div>",
-            responsive: [
-                {
-                    breakpoint: 991,
-                    settings: {
-                        slidesToShow: 1,
-                        slidesToScroll: 1
-                    }
-                }
-            ]
-        });
-
-        $(".slider-three").slick({
-            dots: true,
-            slidesToShow: 3,
-            slidesToScroll: 2,
-            prevArrow: "<div class='arrow left'><i class='fa fa-angle-left'></i></div>",
-            nextArrow: "<div class='arrow right'><i class='fa fa-angle-right'></i></div>",
-            responsive: [
-                {
-                    breakpoint: 991,
-                    settings: {
-                        slidesToShow: 2,
-                        slidesToScroll: 2
-                    }
-                },
-                {
-                    breakpoint: 767,
-                    settings: {
-                        slidesToShow: 1,
-                        slidesToScroll: 1
-                    }
-                }
-            ],
-        });
+        // $(".slider-full").slick({
+        //     prevArrow: "<div class='arrow left'><i class='fa fa-angle-left'></i></div>",
+        //     nextArrow: "<div class='arrow right'><i class='fa fa-angle-right'></i></div>",
+        //     dots: true
+        // });
+        //
+        // $(".slider-two").slick({
+        //     dots: true,
+        //     slidesToShow: 2,
+        //     slidesToScroll: 1,
+        //     prevArrow: "<div class='arrow left'><i class='fa fa-angle-left'></i></div>",
+        //     nextArrow: "<div class='arrow right'><i class='fa fa-angle-right'></i></div>",
+        //     responsive: [
+        //         {
+        //             breakpoint: 991,
+        //             settings: {
+        //                 slidesToShow: 1,
+        //                 slidesToScroll: 1
+        //             }
+        //         }
+        //     ]
+        // });
+        //
+        // $(".slider-three").slick({
+        //     dots: true,
+        //     slidesToShow: 3,
+        //     slidesToScroll: 2,
+        //     prevArrow: "<div class='arrow left'><i class='fa fa-angle-left'></i></div>",
+        //     nextArrow: "<div class='arrow right'><i class='fa fa-angle-right'></i></div>",
+        //     responsive: [
+        //         {
+        //             breakpoint: 991,
+        //             settings: {
+        //                 slidesToShow: 2,
+        //                 slidesToScroll: 2
+        //             }
+        //         },
+        //         {
+        //             breakpoint: 767,
+        //             settings: {
+        //                 slidesToShow: 1,
+        //                 slidesToScroll: 1
+        //             }
+        //         }
+        //     ],
+        // });
 
         // ========== ANIMATION ==========
 
@@ -90,18 +90,28 @@
         // ========== ACCORDION ==========
 
         (function () {
-            var acc = document.getElementsByClassName("accordion--heading");
-            var i;
 
-            for (i = 0; i < acc.length; i++) {
+            var accordionLinks = $('.accordion--heading');
+            var accordionContent = $('.accordion--panel');
 
-                acc[i].addEventListener("click", function () {
-                    this.classList.toggle("active");
-                    var panel = this.nextElementSibling;
-                    if (panel.style.maxHeight) {
-                        panel.style.maxHeight = null;
+            for (var i = 0; i < accordionLinks.length; i++) {
+                $(accordionLinks[i]).click(function (e) {
+                    e.preventDefault();
+
+                    var j = $(accordionLinks).index(this);
+
+                    if ($(this).hasClass('active')) {
+
+                        $(this).removeClass('active');
+                        $(accordionContent[j]).slideUp();
+
                     } else {
-                        panel.style.maxHeight = panel.scrollHeight + "px";
+
+                        $(accordionLinks).removeClass('active');
+                        $(accordionContent).slideUp()
+
+                        $(this).addClass('active');
+                        $(accordionContent[j]).slideDown();
                     }
                 });
             }
@@ -112,33 +122,30 @@
         // ========== TABS ==========
 
         (function () {
-            $('.tabs li a').click(function (e) {
-                e.preventDefault();
 
-                $('.tabs li a, .tabs-content').removeClass('active');
+            var tabLinks = $('.tabs li a');
+            var tabContent = $('.tabs-content');
 
-                var tab = $(this).attr('data-tab');
+            for (var i = 0; i < tabLinks.length; i++) {
+                $(tabLinks[i]).click(function (e) {
+                    e.preventDefault();
 
-                $(this).addClass('active');
+                    $(tabLinks).removeClass('active');
+                    $(tabContent).removeClass('active');
 
-                tabs(tab);
-            })
+                    var j = $(tabLinks).index(this);
 
-            function tabs(tab) {
-                var tabcontent = $('.tabs-content');
-
-                for (var i = 0; i < tabcontent.length; i++) {
-                    if ($(tabcontent[i]).attr('id') == tab) {
-                        $(tabcontent[i]).addClass('active');
-                    }
-                }
+                    $(this).addClass('active');
+                    $(tabContent[j]).addClass('active');
+                });
             }
+
+
         })();
 
 
         // ========== DATEPICKER ==========
-        $(".datepicker").datepicker({
-        });
+        // $(".datepicker").datepicker({});
 
         // ========== FULL PAGE SCROLLING ==========
 

@@ -404,7 +404,7 @@ block content
                 .col-12
                     h2 Accordion
                 .col-md-8
-                    .accordion
+                    .accordion#accordion
                         .accordion--heading Section 1
                         .accordion--panel
                             .accordion--panel-content
@@ -420,8 +420,6 @@ block content
                             .accordion--panel-content
                                 p
                                     | Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-
-
                 .col-12
                     h2 Tabs
                 .col-md-8
@@ -432,15 +430,15 @@ block content
                             a(href='#' title='' data-tab='tab2') Paris
                         li
                             a(href='#' title='' data-tab='tab3') Tokyo
-                    #tab1.tabs-content.active
+                    .tabs-content.active
                         h3 London
                         p London is the capital city of England.
                         p Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequuntur dignissimos dolor dolorum eius eum, excepturi facere fugiat in iusto, laborum magni, maiores odit pariatur quam quia quis repellat sit tempora?
-                    #tab2.tabs-content
+                    .tabs-content
                         h3 Paris
                         p Paris is the capital of France.
                         p Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequuntur dignissimos dolor dolorum eius eum, excepturi facere fugiat in iusto, laborum magni, maiores odit pariatur quam quia quis repellat sit tempora?
-                    #tab3.tabs-content
+                    .tabs-content
                         h3 Tokyo
                         p Tokyo is the capital of Japan.
                         p Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequuntur dignissimos dolor dolorum eius eum, excepturi facere fugiat in iusto, laborum magni, maiores odit pariatur quam quia quis repellat sit tempora?
