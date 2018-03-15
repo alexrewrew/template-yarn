@@ -1,0 +1,5 @@
+    "animate.css": "latest",
+    "fullpage.js": "^2.9.6",
+    "jquery-slimscroll": "^1.3.8",
+    "jquery-ui-dist": "^1.12.1",
+    "wowjs": "^1.1.3"
