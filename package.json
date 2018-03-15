@@ -24,7 +24,7 @@
     "gulp-uglify": "^3.0.0"
   },
   "devDependencies": {
-    "@fancyapps/fancybox": "^3.2.5",
+    "@fancyapps/fancybox": "latest",
     "aos": "^2.2.0",
     "bootstrap": "^4.0.0",
     "bowser": "^1.9.2",

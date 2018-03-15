@@ -82,83 +82,14 @@
         //     ],
         // });
 
-        // ========== ANIMATION ==========
-
-        // new WOW().init();
-
-
         // ========== ACCORDION ==========
-
-        (function ($) {
-            $.fn.rewAccordion = function () {
-                var accordionLinks = $('.accordion--heading');
-                var accordionContent = $('.accordion--panel');
-
-                for (var i = 0; i < accordionLinks.length; i++) {
-                    $(accordionLinks[i]).click(function (e) {
-                        e.preventDefault();
-
-                        var j = $(accordionLinks).index(this);
-
-                        if ($(this).hasClass('active')) {
-
-                            $(this).removeClass('active');
-                            $(accordionContent[j]).slideUp();
-
-                        } else {
-
-                            $(accordionLinks).removeClass('active');
-                            $(accordionContent).slideUp()
-
-                            $(this).addClass('active');
-                            $(accordionContent[j]).slideDown();
-                        }
-                    });
-                }
-            };
-        })(jQuery);
-
         $('#accordion').rewAccordion();
 
         // ========== TABS ==========
-
-        (function ($) {
-            $.fn.rewTabs = function () {
-
-                var tabLinks = $(this).find('.tabs li a');
-                var tabContent = $(this).find('.tabs-content');
-
-                for (var i = 0; i < tabLinks.length; i++) {
-                    $(tabLinks[i]).click(function (e) {
-                        e.preventDefault();
-
-                        $(tabLinks).removeClass('active');
-                        $(tabContent).removeClass('active');
-
-                        var j = $(tabLinks).index(this);
-
-                        $(this).addClass('active');
-                        $(tabContent[j]).addClass('active');
-                    });
-                }
-            };
-        })(jQuery);
-
         $('#tabs').rewTabs();
-
 
         // ========== DATEPICKER ==========
         // $(".datepicker").datepicker({});
-
-        // ========== FULL PAGE SCROLLING ==========
-
-        // ----- FULL PAGE -----
-        // $('#fullpage').fullpage();
-
-        // ----- SLIM SCROLL -----
-        // $('.slim').slimScroll({
-        //     height: '200px'
-        // });
 
         // ========== SCROLLSPY ==========
 
@@ -173,16 +104,14 @@
         // });
 
         // ANCHOR LINKS SCROLLING
-        // $(".smooth").click(function (event) {
-        //     event.preventDefault();
+        // $(".smooth").click(function (e) {
+        //     e.preventDefault();
         //     var id = $(this).attr("href"),
         //         top = $(id).offset().top - 70;
         //     $("body,html").animate({
         //         scrollTop: top
         //     }, 1500);
         // });
-
-
     });
 
 // ========== !!! RESPONSIVE SCRIPTS !!! ===========

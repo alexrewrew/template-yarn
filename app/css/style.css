@@ -844,8 +844,6 @@ video {
 }
 .accordion--panel {
 	display: none;
-}
-.accordion--panel-content {
 	padding: .75rem .938rem .813rem;
 }
 input {
