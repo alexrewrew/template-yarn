@@ -22,8 +22,8 @@
         // $('.select2-select').select2({
         //     placeholder: "Choose...",
         //     allowClear: true
-            //     // dropdownParent: $('.select-select2-container'),
-            //     // minimumResultsForSearch: Infinity
+        //     // dropdownParent: $('.select-select2-container'),
+        //     // minimumResultsForSearch: Infinity
         // });
 
         // ========== SLIDER ==========
@@ -89,59 +89,62 @@
 
         // ========== ACCORDION ==========
 
-        (function () {
+        (function ($) {
+            $.fn.rewAccordion = function () {
+                var accordionLinks = $('.accordion--heading');
+                var accordionContent = $('.accordion--panel');
 
-            var accordionLinks = $('.accordion--heading');
-            var accordionContent = $('.accordion--panel');
+                for (var i = 0; i < accordionLinks.length; i++) {
+                    $(accordionLinks[i]).click(function (e) {
+                        e.preventDefault();
 
-            for (var i = 0; i < accordionLinks.length; i++) {
-                $(accordionLinks[i]).click(function (e) {
-                    e.preventDefault();
+                        var j = $(accordionLinks).index(this);
 
-                    var j = $(accordionLinks).index(this);
+                        if ($(this).hasClass('active')) {
 
-                    if ($(this).hasClass('active')) {
+                            $(this).removeClass('active');
+                            $(accordionContent[j]).slideUp();
 
-                        $(this).removeClass('active');
-                        $(accordionContent[j]).slideUp();
+                        } else {
 
-                    } else {
+                            $(accordionLinks).removeClass('active');
+                            $(accordionContent).slideUp()
 
-                        $(accordionLinks).removeClass('active');
-                        $(accordionContent).slideUp()
+                            $(this).addClass('active');
+                            $(accordionContent[j]).slideDown();
+                        }
+                    });
+                }
+            };
+        })(jQuery);
 
-                        $(this).addClass('active');
-                        $(accordionContent[j]).slideDown();
-                    }
-                });
-            }
-
-
-        })();
+        $('#accordion').rewAccordion();
 
         // ========== TABS ==========
 
-        (function () {
+        (function ($) {
+            $.fn.rewTabs = function () {
 
-            var tabLinks = $('.tabs li a');
-            var tabContent = $('.tabs-content');
+                var tabLinks = $(this).find('.tabs li a');
+                var tabContent = $(this).find('.tabs-content');
 
-            for (var i = 0; i < tabLinks.length; i++) {
-                $(tabLinks[i]).click(function (e) {
-                    e.preventDefault();
+                for (var i = 0; i < tabLinks.length; i++) {
+                    $(tabLinks[i]).click(function (e) {
+                        e.preventDefault();
 
-                    $(tabLinks).removeClass('active');
-                    $(tabContent).removeClass('active');
+                        $(tabLinks).removeClass('active');
+                        $(tabContent).removeClass('active');
 
-                    var j = $(tabLinks).index(this);
+                        var j = $(tabLinks).index(this);
 
-                    $(this).addClass('active');
-                    $(tabContent[j]).addClass('active');
-                });
-            }
+                        $(this).addClass('active');
+                        $(tabContent[j]).addClass('active');
+                    });
+                }
+            };
+        })(jQuery);
 
-
-        })();
+        $('#tabs').rewTabs();
 
 
         // ========== DATEPICKER ==========
