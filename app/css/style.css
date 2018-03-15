@@ -758,7 +758,6 @@ video {
 }
 .tabs li a {
 	cursor: pointer;
-	padding: 14px 16px;
 	padding: .75rem .938rem .813rem;
 	color: #000;
 	display: block;
