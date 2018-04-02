@@ -29,9 +29,9 @@ flex($direction)
     flex-direction column
 
 // ----- FONT (font-size, font-color, weight, line-height) -----
-font($sz = false, $wght = false, $lh = false)
-  if $sz
-    font-size: $sz
+font($rz = false, $wght = false, $lh = false)
+  if $rz
+    font-size: $rz
   if $wght
     font-weight: $wght
   if $lh
@@ -48,26 +48,26 @@ trans()
   transition: all 0.4s ease
 
 // ----- TRIANGLE -----
-triangle($colour, $direction, $size)
+triangle($colour, $direction, $rize)
   pseudo(block, absolute)
   width: 0
   height: 0
   if $direction == down
-    border-left: $size solid transparent
-    border-right: $size solid transparent
-    border-top: $size solid $colour
+    border-left: $rize solid transparent
+    border-right: $rize solid transparent
+    border-top: $rize solid $colour
   else if $direction == up
-    border-left: $size solid transparent
-    border-right: $size solid transparent
-    border-bottom: $size solid $colour
+    border-left: $rize solid transparent
+    border-right: $rize solid transparent
+    border-bottom: $rize solid $colour
   else if $direction == right
-    border-top: $size solid transparent
-    border-bottom: $size solid transparent
-    border-left: $size solid $colour
+    border-top: $rize solid transparent
+    border-bottom: $rize solid transparent
+    border-left: $rize solid $colour
   else if $direction == left
-    border-top: $size solid transparent
-    border-bottom: $size solid transparent
-    border-right: $size solid $colour
+    border-top: $rize solid transparent
+    border-bottom: $rize solid transparent
+    border-right: $rize solid $colour
 
 // ----- PLACEHOLDER -----
 placeholder()
