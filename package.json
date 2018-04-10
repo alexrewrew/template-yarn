@@ -26,7 +26,7 @@
   "devDependencies": {
     "@fancyapps/fancybox": "latest",
     "aos": "^2.2.0",
-    "bootstrap": "^4.0.0",
+    "bootstrap": "next",
     "bowser": "latest",
     "chosen-js": "^1.8.3",
     "flatpickr": "latest",
