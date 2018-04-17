@@ -18785,7 +18785,9 @@ return jQuery;
       }
       option_el = document.createElement("li");
       option_el.className = classes.join(" ");
-      option_el.style.cssText = option.style;
+      if (option.style) {
+        option_el.style.cssText = option.style;
+      }
       option_el.setAttribute("data-option-array-index", option.array_index);
       option_el.innerHTML = option.highlighted_html || option.html;
       if (option.title) {
@@ -18859,7 +18861,7 @@ return jQuery;
       }
     };
 
-    AbstractChosen.prototype.winnow_results = function() {
+    AbstractChosen.prototype.winnow_results = function(options) {
       var escapedQuery, fix, i, len, option, prefix, query, ref, regex, results, results_group, search_match, startpos, suffix, text;
       this.no_results_clear();
       results = 0;
@@ -18915,7 +18917,9 @@ return jQuery;
         return this.no_results(query);
       } else {
         this.update_results_content(this.results_option_build());
-        return this.winnow_results_set_highlight();
+        if (!(options != null ? options.skip_highlight : void 0)) {
+          return this.winnow_results_set_highlight();
+        }
       }
     };
 
@@ -19102,7 +19106,7 @@ return jQuery;
     };
 
     AbstractChosen.prototype.get_single_html = function() {
-      return "<a class=\"chosen-single chosen-default\">\n  <input class=\"chosen-search-input\" type=\"text\" autocomplete=\"off\" />\n  <span>" + this.default_text + "</span>\n  <div><b></b></div>\n</a>\n<div class=\"chosen-drop\">\n  <div class=\"chosen-search\">\n  </div>\n  <ul class=\"chosen-results\"></ul>\n</div>";
+      return "<a class=\"chosen-single chosen-default\">\n  <input class=\"chosen-focus-input\" type=\"text\" autocomplete=\"off\" />\n  <span>" + this.default_text + "</span>\n  <div><b></b></div>\n</a>\n<div class=\"chosen-drop\">\n  <div class=\"chosen-search\">\n    <input class=\"chosen-search-input\" type=\"text\" autocomplete=\"off\" />\n  </div>\n  <ul class=\"chosen-results\"></ul>\n</div>";
     };
 
     AbstractChosen.prototype.get_multi_html = function() {
@@ -19195,7 +19199,8 @@ return jQuery;
       }
       this.form_field_jq.hide().after(this.container);
       this.dropdown = this.container.find('div.chosen-drop').first();
-      this.search_field = this.container.find('input').first();
+      this.search_field = this.container.find('input.chosen-search-input');
+      this.focus_field = this.container.find('input.chosen-focus-input');
       this.search_results = this.container.find('ul.chosen-results').first();
       this.search_field_scale();
       this.search_no_results = this.container.find('li.no-results').first();
@@ -19218,6 +19223,7 @@ return jQuery;
     };
 
     Chosen.prototype.register_observers = function() {
+      var transfer_value;
       this.container.on('touchstart.chosen', (function(_this) {
         return function(evt) {
           _this.container_mousedown(evt);
@@ -19340,9 +19346,49 @@ return jQuery;
           };
         })(this));
       } else {
-        return this.container.on('click.chosen', function(evt) {
+        this.container.on('click.chosen', function(evt) {
           evt.preventDefault();
         });
+        this.focus_field.on('blur.chosen', (function(_this) {
+          return function(evt) {
+            _this.input_blur(evt);
+          };
+        })(this));
+        this.focus_field.on('focus.chosen', (function(_this) {
+          return function(evt) {
+            _this.input_focus(evt);
+          };
+        })(this));
+        transfer_value = (function(_this) {
+          return function() {
+            _this.search_field.val(_this.focus_field.val());
+            return _this.focus_field.val('');
+          };
+        })(this);
+        this.focus_field.on('keyup.chosen', (function(_this) {
+          return function(evt) {
+            transfer_value();
+            _this.keyup_checker(evt);
+          };
+        })(this));
+        this.focus_field.on('keydown.chosen', (function(_this) {
+          return function(evt) {
+            transfer_value();
+            _this.keydown_checker(evt);
+          };
+        })(this));
+        this.focus_field.on('cut.chosen', (function(_this) {
+          return function(evt) {
+            setTimeout(transfer_value, 0);
+            _this.clipboard_event_checker(evt);
+          };
+        })(this));
+        return this.focus_field.on('paste.chosen', (function(_this) {
+          return function(evt) {
+            setTimeout(transfer_value, 0);
+            _this.clipboard_event_checker(evt);
+          };
+        })(this));
       }
     };
 
@@ -19439,7 +19485,6 @@ return jQuery;
       }
       this.container.addClass("chosen-container-active");
       this.active_field = true;
-      this.search_field.val(this.search_field.val());
       return this.search_field.focus();
     };
 
@@ -19459,13 +19504,15 @@ return jQuery;
       this.results_data = SelectParser.select_to_array(this.form_field);
       if (this.is_multiple) {
         this.search_choices.find("li.search-choice").remove();
-      } else if (!this.is_multiple) {
+      } else {
         this.single_set_selected_text();
         if (this.disable_search || this.form_field.options.length <= this.disable_search_threshold) {
           this.search_field[0].readOnly = true;
+          this.focus_field[0].readOnly = true;
           this.container.addClass("chosen-container-single-nosearch");
         } else {
           this.search_field[0].readOnly = false;
+          this.focus_field[0].readOnly = false;
           this.container.removeClass("chosen-container-single-nosearch");
         }
       }
@@ -19511,9 +19558,6 @@ return jQuery;
         });
         return false;
       }
-      if (!this.is_multiple) {
-        this.search_container.append(this.search_field);
-      }
       this.container.addClass("chosen-with-drop");
       this.results_showing = true;
       this.search_field.focus();
@@ -19531,10 +19575,11 @@ return jQuery;
     Chosen.prototype.results_hide = function() {
       if (this.results_showing) {
         this.result_clear_highlight();
-        if (!this.is_multiple) {
-          this.selected_item.prepend(this.search_field);
-          this.search_field.focus();
-        }
+        setTimeout(((function(_this) {
+          return function() {
+            return _this.focus_field.focus();
+          };
+        })(this)), 0);
         this.container.removeClass("chosen-with-drop");
         this.form_field_jq.trigger("chosen:hiding_dropdown", {
           chosen: this
@@ -19544,11 +19589,12 @@ return jQuery;
     };
 
     Chosen.prototype.set_tab_index = function(el) {
-      var ti;
+      var ref, ti;
       if (this.form_field.tabIndex) {
         ti = this.form_field.tabIndex;
         this.form_field.tabIndex = -1;
-        return this.search_field[0].tabIndex = ti;
+        this.search_field[0].tabIndex = ti;
+        return (ref = this.focus_field[0]) != null ? ref.tabIndex = ti : void 0;
       }
     };
 
@@ -19679,14 +19725,20 @@ return jQuery;
         item.selected = true;
         this.form_field.options[item.options_index].selected = true;
         this.selected_option_count = null;
-        this.search_field.val("");
         if (this.is_multiple) {
           this.choice_build(item);
         } else {
           this.single_set_selected_text(this.choice_label(item));
         }
         if (this.is_multiple && (!this.hide_results_on_select || (evt.metaKey || evt.ctrlKey))) {
-          this.winnow_results();
+          if (evt.metaKey || evt.ctrlKey) {
+            this.winnow_results({
+              skip_highlight: true
+            });
+          } else {
+            this.search_field.val("");
+            this.winnow_results();
+          }
         } else {
           this.results_hide();
           this.show_search_field_default();
@@ -32020,7 +32072,7 @@ bunker(bootstrap);
 
 }());
 
-/*! nouislider - 11.0.3 - 2018-01-21 14:04:07 */
+/*! nouislider - 11.1.0 - 2018-04-02 11:18:13 */
 
 (function (factory) {
 
@@ -32044,7 +32096,7 @@ bunker(bootstrap);
 
 	'use strict';
 
-	var VERSION = '11.0.3';
+	var VERSION = '11.1.0';
 
 
 	function isValidFormatter ( entry ) {
@@ -32053,6 +32105,10 @@ bunker(bootstrap);
 
 	function removeElement ( el ) {
 		el.parentElement.removeChild(el);
+	}
+
+	function isSet ( value ) {
+		return value !== null && value !== undefined;
 	}
 
 	// Bindable version
@@ -32691,8 +32747,8 @@ bunker(bootstrap);
 			throw new Error("noUiSlider (" + VERSION + "): 'padding' option must be a positive number(s).");
 		}
 
-		if ( parsed.padding[0] >= 50 || parsed.padding[1] >= 50 ) {
-			throw new Error("noUiSlider (" + VERSION + "): 'padding' option must be less than half the range.");
+		if ( parsed.padding[0] + parsed.padding[1] >= 100 ) {
+			throw new Error("noUiSlider (" + VERSION + "): 'padding' option must not exceed 100% of the range.");
 		}
 	}
 
@@ -32790,7 +32846,7 @@ bunker(bootstrap);
 
 	function testCssPrefix ( parsed, entry ) {
 
-		if ( entry !== undefined && typeof entry !== 'string' && entry !== false ) {
+		if ( typeof entry !== 'string' && entry !== false ) {
 			throw new Error("noUiSlider (" + VERSION + "): 'cssPrefix' must be a string or `false`.");
 		}
 
@@ -32799,7 +32855,7 @@ bunker(bootstrap);
 
 	function testCssClasses ( parsed, entry ) {
 
-		if ( entry !== undefined && typeof entry !== 'object' ) {
+		if ( typeof entry !== 'object' ) {
 			throw new Error("noUiSlider (" + VERSION + "): 'cssClasses' must be an object.");
 		}
 
@@ -32851,8 +32907,8 @@ bunker(bootstrap);
 			'ariaFormat': { r: false, t: testAriaFormat },
 			'format': { r: false, t: testFormat },
 			'tooltips': { r: false, t: testTooltips },
-			'cssPrefix': { r: false, t: testCssPrefix },
-			'cssClasses': { r: false, t: testCssClasses }
+			'cssPrefix': { r: true, t: testCssPrefix },
+			'cssClasses': { r: true, t: testCssClasses }
 		};
 
 		var defaults = {
@@ -32909,7 +32965,7 @@ bunker(bootstrap);
 		Object.keys(tests).forEach(function( name ){
 
 			// If the option isn't set, but it is required, throw an error.
-			if ( options[name] === undefined && defaults[name] === undefined ) {
+			if ( !isSet(options[name]) && defaults[name] === undefined ) {
 
 				if ( tests[name].r ) {
 					throw new Error("noUiSlider (" + VERSION + "): '" + name + "' is required.");
@@ -32918,7 +32974,7 @@ bunker(bootstrap);
 				return true;
 			}
 
-			tests[name].t( parsed, options[name] === undefined ? defaults[name] : options[name] );
+			tests[name].t( parsed, !isSet(options[name]) ? defaults[name] : options[name] );
 		});
 
 		// Forward pips options
