@@ -1,0 +1,39 @@
+mob()
+  @media (max-width: 767px)
+    {block}
+
+xs()
+  @media (max-width: 567px)
+    {block}
+
+land()
+  @media (min-width: 568px) and (max-width 767px)
+    {block}
+
+port()
+  @media (min-width: 768px) and (max-width: 991px)
+    {block}
+
+tab()
+  @media (min-width: 992px) and (max-width: 1199px)
+    {block}
+
+dis()
+  @media (min-width: 1200px)
+    {block}
+
+xxl()
+  @media (min-width: 1600px)
+    {block}
+
+mmin($minwidth)
+  @media (min-width: $minwidth)
+    {block}
+
+mmax($maxwidth)
+  @media (max-width: $maxwidth)
+    {block}
+
+media($minwidth, $maxwidth)
+  @media (min-width: $minwidth) and (max-width: $maxwidth)
+    {block}

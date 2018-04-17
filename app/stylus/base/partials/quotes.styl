@@ -2,8 +2,9 @@
 @import '../../utilities/mixins'
 
 blockquote
-  padding $r15
+  padding r(15)
   position relative
+  fs(e(16))
   &:before, &:after
     position absolute
     display block
@@ -18,6 +19,6 @@ blockquote
     bottom 0
 
 cite
-  fs($e16)
+  fs(e(16))
   font-style italic
-  color $gray
+  co($gr)

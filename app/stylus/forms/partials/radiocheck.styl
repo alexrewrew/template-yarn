@@ -1,6 +1,6 @@
 .radio-check
-  margin-bottom $r15
-  margin-right $r15
+  mb(r(15))
+  mr(r(15))
   position relative
   padding 0
 
@@ -10,9 +10,9 @@
 
   input + span
     position relative
-    padding-left $r35
+    pl(r(35))
     cursor pointer
-    font-weight 400
+    fw(400)
     &:before, &:after
       pseudo(block, absolute)
       top 2px
@@ -22,11 +22,11 @@
       trans()
 
     &:before
-      border 1px solid #ccc
+      border 1px solid $gr2
       opacity 1
 
     &:after
-      background blue
+      bg(blue)
       border 1px solid blue
       opacity 0
 
@@ -45,23 +45,23 @@
 //validation
 .radio-check.error
   span
-    color red
+    co(red)
     &:before, &:after
       border-color red
     &:after
-      background red
+      bg(red)
 
 .radio-check.disabled
   span
-    color #e5e5e5
+    co(#e5e5e5)
     cursor default
     &:before, &:after
       border-color #e5e5e5
 
 .radio-check.success
   span
-    color green
+    co(green)
     &:before, &:after
       border-color green
     &:after
-      background green
+      bg(green)

@@ -22,9 +22,9 @@
 
 .chosen-container
   width 100%
-  margin-bottom $r20
+  mb(r(20))
   &:after
-    triangle($black, down, 4px)
+    triangle($bk, down, 4px)
     top calc(50% - 2px)
     right 15px
     trans()
@@ -34,25 +34,25 @@
     padding 0
     height auto
     border-radius 0
-    border 1px solid #ccc
-    background $white
+    border 1px solid $gr2
+    bg($wt)
     box-shadow none
     trans()
     span
-      padding $r10 $r15 $r11
-      font-size $e16
+      padding r(10) r(15) r(11)
+      fs(e(16))
   .chosen-default
     span
       opacity .5
 
 .chosen-container-single
   .chosen-search
-    padding 0 5px
-    margin-bottom $r12
+    padding 0 r(5)
+    mb(r(12))
     input[type='text']
-      font-size $e16
-      border 1px solid #ccc
-      padding $r11 $r10 $r12
+      fs(e(16))
+      border 1px solid $gr2
+      padding r(11) r(10) r(12)
       background-image none !important
 
 .chosen-container.chosen-with-drop
@@ -77,14 +77,14 @@
     margin 0
     box-shadow none
     .active-result
-      padding $r12 $r15 $r13
-      font-size $e16
+      padding r(12) r(15) r(13)
+      fs(e(16))
       line-height normal
-    .active-result.highlighted
-      background blue
+      &.highlighted
+        bg(blue)
     .result-selected
-      background #ccc
-      color $white
+      bg($gr2)
+      co($wt)
 
 .chosen-container-single .chosen-single div b
   display none
@@ -92,7 +92,7 @@
 .chosen-container
   .chosen-results
     li.no-results
-      background $white
-      color #999
-      font-size $e14
-      padding $r12 $r10 $r13
+      bg($wt)
+      co($gr)
+      fs(e(14))
+      padding r(12) r(10) r(13)

@@ -2,75 +2,75 @@
 @import '../../utilities/mixins'
 
 input[disabled], textarea[disabled]
-  background #e5e5e5
+  bg(#e5e5e5)
   border-color #e5e5e5
   +placeholder()
     opacity .5
 
 input.error, textarea.error
-  color red
+  co(red)
   border-color red
   +placeholder()
-    color red
+    co(red)
     opacity .5
 
 input.success, textarea.success
-  color green
+  co(green)
   border-color green
   +placeholder()
-    color green
+    co(green)
     opacity .5
 
 .input-group.error
   input, select, textarea
-    color red
+    co(red)
     border-color red
     +placeholder()
-      color #f9d3cf
+      co(#f9d3cf)
     &:focus + span
-      color red
+      co(red)
   span
-    color red
+    co(red)
 
 .input-group.success
   input, textarea
-    color green
+    co(green)
     border-color green
     +placeholder()
-      color green
+      co(green)
       opacity .5
     &:focus + span
-      color green
+      co(green)
   span
-    color green
+    co(green)
 
 .input-group.disabled
   input, textarea
-    background #e5e5e5
+    bg(#e5e5e5)
     border-color #e5e5e5
     +placeholder()
       opacity .5
   span
-    color #999
+    co(#999)
 
 .select-group.error
   select
     border-color red
-    color red
+    co(red)
   &:after
     triangle(red, down, 5px)
 
 .select-group.success
   select
     border-color green
-    color green
+    co(green)
   &:after
     triangle(green, down, 5px)
 
 .select-group.disabled
   select
-    background #e5e5e5
+    bg(#e5e5e5)
     border-color #e5e5e5
-    color rgba(153,153,153,.5)
+    co(rgba(153,153,153,.5))
   &:after
     triangle(#999, down, 5px)

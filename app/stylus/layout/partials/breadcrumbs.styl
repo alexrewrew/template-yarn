@@ -2,19 +2,19 @@
 @import '../../utilities/mixins'
 
 .breadcrumbs
-  flex(row)
-  margin-bottom $r15
+  df(row)
+  mb(r(15))
   li
     position relative
-    padding-right $r15
-    margin-right $r15
+    pr(r(15))
+    mr(r(15))
     &:after
       pseudo(block, absolute)
       right 0
       top 0
       height 100%
       width 1px
-      background $black
+      bg($bk)
       transform rotate(25deg)
     &:last-child
       &:after
@@ -22,11 +22,10 @@
 
     a
       display inline-block
-      color $black
+      co($bk)
       &:hover
-        color lightblue
-
-    .active
-      cursor default
-      pointer-events: none
-      color blue
+        co(lightblue)
+      &.active
+        cursor default
+        pointer-events: none
+        co(blue)

@@ -2,49 +2,43 @@
 @import '../../utilities/mixins'
 
 ::selection
-  background $black
-  color $white
+  bg($bk)
+  co($wt)
 
 h1, h2, h3, h4, h5, h6, p, ul li, ol li, blockquote, cite
   font-family $m-font, sans-serif
-  color $black
+  co($bk)
 
 h1
-  font($e34, 700, 1.5)
-  mb($r20)
+  font(e(34), 700, 1.5)
+  mb(r(20))
 
 h2
-  font($e30, 700, 1.5)
-  mb($r27)
+  font(e(30), 700, 1.5)
+  mb(r(27))
 
 h3
-  font($e26, 700, 1.5)
-  mb($r32)
+  font(e(26), 700, 1.5)
+  mb(r(32))
 
 h4
-  font($e22, 700, 1.5)
-  mb($r38)
+  font(e(22), 700, 1.5)
+  mb(r(38))
 
 h5
-  font($e18, 700, 1.5)
-  mb($r44)
+  font(e(18), 700, 1.5)
+  mb(r(44))
 
 h6
-  font($e14, 700, 1.5)
-  mb($r50)
+  font(e(14), 700, 1.5)
+  mb(r(50))
 
 p
-  font($e16, 400, 1.57)
-  mb($r16)
-
-.paragraph-lead
-  font-size $e20
-
-.paragraph-small
-  font-size $e14
+  font(e(16), 400, 1.57)
+  mb(r(16))
 
 hr
   border: 0;
   height: 1px;
-  background: $black
-  margin $r15 0
+  bg($bk)
+  margin r(15) 0

@@ -1,4 +1,4 @@
-@import "vars"
+@import "../../../vars/vars"
 
 column-init($col = $column-number + 2)
   $grid-column
@@ -8,14 +8,16 @@ column-init($col = $column-number + 2)
     padding-right: ($column-gutter / 2)px
     padding-left: ($column-gutter / 2)px
 
-  for l in (1..$col)
+  for l in (1..$column-number)
     .col,
     .col-auto,
     .col-{prefixes[l]},
     .col-{prefixes[l]}-auto,
-    .col-{l},
-    .col-{prefixes[l]}-{l}
-      @extend $grid-column;
+    .col-{l}
+      @extend $grid-column
+    for m in (1..$breakpoints-count)
+      .col-{prefixes[m]}-{l}
+        @extend $grid-column
 
 
 column-generator($col = $column-number)

@@ -3,33 +3,33 @@
 
 .accordion
   &--heading
-    background $white
-    color $black
+    bg($wt)
+    co($bk)
     cursor pointer
-    padding $r12 $r15 $r13
-    font-size $e16
+    padding r(12) r(15) r(13)
+    fs(e(16))
     margin 0
     position relative
     trans()
     &:focus
       outline none
     &:hover
-      background lightblue
-      color $white
+      bg(lightblue)
+      co($wt)
     &:after
-      triangle($black, down, 4px)
+      triangle($bk, down, 4px)
       top calc(50% - 2px)
       right 15px
       trans()
-  &--heading.active
-    background blue
-    color $white
-    &:after
-      transform rotate(180deg)
+    &.active
+      bg(blue)
+      co($wt)
+      &:after
+        transform rotate(180deg)
 
   &--panel
     display none
-    padding $r12 $r15 $r13
+    padding r(12) r(15) r(13)
 
 
 

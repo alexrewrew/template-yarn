@@ -3,27 +3,25 @@
 
 .tabs
   flex(row)
-  margin-bottom $r16
+  mb(r(16))
 
 .tabs li
   a
     cursor: pointer;
-    padding $r12 $r15 $r13
-    color $black
+    padding r(12) r(15) r(13)
+    co($bk)
     display block
     trans()
-
     &:hover
-      color $white
-      background lightblue
-  a.active
-    color $white
-    background blue
-
+      co($wt)
+      bg(lightblue)
+    &.active
+      co($wt)
+      bg(blue)
 
 .tabs-content
   display: none;
-  padding: $r10 $r15
+  padding: r(10) r(15)
   animation: fadeEffect 1s;
 
 .tabs-content.active

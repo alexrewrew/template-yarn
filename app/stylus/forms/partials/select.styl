@@ -3,12 +3,12 @@
 
 select
   width 100%
-  background $white
-  border 1px solid #ccc
-  padding $r12 $r15 $r13
+  bg($wt)
+  border 1px solid $gr2
+  padding r(12) r(15) r(13)
   border-radius 0
   display block
-  margin-bottom $r20
+  mb(r(20))
   -webkit-appearance none
   -moz-appearance none
   trans()
@@ -18,9 +18,9 @@ select
 
 .select-group
   position relative
-  margin-bottom $r20
+  mb(r(20))
   &:after
-    triangle($black, down, 4px)
+    triangle($bk, down, 4px)
     top calc(50% - 2px)
     right 15px
 

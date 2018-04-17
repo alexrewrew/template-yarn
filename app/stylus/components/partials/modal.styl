@@ -8,19 +8,19 @@
     max-width 960px
   +port()
     max-width 720px
-  +fab()
+  +land()
     max-width 540px
-  +mob()
+  +xs()
     max-width calc(100% - 30px)
 
 .fancybox-close-small
   &:hover
     &:after
-      background $trans
-      color lightblue
+      bg($tr)
+      co(lightblue)
   &:focus
     &:after
       outline none
   &:after
     trans()
-    color blue
+    co(blue)

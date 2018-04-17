@@ -1,5 +1,7 @@
 (function ($) {
     $.fn.rewAccordion = function () {
+
+
         var accordionLinks = $(this).find('.accordion--heading');
         var accordionContent = $(this).find('.accordion--panel');
 

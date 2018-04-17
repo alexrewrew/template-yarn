@@ -1,5 +1,7 @@
 (function ($) {
     $.fn.rewAccordion = function () {
+
+
         var accordionLinks = $(this).find('.accordion--heading');
         var accordionContent = $(this).find('.accordion--panel');
 
@@ -50,25 +52,42 @@
 (function () {
     "use strict";
 
+    var DOMs = {
+
+        documentBodyHtml : $('html, body'),
+        documentBody : $('body'),
+
+        menuTrigger : $('#menu-trigger'),
+
+        selectChosen : $(".chosen-select"),
+        selectSelect2 : $('.select2-select'),
+
+        sliderFull : $('.slider-full'),
+        sliderTwo : $(".slider-two"),
+        sliderThree : $(".slider-three"),
+
+        linkSmooth : $(".smooth")
+    };
+
     $(document).ready(function () {
 
         // ========== MENU ==========
 
-        $('#menu-trigger').click(function (e) {
+        DOMs.menuTrigger.click(function (e) {
             e.preventDefault();
-            $('html, body').toggleClass('open');
+            DOMs.documentBodyHtml.toggleClass('open');
         });
 
         // ========== SELECT ==========
 
         // ----- CHOSEN -----
-        $(".chosen-select").chosen({
+        DOMs.selectChosen.chosen({
             disable_search_threshold: 4,
             no_results_text: "Нічого не знайдено"
         });
 
         // ----- SELECT2 -----
-        $('.select2-select').select2({
+        DOMs.selectSelect2.select2({
             placeholder: "Choose...",
             allowClear: true
             // dropdownParent: $('.select-select2-container'),
@@ -78,19 +97,19 @@
         // ========== SLIDER ==========
 
         // ----- SLICK SLIDER COUNTER -----
-        $('.slider-full').on('init reInit afterChange', function (event, slick, currentSlide) {
+        DOMs.sliderFull.on('init reInit afterChange', function (event, slick, currentSlide) {
             var i = (currentSlide ? currentSlide : 0) + 1;
             $('.slider-counter').text(i + '/' + slick.slideCount);
         });
 
         // ----- SLICK SLIDER -----
-        $(".slider-full").slick({
+        DOMs.sliderFull.slick({
             prevArrow: "<div class='arrow left'><i class='fa fa-angle-left'></i></div>",
             nextArrow: "<div class='arrow right'><i class='fa fa-angle-right'></i></div>",
             dots: true
         });
 
-        $(".slider-two").slick({
+        DOMs.sliderTwo.slick({
             dots: true,
             slidesToShow: 2,
             slidesToScroll: 1,
@@ -107,7 +126,7 @@
             ]
         });
 
-        $(".slider-three").slick({
+        DOMs.sliderThree.slick({
             dots: true,
             slidesToShow: 3,
             slidesToScroll: 2,
@@ -153,11 +172,11 @@
         // });
 
         // ----- ANCHOR LINKS SCROLLING -----
-        $(".smooth").click(function (e) {
+        DOMs.linkSmooth.click(function (e) {
             e.preventDefault();
             var id = $(this).attr("href"),
                 top = $(id).offset().top - 70;
-            $("body,html").animate({
+            DOMs.documentBodyHtml.animate({
                 scrollTop: top
             }, 1500);
         });
