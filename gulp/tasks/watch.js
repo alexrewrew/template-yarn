@@ -1,8 +1,9 @@
 module.exports = function () {
     $.gulp.task('watch', function () {
-        $.gulp.watch('app/pages/**/*.pug', $.gulp.series('pug'));
-        $.gulp.watch('app/stylus/**/*.styl', $.gulp.series('stylus'));
-        $.gulp.watch('app/source/**/*.styl', $.gulp.series('stylus'));
-        $.gulp.watch('app/scripts/**/*.js', $.gulp.series('scripts'));
+        $.gulp.watch('dev/**/*.pug', $.gulp.series('pug'));
+        $.gulp.watch('dev/**/*.styl', $.gulp.series('stylus'));
+        $.gulp.watch('dev/source/**/*.styl', $.gulp.series('stylus'));
+        $.gulp.watch('dev/source/**/*.js', $.gulp.series('scripts'));
+        $.gulp.watch('dev/scripts/**/*.js', $.gulp.series('scripts'));
     });
 }

@@ -1,0 +1,55 @@
+nav
+  bg($wt)
+  padding r(10) 0
+  trans()
+
+.menu
+  df(row)
+  justify-content flex-end
+  align-items center
+  height 100%
+  li
+    margin 0 r(15)
+    &:last-child
+      mr(0)
+    a
+      display block
+      co(lightblue)
+      &:hover, &.active
+        co(blue)
+
+.nav-mobile
+  display none
+  +mob()
+    display block
+
+.nav-icon
+  width 30px
+  height 22px
+  position relative
+  margin r(14) 0
+  cursor pointer
+  transform rotate(0deg)
+  float right
+  trans()
+  span
+    display block
+    position absolute
+    height 3px
+    width 100%
+    bg($bk)
+    border-radius 2px
+    opacity 1
+    left 0
+    transform rotate(0deg)
+    trans()
+    &:nth-child(1)
+      top 0
+    &:nth-child(2), &:nth-child(3)
+      top 9px
+    &:nth-child(4)
+      top 18px
+
+
+//@import "../../../source/rew-ui-kit/rew-navigation/nav-right-left.styl"
+//@import "../../../source/rew-ui-kit/rew-navigation/nav-top-bottom.styl"

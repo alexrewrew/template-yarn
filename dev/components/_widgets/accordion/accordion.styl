@@ -1,0 +1,35 @@
+
+
+
+.accordion
+  &--heading
+    bg($wt)
+    co($bk)
+    cursor pointer
+    padding r(12) r(15) r(13)
+    fs(e(16))
+    margin 0
+    position relative
+    trans()
+    &:focus
+      outline none
+    &:hover
+      bg(lightblue)
+      co($wt)
+    &:after
+      triangle($bk, down, 4px)
+      top calc(50% - 2px)
+      right 15px
+      trans()
+    &.active
+      bg(blue)
+      co($wt)
+      &:after
+        transform rotate(180deg)
+
+  &--panel
+    display none
+    padding r(12) r(15) r(13)
+
+
+

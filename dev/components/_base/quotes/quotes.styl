@@ -1,0 +1,24 @@
+
+
+
+blockquote
+  padding r(15)
+  position relative
+  fs(e(16))
+  &:before, &:after
+    position absolute
+    display block
+    line-height 1
+  &:before
+    content open-quote
+    left 0
+    top 0
+  &:after
+    content close-quote
+    right 0
+    bottom 0
+
+cite
+  fs(e(16))
+  font-style italic
+  co($gr)

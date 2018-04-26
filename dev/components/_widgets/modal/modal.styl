@@ -1,0 +1,26 @@
+
+
+
+.fancybox-slide > div
+  width 100%
+  max-width 1170px
+  +tab()
+    max-width 960px
+  +port()
+    max-width 720px
+  +land()
+    max-width 540px
+  +xs()
+    max-width calc(100% - 30px)
+
+.fancybox-close-small
+  &:hover
+    &:after
+      bg($tr)
+      co(lightblue)
+  &:focus
+    &:after
+      outline none
+  &:after
+    trans()
+    co(blue)

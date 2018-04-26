@@ -1,0 +1,21 @@
+.pagination
+  df(row)
+  justify-content center
+  margin 0 auto
+  li
+    margin 0 r(15)
+    a
+      display inline-block
+      co($bk)
+      fs(e(18))
+      &:hover
+        co(lightblue)
+    .arrow
+      df(row)
+      justify-content center
+      align-items center
+      height 100%
+    .active
+      co(blue)
+      cursor default
+      pointer-events: none;

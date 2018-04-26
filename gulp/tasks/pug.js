@@ -1,6 +1,6 @@
 module.exports = function () {
     $.gulp.task('pug', function () {
-        return $.gulp.src('app/pages/*.pug')
+        return $.gulp.src('dev/pages/*.pug')
             .pipe($.pug({
                 'pretty': true
             }))

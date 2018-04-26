@@ -11,7 +11,7 @@ module.exports = function () {
             'node_modules/flatpickr/dist/flatpickr.js',
             // 'node_modules/aos/dist/aos.js',
             // 'node_modules/bootstrap/dist/js/bootstrap.bundle.js',
-            'app/source/fontawesome-free-5.0.6/svg-with-js/js/fontawesome-all.js',
+            'dev/source/fontawesome-free-5.0.6/svg-with-js/js/fontawesome-all.js',
             'node_modules/nouislider/distribute/nouislider.js',
             'node_modules/wnumb/wNumb.js',
 
@@ -25,10 +25,10 @@ module.exports = function () {
 
     $.gulp.task('scripts', function () {
         return $.gulp.src([
-            'app/scripts/rew.accordion.js',
-            'app/scripts/rew.tabs.js',
-            'app/scripts/dev.js',
-            'app/scripts/mail.js'
+            'dev/scripts/rew.accordion.js',
+            'dev/scripts/rew.tabs.js',
+            'dev/scripts/dev.js',
+            'dev/scripts/mail.js'
         ])
             .pipe($.concat('scripts.js'))
             .pipe($.gulp.dest('app/js'))

@@ -1,0 +1,28 @@
+.breadcrumbs
+  df(row)
+  mb(r(15))
+  li
+    position relative
+    pr(r(15))
+    mr(r(15))
+    &:after
+      pseudo(block, absolute)
+      right 0
+      top 0
+      height 100%
+      width 1px
+      bg($bk)
+      transform rotate(25deg)
+    &:last-child
+      &:after
+        display none
+
+    a
+      display inline-block
+      co($bk)
+      &:hover
+        co(lightblue)
+      &.active
+        cursor default
+        pointer-events: none
+        co(blue)

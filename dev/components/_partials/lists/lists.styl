@@ -1,0 +1,34 @@
+
+
+
+ul
+  li
+    list-style none
+    ul
+      mr(r(15))
+      ml(r(20))
+
+ul, ol
+  padding 0
+  margin 0
+  li
+    font-family $m-font, sans-serif
+
+ol
+  ml(r(20))
+  li
+    ol
+      mt(r(15))
+
+.ul-regular
+  li
+    position relative
+    pl(r(20))
+    mb(r(20))
+    &:before
+      pseudo(block, absolute)
+      width 8px
+      height 1px
+      bg($bk)
+      top 10px
+      left 0

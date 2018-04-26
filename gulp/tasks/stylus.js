@@ -1,6 +1,6 @@
 module.exports = function () {
     $.gulp.task('stylus', function () {
-        return $.gulp.src('app/stylus/*.styl')
+        return $.gulp.src('dev/stylus/*.styl')
             .pipe($.stylus({
                 'include css': true
             }))

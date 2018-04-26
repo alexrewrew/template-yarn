@@ -1,0 +1,15 @@
+mixin pagination()
+    ul.pagination
+        li.arrow.left
+            a(href='' title='')
+                //include ../../_svgs/arrow-left.svg
+
+        +li-a('1')
+        +li-a('2')
+        +li-a('3', 'active')
+        +li-a('4')
+        +li-a('...')
+
+        li.arrow.right
+            a(href='' title='')
+                //include ../../_svgs/arrow-right.svg

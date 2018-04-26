@@ -1,0 +1,35 @@
+
+
+
+.tabs
+  df(row)
+  mb(r(16))
+
+.tabs li
+  a
+    cursor: pointer;
+    padding r(12) r(15) r(13)
+    co($bk)
+    display block
+    trans()
+    &:hover
+      co($wt)
+      bg(lightblue)
+    &.active
+      co($wt)
+      bg(blue)
+
+.tabs-content
+  display: none;
+  padding: r(10) r(15)
+  animation: fadeEffect 1s;
+
+.tabs-content.active
+  display block
+
+@keyframes fadeEffect
+  from 
+    opacity: 0;
+  to 
+    opacity: 1;
+  

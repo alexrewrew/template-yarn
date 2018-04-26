@@ -1,0 +1,29 @@
+
+
+
+select
+  width 100%
+  bg($wt)
+  border 1px solid $gr2
+  padding r(12) r(15) r(13)
+  border-radius 0
+  display block
+  mb(r(20))
+  -webkit-appearance none
+  -moz-appearance none
+  trans()
+  &:focus
+    outline none
+    border 1px solid blue
+
+.select-group
+  position relative
+  mb(r(20))
+  &:after
+    triangle($bk, down, 4px)
+    top calc(50% - 2px)
+    right 15px
+
+.select-group-noarrow
+  &:after
+    display none

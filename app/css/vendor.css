@@ -220,7 +220,7 @@ progress {
 	-webkit-appearance: none;
 }
 ::-webkit-file-upload-button {
-	font: inherit;
+	font-size: inherit;
 	-webkit-appearance: button;
 }
 output {

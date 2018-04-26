@@ -1,0 +1,76 @@
+
+
+
+input[disabled], textarea[disabled]
+  bg(#e5e5e5)
+  border-color #e5e5e5
+  +placeholder()
+    opacity .5
+
+input.error, textarea.error
+  co(red)
+  border-color red
+  +placeholder()
+    co(red)
+    opacity .5
+
+input.success, textarea.success
+  co(green)
+  border-color green
+  +placeholder()
+    co(green)
+    opacity .5
+
+.input-group.error
+  input, select, textarea
+    co(red)
+    border-color red
+    +placeholder()
+      co(#f9d3cf)
+    &:focus + span
+      co(red)
+  span
+    co(red)
+
+.input-group.success
+  input, textarea
+    co(green)
+    border-color green
+    +placeholder()
+      co(green)
+      opacity .5
+    &:focus + span
+      co(green)
+  span
+    co(green)
+
+.input-group.disabled
+  input, textarea
+    bg(#e5e5e5)
+    border-color #e5e5e5
+    +placeholder()
+      opacity .5
+  span
+    co(#999)
+
+.select-group.error
+  select
+    border-color red
+    co(red)
+  &:after
+    triangle(red, down, 5px)
+
+.select-group.success
+  select
+    border-color green
+    co(green)
+  &:after
+    triangle(green, down, 5px)
+
+.select-group.disabled
+  select
+    bg(#e5e5e5)
+    border-color #e5e5e5
+    co(rgba(153,153,153,.5))
+  &:after
+    triangle(#999, down, 5px)
