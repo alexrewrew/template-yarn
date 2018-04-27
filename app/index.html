@@ -57,25 +57,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script><![endif]-->
   </head>
   <body>
-    <div id="preloader">
-      <div id="preloader-load"></div>
-    </div>
-    <script type="text/javascript">
-      var preloader = document.getElementById("preloader-load");function fadeOutnojquery(el) {
-          el.style.opacity = 1;
-          var interpreloader = setInterval(function () {
-              el.style.opacity = el.style.opacity - 0.05;
-              if (el.style.opacity <= 0.05) {
-                  clearInterval(interpreloader);
-                  preloader.style.display = "none";
-              }
-          }, 16);
-      }window.onload = function () {
-          setTimeout(function () {
-              fadeOutnojquery(preloader);
-          }, 1000);
-      };
-    </script>
+    <!--include ../../components/_layout/preloader/preloader-->
     <nav>
       <div class="container">
         <div class="row">
