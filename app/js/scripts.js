@@ -108,10 +108,10 @@
         });
 
         // ========== ACCORDION ==========
-        // $('#accordion').rewAccordion();
+        $('#accordion').rewAccordion();
 
         // ========== TABS ==========
-        // $('#tabs').rewTabs();
+        $('#tabs').rewTabs();
 
         // ========== DATEPICKER ==========
         // $(".datepicker").flatpickr();

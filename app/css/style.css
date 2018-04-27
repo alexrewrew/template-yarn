@@ -559,3 +559,88 @@ select:focus {
 .select-group-noarrow:after {
 	display: none;
 }
+.tabs {
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	margin-bottom: 1rem;
+}
+.tabs li a {
+	cursor: pointer;
+	padding: .75rem .9375rem .8125rem;
+	color: #000;
+	display: block;
+	-webkit-transition: all .4s ease;
+	     -o-transition: all .4s ease;
+	        transition: all .4s ease;
+}
+.tabs li a:hover {
+	color: #fff;
+	background-color: #add8e6;
+}
+.tabs li a.active {
+	color: #fff;
+	background-color: #00f;
+}
+.tabs-content {
+	display: none;
+	padding: .625rem .9375rem;
+	-webkit-animation: fadeEffect 1s;
+	        animation: fadeEffect 1s;
+}
+.tabs-content.active {
+	display: block;
+}
+@-webkit-keyframes fadeEffect {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+@keyframes fadeEffect {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+.volta {
+	float: right;
+	display: block;
+	position: relative;
+}
+.volta--text {
+	font-size: .625em;
+	color: #bebebe;
+	position: relative;
+	top: -3px;
+	margin-right: .3125rem;
+}
+.volta--visible svg {
+	width: 62px;
+}
+.volta--visible svg g {
+	fill: #bebebe;
+}
+.volta--hidden {
+	position: absolute;
+	right: 0;
+	top: 0;
+	height: 0;
+	overflow: hidden;
+	-webkit-transition: all .4s ease;
+	     -o-transition: all .4s ease;
+	        transition: all .4s ease;
+}
+.volta--hidden svg {
+	width: 62px;
+}
+.volta--hidden svg g {
+	fill: #7521e1;
+}
+.volta:hover .volta--hidden {
+	height: 100%;
+}
