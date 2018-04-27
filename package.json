@@ -6,7 +6,7 @@
   "author": "alexrewrew",
   "license": "MIT",
   "dependencies": {
-    "browser-sync": "^2.23.6",
+    "browser-sync": "latest",
     "del": "^3.0.0",
     "eslint": "latest",
     "gulp": "^4.0.0",
@@ -24,18 +24,14 @@
     "gulp-uglify": "^3.0.0"
   },
   "devDependencies": {
-    "@fancyapps/fancybox": "latest",
-    "aos": "^2.2.0",
+    "@fancyapps/fancybox": "^3.3.5",
     "bootstrap": "latest",
     "bowser": "latest",
     "chosen-js": "latest",
-    "flatpickr": "latest",
     "font-awesome": "^4.7.0",
     "jquery": "^3.3.1",
     "jquery.maskedinput": "^1.4.1",
-    "nouislider": "latest",
     "select2": "^4.0.6-rc.1",
-    "slick-carousel": "^1.8.1",
-    "wnumb": "^1.1.0"
+    "slick-carousel": "^1.8.1"
   }
 }

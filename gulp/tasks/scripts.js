@@ -8,12 +8,12 @@ module.exports = function () {
             'node_modules/select2/dist/js/select2.full.js',
             'node_modules/jquery.maskedinput/src/jquery.maskedinput.js',
             // 'node_modules/bowser/bowser.js',
-            'node_modules/flatpickr/dist/flatpickr.js',
+            // 'node_modules/flatpickr/dist/flatpickr.js',
             // 'node_modules/aos/dist/aos.js',
             // 'node_modules/bootstrap/dist/js/bootstrap.bundle.js',
             'dev/source/fontawesome-free-5.0.6/svg-with-js/js/fontawesome-all.js',
-            'node_modules/nouislider/distribute/nouislider.js',
-            'node_modules/wnumb/wNumb.js',
+            // 'node_modules/nouislider/distribute/nouislider.js',
+            // 'node_modules/wnumb/wNumb.js',
 
         ])
             .pipe($.concat('vendor.js'))

@@ -13376,271 +13376,268 @@ return jQuery;
 }));
 
 // ==================================================
-// fancyBox v3.2.5
+// fancyBox v3.3.5
 //
 // Licensed GPLv3 for open source use
 // or fancyBox Commercial License for commercial use
 //
 // http://fancyapps.com/fancybox/
-// Copyright 2017 fancyApps
+// Copyright 2018 fancyApps
 //
 // ==================================================
-;(function (window, document, $, undefined) {
-    'use strict';
+(function(window, document, $, undefined) {
+  "use strict";
 
-    // If there's no jQuery, fancyBox can't work
-    // =========================================
+  window.console = window.console || {
+    info: function(stuff) {}
+  };
 
-    if ( !$ ) {
-        return;
-    }
+  // If there's no jQuery, fancyBox can't work
+  // =========================================
 
-    // Check if fancyBox is already initialized
-    // ========================================
+  if (!$) {
+    return;
+  }
 
-    if ( $.fn.fancybox ) {
+  // Check if fancyBox is already initialized
+  // ========================================
 
-        if ( 'console' in window ) {
-            console.log( 'fancyBox already initialized' );
+  if ($.fn.fancybox) {
+    console.info("fancyBox already initialized");
+
+    return;
+  }
+
+  // Private default settings
+  // ========================
+
+  var defaults = {
+    // Enable infinite gallery navigation
+    loop: false,
+
+    // Horizontal space between slides
+    gutter: 50,
+
+    // Enable keyboard navigation
+    keyboard: true,
+
+    // Should display navigation arrows at the screen edges
+    arrows: true,
+
+    // Should display counter at the top left corner
+    infobar: true,
+
+    // Should display close button (using `btnTpl.smallBtn` template) over the content
+    // Can be true, false, "auto"
+    // If "auto" - will be automatically enabled for "html", "inline" or "ajax" items
+    smallBtn: "auto",
+
+    // Should display toolbar (buttons at the top)
+    // Can be true, false, "auto"
+    // If "auto" - will be automatically hidden if "smallBtn" is enabled
+    toolbar: "auto",
+
+    // What buttons should appear in the top right corner.
+    // Buttons will be created using templates from `btnTpl` option
+    // and they will be placed into toolbar (class="fancybox-toolbar"` element)
+    buttons: [
+      "zoom",
+      //"share",
+      //"slideShow",
+      //"fullScreen",
+      //"download",
+      "thumbs",
+      "close"
+    ],
+
+    // Detect "idle" time in seconds
+    idleTime: 3,
+
+    // Disable right-click and use simple image protection for images
+    protect: false,
+
+    // Shortcut to make content "modal" - disable keyboard navigtion, hide buttons, etc
+    modal: false,
+
+    image: {
+      // Wait for images to load before displaying
+      //   true  - wait for image to load and then display;
+      //   false - display thumbnail and load the full-sized image over top,
+      //           requires predefined image dimensions (`data-width` and `data-height` attributes)
+      preload: false
+    },
+
+    ajax: {
+      // Object containing settings for ajax request
+      settings: {
+        // This helps to indicate that request comes from the modal
+        // Feel free to change naming
+        data: {
+          fancybox: true
         }
+      }
+    },
 
-        return;
-    }
+    iframe: {
+      // Iframe template
+      tpl:
+        '<iframe id="fancybox-frame{rnd}" name="fancybox-frame{rnd}" class="fancybox-iframe" frameborder="0" vspace="0" hspace="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen allowtransparency="true" src=""></iframe>',
 
-    // Private default settings
-    // ========================
+      // Preload iframe before displaying it
+      // This allows to calculate iframe content width and height
+      // (note: Due to "Same Origin Policy", you can't get cross domain data).
+      preload: true,
 
-    var defaults = {
+      // Custom CSS styling for iframe wrapping element
+      // You can use this to set custom iframe dimensions
+      css: {},
 
-        // Enable infinite gallery navigation
-        loop : false,
+      // Iframe tag attributes
+      attr: {
+        scrolling: "auto"
+      }
+    },
 
-        // Space around image, ignored if zoomed-in or viewport width is smaller than 800px
-        margin : [44, 0],
+    // Default content type if cannot be detected automatically
+    defaultType: "image",
 
-        // Horizontal space between slides
-        gutter : 50,
+    // Open/close animation type
+    // Possible values:
+    //   false            - disable
+    //   "zoom"           - zoom images from/to thumbnail
+    //   "fade"
+    //   "zoom-in-out"
+    //
+    animationEffect: "zoom",
 
-        // Enable keyboard navigation
-        keyboard : true,
+    // Duration in ms for open/close animation
+    animationDuration: 366,
 
-        // Should display navigation arrows at the screen edges
-        arrows : true,
+    // Should image change opacity while zooming
+    // If opacity is "auto", then opacity will be changed if image and thumbnail have different aspect ratios
+    zoomOpacity: "auto",
 
-        // Should display infobar (counter and arrows at the top)
-        infobar : true,
+    // Transition effect between slides
+    //
+    // Possible values:
+    //   false            - disable
+    //   "fade'
+    //   "slide'
+    //   "circular'
+    //   "tube'
+    //   "zoom-in-out'
+    //   "rotate'
+    //
+    transitionEffect: "fade",
 
-        // Should display toolbar (buttons at the top)
-        toolbar : true,
+    // Duration in ms for transition animation
+    transitionDuration: 366,
 
-        // What buttons should appear in the top right corner.
-        // Buttons will be created using templates from `btnTpl` option
-        // and they will be placed into toolbar (class="fancybox-toolbar"` element)
-        buttons : [
-            'slideShow',
-            'fullScreen',
-            'thumbs',
-            'share',
-            //'download',
-            //'zoom',
-            'close'
-        ],
+    // Custom CSS class for slide element
+    slideClass: "",
 
-        // Detect "idle" time in seconds
-        idleTime : 3,
+    // Custom CSS class for layout
+    baseClass: "",
 
-        // Should display buttons at top right corner of the content
-        // If 'auto' - they will be created for content having type 'html', 'inline' or 'ajax'
-        // Use template from `btnTpl.smallBtn` for customization
-        smallBtn : 'auto',
+    // Base template for layout
+    baseTpl:
+      '<div class="fancybox-container" role="dialog" tabindex="-1">' +
+      '<div class="fancybox-bg"></div>' +
+      '<div class="fancybox-inner">' +
+      '<div class="fancybox-infobar">' +
+      "<span data-fancybox-index></span>&nbsp;/&nbsp;<span data-fancybox-count></span>" +
+      "</div>" +
+      '<div class="fancybox-toolbar">{{buttons}}</div>' +
+      '<div class="fancybox-navigation">{{arrows}}</div>' +
+      '<div class="fancybox-stage"></div>' +
+      '<div class="fancybox-caption"></div>' +
+      "</div>" +
+      "</div>",
 
-        // Disable right-click and use simple image protection for images
-        protect : false,
+    // Loading indicator template
+    spinnerTpl: '<div class="fancybox-loading"></div>',
 
-        // Shortcut to make content "modal" - disable keyboard navigtion, hide buttons, etc
-        modal : false,
+    // Error message template
+    errorTpl: '<div class="fancybox-error"><p>{{ERROR}}</p></div>',
 
-        image : {
+    btnTpl: {
+      download:
+        '<a download data-fancybox-download class="fancybox-button fancybox-button--download" title="{{DOWNLOAD}}" href="javascript:;">' +
+        '<svg viewBox="0 0 40 40">' +
+        '<path d="M13,16 L20,23 L27,16 M20,7 L20,23 M10,24 L10,28 L30,28 L30,24" />' +
+        "</svg>" +
+        "</a>",
 
-            // Wait for images to load before displaying
-            // Requires predefined image dimensions
-            // If 'auto' - will zoom in thumbnail if 'width' and 'height' attributes are found
-            preload : "auto"
+      zoom:
+        '<button data-fancybox-zoom class="fancybox-button fancybox-button--zoom" title="{{ZOOM}}">' +
+        '<svg viewBox="0 0 40 40">' +
+        '<path d="M18,17 m-8,0 a8,8 0 1,0 16,0 a8,8 0 1,0 -16,0 M24,22 L31,29" />' +
+        "</svg>" +
+        "</button>",
 
-        },
+      close:
+        '<button data-fancybox-close class="fancybox-button fancybox-button--close" title="{{CLOSE}}">' +
+        '<svg viewBox="0 0 40 40">' +
+        '<path d="M10,10 L30,30 M30,10 L10,30" />' +
+        "</svg>" +
+        "</button>",
 
-        ajax : {
+      // This small close button will be appended to your html/inline/ajax content by default,
+      // if "smallBtn" option is not set to false
+      smallBtn:
+        '<button data-fancybox-close class="fancybox-close-small" title="{{CLOSE}}"><svg viewBox="0 0 32 32"><path d="M10,10 L22,22 M22,10 L10,22"></path></svg></button>',
 
-            // Object containing settings for ajax request
-            settings : {
+      // Arrows
+      arrowLeft:
+        '<a data-fancybox-prev class="fancybox-button fancybox-button--arrow_left" title="{{PREV}}" href="javascript:;">' +
+        '<svg viewBox="0 0 40 40">' +
+        '<path d="M18,12 L10,20 L18,28 M10,20 L30,20"></path>' +
+        "</svg>" +
+        "</a>",
 
-                // This helps to indicate that request comes from the modal
-                // Feel free to change naming
-                data : {
-                    fancybox : true
-                }
-            }
+      arrowRight:
+        '<a data-fancybox-next class="fancybox-button fancybox-button--arrow_right" title="{{NEXT}}" href="javascript:;">' +
+        '<svg viewBox="0 0 40 40">' +
+        '<path d="M10,20 L30,20 M22,12 L30,20 L22,28"></path>' +
+        "</svg>" +
+        "</a>"
+    },
 
-        },
+    // Container is injected into this element
+    parentEl: "body",
 
-        iframe : {
+    // Focus handling
+    // ==============
 
-            // Iframe template
-            tpl : '<iframe id="fancybox-frame{rnd}" name="fancybox-frame{rnd}" class="fancybox-iframe" frameborder="0" vspace="0" hspace="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen allowtransparency="true" src=""></iframe>',
+    // Try to focus on the first focusable element after opening
+    autoFocus: false,
 
-            // Preload iframe before displaying it
-            // This allows to calculate iframe content width and height
-            // (note: Due to "Same Origin Policy", you can't get cross domain data).
-            preload : true,
+    // Put focus back to active element after closing
+    backFocus: true,
 
-            // Custom CSS styling for iframe wrapping element
-            // You can use this to set custom iframe dimensions
-            css : {},
+    // Do not let user to focus on element outside modal content
+    trapFocus: true,
 
-            // Iframe tag attributes
-            attr : {
-                scrolling : 'auto'
-            }
+    // Module specific options
+    // =======================
 
-        },
+    fullScreen: {
+      autoStart: false
+    },
 
-        // Default content type if cannot be detected automatically
-        defaultType : 'image',
+    // Set `touch: false` to disable dragging/swiping
+    touch: {
+      vertical: true, // Allow to drag content vertically
+      momentum: true // Continue movement after releasing mouse/touch when panning
+    },
 
-        // Open/close animation type
-        // Possible values:
-        //   false            - disable
-        //   "zoom"           - zoom images from/to thumbnail
-        //   "fade"
-        //   "zoom-in-out"
-        //
-        animationEffect : "zoom",
+    // Hash value when initializing manually,
+    // set `false` to disable hash change
+    hash: null,
 
-        // Duration in ms for open/close animation
-        animationDuration : 500,
-
-        // Should image change opacity while zooming
-        // If opacity is "auto", then opacity will be changed if image and thumbnail have different aspect ratios
-        zoomOpacity : "auto",
-
-        // Transition effect between slides
-        //
-        // Possible values:
-        //   false            - disable
-        //   "fade'
-        //   "slide'
-        //   "circular'
-        //   "tube'
-        //   "zoom-in-out'
-        //   "rotate'
-        //
-        transitionEffect : "fade",
-
-        // Duration in ms for transition animation
-        transitionDuration : 366,
-
-        // Custom CSS class for slide element
-        slideClass : '',
-
-        // Custom CSS class for layout
-        baseClass : '',
-
-        // Base template for layout
-        baseTpl	:
-            '<div class="fancybox-container" role="dialog" tabindex="-1">' +
-                '<div class="fancybox-bg"></div>' +
-                '<div class="fancybox-inner">' +
-                    '<div class="fancybox-infobar">' +
-                        '<span data-fancybox-index></span>&nbsp;/&nbsp;<span data-fancybox-count></span>' +
-                    '</div>' +
-                    '<div class="fancybox-toolbar">{{buttons}}</div>' +
-                    '<div class="fancybox-navigation">{{arrows}}</div>' +
-                    '<div class="fancybox-stage"></div>' +
-                    '<div class="fancybox-caption-wrap"><div class="fancybox-caption"></div></div>' +
-                '</div>' +
-            '</div>',
-
-        // Loading indicator template
-        spinnerTpl : '<div class="fancybox-loading"></div>',
-
-        // Error message template
-        errorTpl : '<div class="fancybox-error"><p>{{ERROR}}<p></div>',
-
-        btnTpl : {
-
-            download : '<a download data-fancybox-download class="fancybox-button fancybox-button--download" title="{{DOWNLOAD}}">' +
-                        '<svg viewBox="0 0 40 40">' +
-                            '<path d="M20,23 L20,8 L20,23 L13,16 L20,23 L27,16 L20,23 M26,28 L13,28 L27,28 L14,28" />' +
-                        '</svg>' +
-                    '</a>',
-
-            zoom : '<button data-fancybox-zoom class="fancybox-button fancybox-button--zoom" title="{{ZOOM}}">' +
-                        '<svg viewBox="0 0 40 40">' +
-                            '<path d="M 18,17 m-8,0 a 8,8 0 1,0 16,0 a 8,8 0 1,0 -16,0 M25,23 L31,29 L25,23" />' +
-                        '</svg>' +
-                    '</button>',
-
-            close : '<button data-fancybox-close class="fancybox-button fancybox-button--close" title="{{CLOSE}}">' +
-                        '<svg viewBox="0 0 40 40">' +
-                            '<path d="M10,10 L30,30 M30,10 L10,30" />' +
-                        '</svg>' +
-                    '</button>',
-
-            // This small close button will be appended to your html/inline/ajax content by default,
-            // if "smallBtn" option is not set to false
-            smallBtn   : '<button data-fancybox-close class="fancybox-close-small" title="{{CLOSE}}"></button>',
-
-            // Arrows
-            arrowLeft : '<button data-fancybox-prev class="fancybox-button fancybox-button--arrow_left" title="{{PREV}}">' +
-                            '<svg viewBox="0 0 40 40">' +
-                              '<path d="M10,20 L30,20 L10,20 L18,28 L10,20 L18,12 L10,20"></path>' +
-                            '</svg>' +
-                          '</button>',
-
-            arrowRight : '<button data-fancybox-next class="fancybox-button fancybox-button--arrow_right" title="{{NEXT}}">' +
-                          '<svg viewBox="0 0 40 40">' +
-                            '<path d="M30,20 L10,20 L30,20 L22,28 L30,20 L22,12 L30,20"></path>' +
-                          '</svg>' +
-                        '</button>'
-        },
-
-        // Container is injected into this element
-        parentEl : 'body',
-
-
-        // Focus handling
-        // ==============
-
-        // Try to focus on the first focusable element after opening
-        autoFocus : false,
-
-        // Put focus back to active element after closing
-        backFocus : true,
-
-        // Do not let user to focus on element outside modal content
-        trapFocus : true,
-
-
-        // Module specific options
-        // =======================
-
-        fullScreen : {
-            autoStart : false,
-        },
-
-        // Set `touch: false` to disable dragging/swiping
-        touch : {
-            vertical : true,  // Allow to drag content vertically
-            momentum : true   // Continue movement after releasing mouse/touch when panning
-        },
-
-        // Hash value when initializing manually,
-        // set `false` to disable hash change
-        hash : null,
-
-        // Customize or add new media types
-        // Example:
-        /*
+    // Customize or add new media types
+    // Example:
+    /*
         media : {
             youtube : {
                 params : {
@@ -13649,2796 +13646,2809 @@ return jQuery;
             }
         }
         */
-        media : {},
+    media: {},
 
-        slideShow : {
-            autoStart : false,
-            speed     : 4000
-        },
+    slideShow: {
+      autoStart: false,
+      speed: 4000
+    },
 
-        thumbs : {
-			autoStart   : false,                  // Display thumbnails on opening
-			hideOnClose : true,                   // Hide thumbnail grid when closing animation starts
-			parentEl    : '.fancybox-container',  // Container is injected into this element
-			axis        : 'y'                     // Vertical (y) or horizontal (x) scrolling
-		},
+    thumbs: {
+      autoStart: false, // Display thumbnails on opening
+      hideOnClose: true, // Hide thumbnail grid when closing animation starts
+      parentEl: ".fancybox-container", // Container is injected into this element
+      axis: "y" // Vertical (y) or horizontal (x) scrolling
+    },
 
-        // Callbacks
-        //==========
+    // Use mousewheel to navigate gallery
+    // If 'auto' - enabled for images only
+    wheel: "auto",
 
-        // See Documentation/API/Events for more information
-        // Example:
-        /*
-            afterShow: function( instance, current ) {
-                 console.info( 'Clicked element:' );
-                 console.info( current.opts.$orig );
-            }
-        */
+    // Callbacks
+    //==========
 
-        onInit       : $.noop,  // When instance has been initialized
+    // See Documentation/API/Events for more information
+    // Example:
+    /*
+		afterShow: function( instance, current ) {
+			console.info( 'Clicked element:' );
+			console.info( current.opts.$orig );
+		}
+	*/
 
-        beforeLoad   : $.noop,  // Before the content of a slide is being loaded
-        afterLoad    : $.noop,  // When the content of a slide is done loading
+    onInit: $.noop, // When instance has been initialized
 
-        beforeShow   : $.noop,  // Before open animation starts
-        afterShow    : $.noop,  // When content is done loading and animating
+    beforeLoad: $.noop, // Before the content of a slide is being loaded
+    afterLoad: $.noop, // When the content of a slide is done loading
 
-        beforeClose  : $.noop,  // Before the instance attempts to close. Return false to cancel the close.
-        afterClose   : $.noop,  // After instance has been closed
+    beforeShow: $.noop, // Before open animation starts
+    afterShow: $.noop, // When content is done loading and animating
 
-        onActivate   : $.noop,  // When instance is brought to front
-        onDeactivate : $.noop,  // When other instance has been activated
+    beforeClose: $.noop, // Before the instance attempts to close. Return false to cancel the close.
+    afterClose: $.noop, // After instance has been closed
 
+    onActivate: $.noop, // When instance is brought to front
+    onDeactivate: $.noop, // When other instance has been activated
 
-        // Interaction
-        // ===========
+    // Interaction
+    // ===========
 
-        // Use options below to customize taken action when user clicks or double clicks on the fancyBox area,
-        // each option can be string or method that returns value.
-        //
-        // Possible values:
-        //   "close"           - close instance
-        //   "next"            - move to next gallery item
-        //   "nextOrClose"     - move to next gallery item or close if gallery has only one item
-        //   "toggleControls"  - show/hide controls
-        //   "zoom"            - zoom image (if loaded)
-        //   false             - do nothing
+    // Use options below to customize taken action when user clicks or double clicks on the fancyBox area,
+    // each option can be string or method that returns value.
+    //
+    // Possible values:
+    //   "close"           - close instance
+    //   "next"            - move to next gallery item
+    //   "nextOrClose"     - move to next gallery item or close if gallery has only one item
+    //   "toggleControls"  - show/hide controls
+    //   "zoom"            - zoom image (if loaded)
+    //   false             - do nothing
 
-        // Clicked on the content
-        clickContent : function( current, event ) {
-            return current.type === 'image' ? 'zoom' : false;
-        },
+    // Clicked on the content
+    clickContent: function(current, event) {
+      return current.type === "image" ? "zoom" : false;
+    },
 
-        // Clicked on the slide
-        clickSlide : 'close',
+    // Clicked on the slide
+    clickSlide: "close",
 
-        // Clicked on the background (backdrop) element
-        clickOutside : 'close',
+    // Clicked on the background (backdrop) element;
+    // if you have not changed the layout, then most likely you need to use `clickSlide` option
+    clickOutside: "close",
 
-        // Same as previous two, but for double click
-        dblclickContent : false,
-        dblclickSlide   : false,
-        dblclickOutside : false,
+    // Same as previous two, but for double click
+    dblclickContent: false,
+    dblclickSlide: false,
+    dblclickOutside: false,
 
+    // Custom options when mobile device is detected
+    // =============================================
 
-        // Custom options when mobile device is detected
-        // =============================================
+    mobile: {
+      idleTime: false,
+      clickContent: function(current, event) {
+        return current.type === "image" ? "toggleControls" : false;
+      },
+      clickSlide: function(current, event) {
+        return current.type === "image" ? "toggleControls" : "close";
+      },
+      dblclickContent: function(current, event) {
+        return current.type === "image" ? "zoom" : false;
+      },
+      dblclickSlide: function(current, event) {
+        return current.type === "image" ? "zoom" : false;
+      }
+    },
 
-        mobile : {
-            margin : 0,
+    // Internationalization
+    // ====================
 
-            clickContent : function( current, event ) {
-                return current.type === 'image' ? 'toggleControls' : false;
-            },
-            clickSlide : function( current, event ) {
-                return current.type === 'image' ? 'toggleControls' : 'close';
-            },
-            dblclickContent : function( current, event ) {
-                return current.type === 'image' ? 'zoom' : false;
-            },
-            dblclickSlide : function( current, event ) {
-                return current.type === 'image' ? 'zoom' : false;
-            }
-        },
+    lang: "en",
+    i18n: {
+      en: {
+        CLOSE: "Close",
+        NEXT: "Next",
+        PREV: "Previous",
+        ERROR: "The requested content cannot be loaded. <br/> Please try again later.",
+        PLAY_START: "Start slideshow",
+        PLAY_STOP: "Pause slideshow",
+        FULL_SCREEN: "Full screen",
+        THUMBS: "Thumbnails",
+        DOWNLOAD: "Download",
+        SHARE: "Share",
+        ZOOM: "Zoom"
+      },
+      de: {
+        CLOSE: "Schliessen",
+        NEXT: "Weiter",
+        PREV: "Zurück",
+        ERROR: "Die angeforderten Daten konnten nicht geladen werden. <br/> Bitte versuchen Sie es später nochmal.",
+        PLAY_START: "Diaschau starten",
+        PLAY_STOP: "Diaschau beenden",
+        FULL_SCREEN: "Vollbild",
+        THUMBS: "Vorschaubilder",
+        DOWNLOAD: "Herunterladen",
+        SHARE: "Teilen",
+        ZOOM: "Maßstab"
+      }
+    }
+  };
 
+  // Few useful variables and methods
+  // ================================
 
-        // Internationalization
-        // ============
+  var $W = $(window);
+  var $D = $(document);
 
-        lang : 'en',
-        i18n : {
-            'en' : {
-                CLOSE       : 'Close',
-                NEXT        : 'Next',
-                PREV        : 'Previous',
-                ERROR       : 'The requested content cannot be loaded. <br/> Please try again later.',
-                PLAY_START  : 'Start slideshow',
-                PLAY_STOP   : 'Pause slideshow',
-                FULL_SCREEN : 'Full screen',
-                THUMBS      : 'Thumbnails',
-                DOWNLOAD    : 'Download',
-                SHARE       : 'Share',
-                ZOOM        : 'Zoom'
-            },
-            'de' : {
-                CLOSE       : 'Schliessen',
-                NEXT        : 'Weiter',
-                PREV        : 'Zurück',
-                ERROR       : 'Die angeforderten Daten konnten nicht geladen werden. <br/> Bitte versuchen Sie es später nochmal.',
-                PLAY_START  : 'Diaschau starten',
-                PLAY_STOP   : 'Diaschau beenden',
-                FULL_SCREEN : 'Vollbild',
-                THUMBS      : 'Vorschaubilder',
-                DOWNLOAD    : 'Herunterladen',
-                SHARE       : 'Teilen',
-                ZOOM        : 'Maßstab'
-            }
-        }
+  var called = 0;
 
+  // Check if an object is a jQuery object and not a native JavaScript object
+  // ========================================================================
+  var isQuery = function(obj) {
+    return obj && obj.hasOwnProperty && obj instanceof $;
+  };
+
+  // Handle multiple browsers for "requestAnimationFrame" and "cancelAnimationFrame"
+  // ===============================================================================
+  var requestAFrame = (function() {
+    return (
+      window.requestAnimationFrame ||
+      window.webkitRequestAnimationFrame ||
+      window.mozRequestAnimationFrame ||
+      window.oRequestAnimationFrame ||
+      // if all else fails, use setTimeout
+      function(callback) {
+        return window.setTimeout(callback, 1000 / 60);
+      }
+    );
+  })();
+
+  // Detect the supported transition-end event property name
+  // =======================================================
+  var transitionEnd = (function() {
+    var el = document.createElement("fakeelement"),
+      t;
+
+    var transitions = {
+      transition: "transitionend",
+      OTransition: "oTransitionEnd",
+      MozTransition: "transitionend",
+      WebkitTransition: "webkitTransitionEnd"
     };
 
-    // Few useful variables and methods
-    // ================================
-
-    var $W = $(window);
-    var $D = $(document);
-
-    var called = 0;
-
-
-    // Check if an object is a jQuery object and not a native JavaScript object
-    // ========================================================================
-
-    var isQuery = function ( obj ) {
-        return obj && obj.hasOwnProperty && obj instanceof $;
-    };
-
-
-    // Handle multiple browsers for "requestAnimationFrame" and "cancelAnimationFrame"
-    // ===============================================================================
-
-    var requestAFrame = (function () {
-        return window.requestAnimationFrame ||
-                window.webkitRequestAnimationFrame ||
-                window.mozRequestAnimationFrame ||
-                window.oRequestAnimationFrame ||
-                // if all else fails, use setTimeout
-                function (callback) {
-                    return window.setTimeout(callback, 1000 / 60);
-                };
-    })();
-
-
-    // Detect the supported transition-end event property name
-    // =======================================================
-
-    var transitionEnd = (function () {
-        var t, el = document.createElement("fakeelement");
-
-        var transitions = {
-            "transition"      : "transitionend",
-            "OTransition"     : "oTransitionEnd",
-            "MozTransition"   : "transitionend",
-            "WebkitTransition": "webkitTransitionEnd"
-        };
-
-        for (t in transitions) {
-            if (el.style[t] !== undefined){
-                return transitions[t];
-            }
-        }
-
-        return 'transitionend';
-    })();
-
-
-    // Force redraw on an element.
-    // This helps in cases where the browser doesn't redraw an updated element properly.
-    // =================================================================================
-
-    var forceRedraw = function( $el ) {
-        return ( $el && $el.length && $el[0].offsetHeight );
-    };
-
-
-    // Class definition
-    // ================
-
-    var FancyBox = function( content, opts, index ) {
-        var self = this;
-
-        self.opts = $.extend( true, { index : index }, $.fancybox.defaults, opts || {} );
-
-        if ( $.fancybox.isMobile ) {
-            self.opts = $.extend( true, {}, self.opts, self.opts.mobile );
-        }
-
-        // Exclude buttons option from deep merging
-        if ( opts && $.isArray( opts.buttons ) ) {
-            self.opts.buttons = opts.buttons;
-        }
-
-        self.id    = self.opts.id || ++called;
-        self.group = [];
-
-        self.currIndex = parseInt( self.opts.index, 10 ) || 0;
-        self.prevIndex = null;
-
-        self.prevPos = null;
-        self.currPos = 0;
-
-        self.firstRun = null;
-
-        // Create group elements from original item collection
-        self.createGroup( content );
-
-        if ( !self.group.length ) {
-            return;
-        }
-
-        // Save last active element and current scroll position
-        self.$lastFocus = $(document.activeElement).blur();
-
-        // Collection of gallery objects
-        self.slides = {};
-
-        self.init();
-    };
-
-    $.extend(FancyBox.prototype, {
-
-        // Create DOM structure
-        // ====================
-
-        init : function() {
-            var self = this,
-                firstItem      = self.group[ self.currIndex ],
-                firstItemOpts  = firstItem.opts,
-                scrollbarWidth = $.fancybox.scrollbarWidth,
-                $scrollDiv,
-                $container,
-                buttonStr;
-
-            self.scrollTop  = $D.scrollTop();
-            self.scrollLeft = $D.scrollLeft();
-
-
-            // Hide scrollbars
-            // ===============
-
-            if ( !$.fancybox.getInstance() ) {
-
-                $( 'body' ).addClass( 'fancybox-active' );
-
-                // iOS hack
-                if ( /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream ) {
-
-                    // iOS has problems for input elements inside fixed containers,
-                    // the workaround is to apply `position: fixed` to `<body>` element,
-                    // unfortunately, this makes it lose the scrollbars and forces address bar to appear.
-
-                    if ( firstItem.type !== 'image' ) {
-                        $( 'body' ).css( 'top', $( 'body' ).scrollTop() * -1 ).addClass( 'fancybox-iosfix' );
-                    }
-
-                } else if ( !$.fancybox.isMobile && document.body.scrollHeight > window.innerHeight ) {
-
-                    if ( scrollbarWidth === undefined ) {
-                        $scrollDiv = $('<div style="width:50px;height:50px;overflow:scroll;" />').appendTo( 'body' );
-
-                        scrollbarWidth = $.fancybox.scrollbarWidth = $scrollDiv[0].offsetWidth - $scrollDiv[0].clientWidth;
-
-                        $scrollDiv.remove();
-                    }
-
-                    $( 'head' ).append( '<style id="fancybox-style-noscroll" type="text/css">.compensate-for-scrollbar { margin-right: ' + scrollbarWidth + 'px; }</style>' );
-                    $( 'body' ).addClass( 'compensate-for-scrollbar' );
-                }
-            }
-
-
-            // Build html markup and set references
-            // ====================================
-
-            // Build html code for buttons and insert into main template
-            buttonStr = '';
-
-            $.each( firstItemOpts.buttons, function( index, value ) {
-                buttonStr += ( firstItemOpts.btnTpl[ value ] || '' );
-            });
-
-            // Create markup from base template, it will be initially hidden to
-            // avoid unnecessary work like painting while initializing is not complete
-            $container = $(
-                self.translate( self,
-                    firstItemOpts.baseTpl
-                        .replace( '\{\{buttons\}\}', buttonStr )
-                        .replace( '\{\{arrows\}\}', firstItemOpts.btnTpl.arrowLeft + firstItemOpts.btnTpl.arrowRight )
-                )
-            )
-                .attr( 'id', 'fancybox-container-' + self.id )
-                .addClass( 'fancybox-is-hidden' )
-                .addClass( firstItemOpts.baseClass )
-                .data( 'FancyBox', self )
-                .appendTo( firstItemOpts.parentEl );
-
-            // Create object holding references to jQuery wrapped nodes
-            self.$refs = {
-                container : $container
-            };
-
-            [ 'bg', 'inner', 'infobar', 'toolbar', 'stage', 'caption', 'navigation' ].forEach(function(item) {
-                self.$refs[ item ] = $container.find( '.fancybox-' + item );
-            });
-
-            self.trigger( 'onInit' );
-
-            // Enable events, deactive previous instances
-            self.activate();
-
-            // Build slides, load and reveal content
-            self.jumpTo( self.currIndex );
-        },
-
-
-        // Simple i18n support - replaces object keys found in template
-        // with corresponding values
-        // ============================================================
-
-        translate : function( obj, str ) {
-            var arr = obj.opts.i18n[ obj.opts.lang ];
-
-            return str.replace(/\{\{(\w+)\}\}/g, function(match, n) {
-                var value = arr[n];
-
-                if ( value === undefined ) {
-                    return match;
-                }
-
-                return value;
-            });
-        },
-
-        // Create array of gally item objects
-        // Check if each object has valid type and content
-        // ===============================================
-
-        createGroup : function ( content ) {
-            var self  = this;
-            var items = $.makeArray( content );
-
-            $.each(items, function( i, item ) {
-                var obj  = {},
-                    opts = {},
-                    $item,
-                    type,
-                    src,
-                    srcParts;
-
-                // Step 1 - Make sure we have an object
-                // ====================================
-
-                if ( $.isPlainObject( item ) ) {
-
-                    // We probably have manual usage here, something like
-                    // $.fancybox.open( [ { src : "image.jpg", type : "image" } ] )
-
-                    obj  = item;
-                    opts = item.opts || item;
-
-                } else if ( $.type( item ) === 'object' && $( item ).length ) {
-
-                    // Here we probably have jQuery collection returned by some selector
-                    $item = $( item );
-
-                    opts = $item.data();
-                    opts = $.extend( {}, opts, opts.options || {} );
-
-                    // Here we store clicked element
-                    opts.$orig = $item;
-
-                    obj.src = opts.src || $item.attr( 'href' );
-
-                    // Assume that simple syntax is used, for example:
-                    //   `$.fancybox.open( $("#test"), {} );`
-                    if ( !obj.type && !obj.src ) {
-                        obj.type = 'inline';
-                        obj.src  = item;
-                    }
-
-                } else {
-
-                    // Assume we have a simple html code, for example:
-                    //   $.fancybox.open( '<div><h1>Hi!</h1></div>' );
-
-                    obj = {
-                        type : 'html',
-                        src  : item + ''
-                    };
-
-                }
-
-                // Each gallery object has full collection of options
-                obj.opts = $.extend( true, {}, self.opts, opts );
-
-                // Do not merge buttons array
-                if ( $.isArray( opts.buttons ) ) {
-                    obj.opts.buttons = opts.buttons;
-                }
-
-
-                // Step 2 - Make sure we have content type, if not - try to guess
-                // ==============================================================
-
-                type = obj.type || obj.opts.type;
-                src  = obj.src || '';
-
-                if ( !type && src ) {
-                    if ( src.match(/(^data:image\/[a-z0-9+\/=]*,)|(\.(jp(e|g|eg)|gif|png|bmp|webp|svg|ico)((\?|#).*)?$)/i) ) {
-                        type = 'image';
-
-                    } else if ( src.match(/\.(pdf)((\?|#).*)?$/i) ) {
-                        type = 'pdf';
-
-                    } else if ( src.charAt(0) === '#' ) {
-                        type = 'inline';
-                    }
-                }
-
-                if ( type ) {
-                    obj.type = type;
-
-                } else {
-                    self.trigger( 'objectNeedsType', obj );
-                }
-
-
-                // Step 3 - Some adjustments
-                // =========================
-
-                obj.index = self.group.length;
-
-                // Check if $orig and $thumb objects exist
-                if ( obj.opts.$orig && !obj.opts.$orig.length ) {
-                    delete obj.opts.$orig;
-                }
-
-                if ( !obj.opts.$thumb && obj.opts.$orig ) {
-                    obj.opts.$thumb = obj.opts.$orig.find( 'img:first' );
-                }
-
-                if ( obj.opts.$thumb && !obj.opts.$thumb.length ) {
-                    delete obj.opts.$thumb;
-                }
-
-                // "caption" is a "special" option, it can be used to customize caption per gallery item ..
-                if ( $.type( obj.opts.caption ) === 'function' ) {
-                    obj.opts.caption = obj.opts.caption.apply( item, [ self, obj ] );
-                }
-
-                if ( $.type( self.opts.caption ) === 'function' ) {
-                    obj.opts.caption = self.opts.caption.apply( item, [ self, obj ] );
-                }
-
-                // Make sure we have caption as a string or jQuery object
-                if ( !( obj.opts.caption instanceof $ ) ) {
-                    obj.opts.caption = obj.opts.caption === undefined ? '' : obj.opts.caption + '';
-                }
-
-                // Check if url contains "filter" used to filter the content
-                // Example: "ajax.html #something"
-                if ( type === 'ajax' ) {
-                    srcParts = src.split(/\s+/, 2);
-
-                    if ( srcParts.length > 1 ) {
-                        obj.src = srcParts.shift();
-
-                        obj.opts.filter = srcParts.shift();
-                    }
-                }
-
-                if ( obj.opts.smallBtn == 'auto' ) {
-
-                    if ( $.inArray( type, ['html', 'inline', 'ajax'] ) > -1 ) {
-                        obj.opts.toolbar  = false;
-                        obj.opts.smallBtn = true;
-
-                    } else {
-                        obj.opts.smallBtn = false;
-                    }
-
-                }
-
-                // If the type is "pdf", then simply load file into iframe
-                if ( type === 'pdf' ) {
-                    obj.type = 'iframe';
-
-                    obj.opts.iframe.preload = false;
-                }
-
-                // Hide all buttons and disable interactivity for modal items
-                if ( obj.opts.modal ) {
-
-                    obj.opts = $.extend(true, obj.opts, {
-                        // Remove buttons
-                        infobar : 0,
-                        toolbar : 0,
-
-                        smallBtn : 0,
-
-                        // Disable keyboard navigation
-                        keyboard : 0,
-
-                        // Disable some modules
-                        slideShow  : 0,
-                        fullScreen : 0,
-                        thumbs     : 0,
-                        touch      : 0,
-
-                        // Disable click event handlers
-                        clickContent    : false,
-                        clickSlide      : false,
-                        clickOutside    : false,
-                        dblclickContent : false,
-                        dblclickSlide   : false,
-                        dblclickOutside : false
-                    });
-
-                }
-
-                // Step 4 - Add processed object to group
-                // ======================================
-
-                self.group.push( obj );
-
-            });
-
-        },
-
-
-        // Attach an event handler functions for:
-        //   - navigation buttons
-        //   - browser scrolling, resizing;
-        //   - focusing
-        //   - keyboard
-        //   - detect idle
-        // ======================================
-
-        addEvents : function() {
-            var self = this;
-
-            self.removeEvents();
-
-            // Make navigation elements clickable
-            self.$refs.container.on('click.fb-close', '[data-fancybox-close]', function(e) {
-                e.stopPropagation();
-                e.preventDefault();
-
-                self.close( e );
-
-            }).on( 'click.fb-prev touchend.fb-prev', '[data-fancybox-prev]', function(e) {
-                e.stopPropagation();
-                e.preventDefault();
-
-                self.previous();
-
-            }).on( 'click.fb-next touchend.fb-next', '[data-fancybox-next]', function(e) {
-                e.stopPropagation();
-                e.preventDefault();
-
-                self.next();
-
-            }).on( 'click.fb', '[data-fancybox-zoom]', function(e) {
-                // Click handler for zoom button
-                self[ self.isScaledDown() ? 'scaleToActual' : 'scaleToFit' ]();
-            });
-
-
-            // Handle page scrolling and browser resizing
-            $W.on('orientationchange.fb resize.fb', function(e) {
-
-                if ( e && e.originalEvent && e.originalEvent.type === "resize" ) {
-
-                    requestAFrame(function() {
-                        self.update();
-                    });
-
-                } else {
-
-                    self.$refs.stage.hide();
-
-                    setTimeout(function() {
-                        self.$refs.stage.show();
-
-                        self.update();
-                    }, 600);
-
-                }
-
-            });
-
-            // Trap keyboard focus inside of the modal, so the user does not accidentally tab outside of the modal
-            // (a.k.a. "escaping the modal")
-            $D.on('focusin.fb', function(e) {
-                var instance = $.fancybox ? $.fancybox.getInstance() : null;
-
-                if ( instance.isClosing || !instance.current || !instance.current.opts.trapFocus || $( e.target ).hasClass( 'fancybox-container' ) || $( e.target ).is( document ) ) {
-                    return;
-                }
-
-                if ( instance && $( e.target ).css( 'position' ) !== 'fixed' && !instance.$refs.container.has( e.target ).length ) {
-                    e.stopPropagation();
-
-                    instance.focus();
-
-                    // Sometimes page gets scrolled, set it back
-                    $W.scrollTop( self.scrollTop ).scrollLeft( self.scrollLeft );
-                }
-            });
-
-
-            // Enable keyboard navigation
-            $D.on('keydown.fb', function (e) {
-                var current = self.current,
-                    keycode = e.keyCode || e.which;
-
-                if ( !current || !current.opts.keyboard ) {
-                    return;
-                }
-
-                if ( $(e.target).is('input') || $(e.target).is('textarea') ) {
-                    return;
-                }
-
-                // Backspace and Esc keys
-                if ( keycode === 8 || keycode === 27 ) {
-                    e.preventDefault();
-
-                    self.close( e );
-
-                    return;
-                }
-
-                // Left arrow and Up arrow
-                if ( keycode === 37 || keycode === 38 ) {
-                    e.preventDefault();
-
-                    self.previous();
-
-                    return;
-                }
-
-                // Righ arrow and Down arrow
-                if ( keycode === 39 || keycode === 40 ) {
-                    e.preventDefault();
-
-                    self.next();
-
-                    return;
-                }
-
-                self.trigger('afterKeydown', e, keycode);
-            });
-
-
-            // Hide controls after some inactivity period
-            if ( self.group[ self.currIndex ].opts.idleTime ) {
-                self.idleSecondsCounter = 0;
-
-                $D.on('mousemove.fb-idle mouseleave.fb-idle mousedown.fb-idle touchstart.fb-idle touchmove.fb-idle scroll.fb-idle keydown.fb-idle', function(e) {
-                    self.idleSecondsCounter = 0;
-
-                    if ( self.isIdle ) {
-                        self.showControls();
-                    }
-
-                    self.isIdle = false;
-                });
-
-                self.idleInterval = window.setInterval(function() {
-                    self.idleSecondsCounter++;
-
-                    if ( self.idleSecondsCounter >= self.group[ self.currIndex ].opts.idleTime ) {
-                        self.isIdle = true;
-                        self.idleSecondsCounter = 0;
-
-                        self.hideControls();
-                    }
-
-                }, 1000);
-            }
-
-        },
-
-
-        // Remove events added by the core
-        // ===============================
-
-        removeEvents : function() {
-            var self = this;
-
-            $W.off( 'orientationchange.fb resize.fb' );
-            $D.off( 'focusin.fb keydown.fb .fb-idle' );
-
-            this.$refs.container.off( '.fb-close .fb-prev .fb-next' );
-
-            if ( self.idleInterval ) {
-                window.clearInterval( self.idleInterval );
-
-                self.idleInterval = null;
-            }
-        },
-
-
-        // Change to previous gallery item
-        // ===============================
-
-        previous : function( duration ) {
-            return this.jumpTo( this.currPos - 1, duration );
-        },
-
-
-        // Change to next gallery item
-        // ===========================
-
-        next : function( duration ) {
-            return this.jumpTo( this.currPos + 1, duration );
-        },
-
-
-        // Switch to selected gallery item
-        // ===============================
-
-        jumpTo : function ( pos, duration, slide ) {
-            var self = this,
-                firstRun,
-                loop,
-                current,
-                previous,
-                canvasWidth,
-                currentPos,
-                transitionProps;
-
-            var groupLen = self.group.length;
-
-            if ( self.isSliding || self.isClosing || ( self.isAnimating && self.firstRun ) ) {
-                return;
-            }
-
-            pos  = parseInt( pos, 10 );
-            loop = self.current ? self.current.opts.loop : self.opts.loop;
-
-            if ( !loop && ( pos < 0 || pos >= groupLen ) ) {
-                return false;
-            }
-
-            firstRun = self.firstRun = ( self.firstRun === null );
-
-            if ( groupLen < 2 && !firstRun && !!self.isSliding ) {
-                return;
-            }
-
-            previous = self.current;
-
-            self.prevIndex = self.currIndex;
-            self.prevPos   = self.currPos;
-
-            // Create slides
-            current = self.createSlide( pos );
-
-            if ( groupLen > 1 ) {
-                if ( loop || current.index > 0 ) {
-                    self.createSlide( pos - 1 );
-                }
-
-                if ( loop || current.index < groupLen - 1 ) {
-                    self.createSlide( pos + 1 );
-                }
-            }
-
-            self.current   = current;
-            self.currIndex = current.index;
-            self.currPos   = current.pos;
-
-            self.trigger( 'beforeShow', firstRun );
-
-            self.updateControls();
-
-            currentPos = $.fancybox.getTranslate( current.$slide );
-
-            current.isMoved        = ( currentPos.left !== 0 || currentPos.top !== 0 ) && !current.$slide.hasClass( 'fancybox-animated' );
-            current.forcedDuration = undefined;
-
-            if ( $.isNumeric( duration ) ) {
-                current.forcedDuration = duration;
-            } else {
-                duration = current.opts[ firstRun ? 'animationDuration' : 'transitionDuration' ];
-            }
-
-            duration = parseInt( duration, 10 );
-
-            // Fresh start - reveal container, current slide and start loading content
-            if ( firstRun ) {
-
-                if ( current.opts.animationEffect && duration ) {
-                    self.$refs.container.css( 'transition-duration', duration + 'ms' );
-                }
-
-                self.$refs.container.removeClass( 'fancybox-is-hidden' );
-
-                forceRedraw( self.$refs.container );
-
-                self.$refs.container.addClass( 'fancybox-is-open' );
-
-                // Make first slide visible (to display loading icon, if needed)
-                current.$slide.addClass( 'fancybox-slide--current' );
-
-                self.loadSlide( current );
-
-                self.preload();
-
-                return;
-            }
-
-            // Clean up
-            $.each(self.slides, function( index, slide ) {
-                $.fancybox.stop( slide.$slide );
-            });
-
-            // Make current that slide is visible even if content is still loading
-            current.$slide.removeClass( 'fancybox-slide--next fancybox-slide--previous' ).addClass( 'fancybox-slide--current' );
-
-            // If slides have been dragged, animate them to correct position
-            if ( current.isMoved ) {
-                canvasWidth = Math.round( current.$slide.width() );
-
-                $.each(self.slides, function( index, slide ) {
-                    var pos = slide.pos - current.pos;
-
-                    $.fancybox.animate( slide.$slide, {
-                        top  : 0,
-                        left : ( pos * canvasWidth ) + ( pos * slide.opts.gutter )
-                    }, duration, function() {
-
-                        slide.$slide.removeAttr('style').removeClass( 'fancybox-slide--next fancybox-slide--previous' );
-
-                        if ( slide.pos === self.currPos ) {
-                            current.isMoved = false;
-
-                            self.complete();
-                        }
-                    });
-                });
-
-            } else {
-                self.$refs.stage.children().removeAttr( 'style' );
-            }
-
-            // Start transition that reveals current content
-            // or wait when it will be loaded
-
-            if ( current.isLoaded ) {
-                self.revealContent( current );
-
-            } else {
-                self.loadSlide( current );
-            }
-
-            self.preload();
-
-            if ( previous.pos === current.pos ) {
-                return;
-            }
-
-            // Handle previous slide
-            // =====================
-
-            transitionProps = 'fancybox-slide--' + ( previous.pos > current.pos ? 'next' : 'previous' );
-
-            previous.$slide.removeClass( 'fancybox-slide--complete fancybox-slide--current fancybox-slide--next fancybox-slide--previous' );
-
-            previous.isComplete = false;
-
-            if ( !duration || ( !current.isMoved && !current.opts.transitionEffect ) ) {
-                return;
-            }
-
-            if ( current.isMoved ) {
-                previous.$slide.addClass( transitionProps );
-
-            } else {
-
-                transitionProps = 'fancybox-animated ' + transitionProps + ' fancybox-fx-' + current.opts.transitionEffect;
-
-                $.fancybox.animate( previous.$slide, transitionProps, duration, function() {
-                    previous.$slide.removeClass( transitionProps ).removeAttr( 'style' );
-                });
-
-            }
-
-        },
-
-
-        // Create new "slide" element
-        // These are gallery items  that are actually added to DOM
-        // =======================================================
-
-        createSlide : function( pos ) {
-
-            var self = this;
-            var $slide;
-            var index;
-
-            index = pos % self.group.length;
-            index = index < 0 ? self.group.length + index : index;
-
-            if ( !self.slides[ pos ] && self.group[ index ] ) {
-                $slide = $('<div class="fancybox-slide"></div>').appendTo( self.$refs.stage );
-
-                self.slides[ pos ] = $.extend( true, {}, self.group[ index ], {
-                    pos      : pos,
-                    $slide   : $slide,
-                    isLoaded : false,
-                });
-
-                self.updateSlide( self.slides[ pos ] );
-            }
-
-            return self.slides[ pos ];
-        },
-
-
-        // Scale image to the actual size of the image
-        // ===========================================
-
-        scaleToActual : function( x, y, duration ) {
-
-            var self = this;
-
-            var current = self.current;
-            var $what   = current.$content;
-
-            var imgPos, posX, posY, scaleX, scaleY;
-
-            var canvasWidth  = parseInt( current.$slide.width(), 10 );
-            var canvasHeight = parseInt( current.$slide.height(), 10 );
-
-            var newImgWidth  = current.width;
-            var newImgHeight = current.height;
-
-            if ( !( current.type == 'image' && !current.hasError) || !$what || self.isAnimating ) {
-                return;
-            }
-
-            $.fancybox.stop( $what );
-
-            self.isAnimating = true;
-
-            x = x === undefined ? canvasWidth  * 0.5  : x;
-            y = y === undefined ? canvasHeight * 0.5  : y;
-
-            imgPos = $.fancybox.getTranslate( $what );
-
-            scaleX  = newImgWidth  / imgPos.width;
-            scaleY  = newImgHeight / imgPos.height;
-
-            // Get center position for original image
-            posX = ( canvasWidth * 0.5  - newImgWidth * 0.5 );
-            posY = ( canvasHeight * 0.5 - newImgHeight * 0.5 );
-
-            // Make sure image does not move away from edges
-            if ( newImgWidth > canvasWidth ) {
-                posX = imgPos.left * scaleX - ( ( x * scaleX ) - x );
-
-                if ( posX > 0 ) {
-                    posX = 0;
-                }
-
-                if ( posX <  canvasWidth - newImgWidth ) {
-                    posX = canvasWidth - newImgWidth;
-                }
-            }
-
-            if ( newImgHeight > canvasHeight) {
-                posY = imgPos.top  * scaleY - ( ( y * scaleY ) - y );
-
-                if ( posY > 0 ) {
-                    posY = 0;
-                }
-
-                if ( posY <  canvasHeight - newImgHeight ) {
-                    posY = canvasHeight - newImgHeight;
-                }
-            }
-
-            self.updateCursor( newImgWidth, newImgHeight );
-
-            $.fancybox.animate( $what, {
-                top    : posY,
-                left   : posX,
-                scaleX : scaleX,
-                scaleY : scaleY
-            }, duration || 330, function() {
-                self.isAnimating = false;
-            });
-
-            // Stop slideshow
-            if ( self.SlideShow && self.SlideShow.isActive ) {
-                self.SlideShow.stop();
-            }
-        },
-
-
-        // Scale image to fit inside parent element
-        // ========================================
-
-        scaleToFit : function( duration ) {
-
-            var self = this;
-
-            var current = self.current;
-            var $what   = current.$content;
-            var end;
-
-            if ( !( current.type == 'image' && !current.hasError) || !$what || self.isAnimating ) {
-                return;
-            }
-
-            $.fancybox.stop( $what );
-
-            self.isAnimating = true;
-
-            end = self.getFitPos( current );
-
-            self.updateCursor( end.width, end.height );
-
-            $.fancybox.animate( $what, {
-                top    : end.top,
-                left   : end.left,
-                scaleX : end.width  / $what.width(),
-                scaleY : end.height / $what.height()
-            }, duration || 330, function() {
-                self.isAnimating = false;
-            });
-
-        },
-
-        // Calculate image size to fit inside viewport
-        // ===========================================
-
-        getFitPos : function( slide ) {
-            var self  = this;
-            var $what = slide.$content;
-
-            var imgWidth  = slide.width;
-            var imgHeight = slide.height;
-
-            var margin = slide.opts.margin;
-
-            var canvasWidth, canvasHeight, minRatio, width, height;
-
-            if ( !$what || !$what.length || ( !imgWidth && !imgHeight) ) {
-                return false;
-            }
-
-            // Convert "margin to CSS style: [ top, right, bottom, left ]
-            if ( $.type( margin ) === "number" ) {
-                margin = [ margin, margin ];
-            }
-
-            if ( margin.length == 2 ) {
-                margin = [ margin[0], margin[1], margin[0], margin[1] ];
-            }
-
-            // We can not use $slide width here, because it can have different diemensions while in transiton
-            canvasWidth  = parseInt( self.$refs.stage.width(), 10 )  - ( margin[ 1 ] + margin[ 3 ] );
-            canvasHeight = parseInt( self.$refs.stage.height(), 10 ) - ( margin[ 0 ] + margin[ 2 ] );
-
-            minRatio = Math.min(1, canvasWidth / imgWidth, canvasHeight / imgHeight );
-
-            width  = Math.floor( minRatio * imgWidth );
-            height = Math.floor( minRatio * imgHeight );
-
-            // Use floor rounding to make sure it really fits
-            return {
-                top    : Math.floor( ( canvasHeight - height ) * 0.5 ) + margin[ 0 ],
-                left   : Math.floor( ( canvasWidth  - width )  * 0.5 ) + margin[ 3 ],
-                width  : width,
-                height : height
-            };
-
-        },
-
-
-        // Update position and content of all slides
-        // =========================================
-
-        update : function() {
-
-            var self = this;
-
-            $.each( self.slides, function( key, slide ) {
-                self.updateSlide( slide );
-            });
-
-        },
-
-
-        // Update slide position and scale content to fit
-        // ==============================================
-
-        updateSlide : function( slide ) {
-
-            var self  = this;
-            var $what = slide.$content;
-
-            if ( $what && ( slide.width || slide.height ) ) {
-                self.isAnimating = false;
-                
-                $.fancybox.stop( $what );
-
-                $.fancybox.setTranslate( $what, self.getFitPos( slide ) );
-
-                if ( slide.pos === self.currPos ) {
-                    self.updateCursor();
-                }
-            }
-
-            slide.$slide.trigger( 'refresh' );
-
-            self.trigger( 'onUpdate', slide );
-
-        },
-
-        // Update cursor style depending if content can be zoomed
-        // ======================================================
-
-        updateCursor : function( nextWidth, nextHeight ) {
-
-            var self = this;
-            var isScaledDown;
-
-            var $container = self.$refs.container.removeClass( 'fancybox-is-zoomable fancybox-can-zoomIn fancybox-can-drag fancybox-can-zoomOut' );
-
-            if ( !self.current || self.isClosing ) {
-                return;
-            }
-
-            if ( self.isZoomable() ) {
-
-                $container.addClass( 'fancybox-is-zoomable' );
-
-                if ( nextWidth !== undefined && nextHeight !== undefined ) {
-                    isScaledDown = nextWidth < self.current.width && nextHeight < self.current.height;
-
-                } else {
-                    isScaledDown = self.isScaledDown();
-                }
-
-                if ( isScaledDown ) {
-
-                    // If image is scaled down, then, obviously, it can be zoomed to full size
-                    $container.addClass( 'fancybox-can-zoomIn' );
-
-                } else {
-
-                    if ( self.current.opts.touch ) {
-
-                        // If image size ir largen than available available and touch module is not disable,
-                        // then user can do panning
-                        $container.addClass( 'fancybox-can-drag' );
-
-                    } else {
-                        $container.addClass( 'fancybox-can-zoomOut' );
-                    }
-
-                }
-
-            } else if ( self.current.opts.touch ) {
-                $container.addClass( 'fancybox-can-drag' );
-            }
-
-        },
-
-
-        // Check if current slide is zoomable
-        // ==================================
-
-        isZoomable : function() {
-
-            var self = this;
-
-            var current = self.current;
-            var fitPos;
-
-            if ( !current || self.isClosing ) {
-                return;
-            }
-
-            // Assume that slide is zoomable if
-            //   - image is loaded successfuly
-            //   - click action is "zoom"
-            //   - actual size of the image is smaller than available area
-            if ( current.type === 'image' && current.isLoaded && !current.hasError &&
-                ( current.opts.clickContent === 'zoom' || ( $.isFunction( current.opts.clickContent ) && current.opts.clickContent( current ) ===  "zoom" ) )
-            ) {
-
-                fitPos = self.getFitPos( current );
-
-                if ( current.width > fitPos.width || current.height > fitPos.height ) {
-                    return true;
-                }
-
-            }
-
-            return false;
-
-        },
-
-
-        // Check if current image dimensions are smaller than actual
-        // =========================================================
-
-        isScaledDown : function() {
-
-            var self = this;
-
-            var current = self.current;
-            var $what   = current.$content;
-
-            var rez = false;
-
-            if ( $what ) {
-                rez = $.fancybox.getTranslate( $what );
-                rez = rez.width < current.width || rez.height < current.height;
-            }
-
-            return rez;
-
-        },
-
-
-        // Check if image dimensions exceed parent element
-        // ===============================================
-
-        canPan : function() {
-
-            var self = this;
-
-            var current = self.current;
-            var $what   = current.$content;
-
-            var rez = false;
-
-            if ( $what ) {
-                rez = self.getFitPos( current );
-                rez = Math.abs( $what.width() - rez.width ) > 1  || Math.abs( $what.height() - rez.height ) > 1;
-
-            }
-
-            return rez;
-
-        },
-
-
-        // Load content into the slide
-        // ===========================
-
-        loadSlide : function( slide ) {
-
-            var self = this, type, $slide;
-            var ajaxLoad;
-
-            if ( slide.isLoading ) {
-                return;
-            }
-
-            if ( slide.isLoaded ) {
-                return;
-            }
-
-            slide.isLoading = true;
-
-            self.trigger( 'beforeLoad', slide );
-
-            type   = slide.type;
-            $slide = slide.$slide;
-
-            $slide
-                .off( 'refresh' )
-                .trigger( 'onReset' )
-                .addClass( 'fancybox-slide--' + ( type || 'unknown' ) )
-                .addClass( slide.opts.slideClass );
-
-            // Create content depending on the type
-
-            switch ( type ) {
-
-                case 'image':
-
-                    self.setImage( slide );
-
-                break;
-
-                case 'iframe':
-
-                    self.setIframe( slide );
-
-                break;
-
-                case 'html':
-
-                    self.setContent( slide, slide.src || slide.content );
-
-                break;
-
-                case 'inline':
-
-                    if ( $( slide.src ).length ) {
-                        self.setContent( slide, $( slide.src ) );
-
-                    } else {
-                        self.setError( slide );
-                    }
-
-                break;
-
-                case 'ajax':
-
-                    self.showLoading( slide );
-
-                    ajaxLoad = $.ajax( $.extend( {}, slide.opts.ajax.settings, {
-                        url : slide.src,
-                        success : function ( data, textStatus ) {
-
-                            if ( textStatus === 'success' ) {
-                                self.setContent( slide, data );
-                            }
-
-                        },
-                        error : function ( jqXHR, textStatus ) {
-
-                            if ( jqXHR && textStatus !== 'abort' ) {
-                                self.setError( slide );
-                            }
-
-                        }
-                    }));
-
-                    $slide.one( 'onReset', function () {
-                        ajaxLoad.abort();
-                    });
-
-                break;
-
-                default:
-
-                    self.setError( slide );
-
-                break;
-
-            }
-
-            return true;
-
-        },
-
-
-        // Use thumbnail image, if possible
-        // ================================
-
-        setImage : function( slide ) {
-
-            var self   = this;
-            var srcset = slide.opts.srcset || slide.opts.image.srcset;
-
-            var found, temp, pxRatio, windowWidth;
-
-            // If we have "srcset", then we need to find matching "src" value.
-            // This is necessary, because when you set an src attribute, the browser will preload the image
-            // before any javascript or even CSS is applied.
-            if ( srcset ) {
-                pxRatio     = window.devicePixelRatio || 1;
-                windowWidth = window.innerWidth  * pxRatio;
-
-                temp = srcset.split(',').map(function ( el ) {
-            		var ret = {};
-
-            		el.trim().split(/\s+/).forEach(function ( el, i ) {
-                        var value = parseInt( el.substring(0, el.length - 1), 10 );
-
-            			if ( i === 0 ) {
-            				return ( ret.url = el );
-            			}
-
-                        if ( value ) {
-                            ret.value   = value;
-                            ret.postfix = el[ el.length - 1 ];
-                        }
-
-            		});
-
-            		return ret;
-            	});
-
-                // Sort by value
-                temp.sort(function (a, b) {
-                  return a.value - b.value;
-                });
-
-                // Ok, now we have an array of all srcset values
-                for ( var j = 0; j < temp.length; j++ ) {
-                    var el = temp[ j ];
-
-                    if ( ( el.postfix === 'w' && el.value >= windowWidth ) || ( el.postfix === 'x' && el.value >= pxRatio ) ) {
-                        found = el;
-                        break;
-                    }
-                }
-
-                // If not found, take the last one
-                if ( !found && temp.length ) {
-                    found = temp[ temp.length - 1 ];
-                }
-
-                if ( found ) {
-                    slide.src = found.url;
-
-                    // If we have default width/height values, we can calculate height for matching source
-                    if ( slide.width && slide.height && found.postfix == 'w' ) {
-                        slide.height = ( slide.width / slide.height ) * found.value;
-                        slide.width  = found.value;
-                    }
-                }
-            }
-
-            // This will be wrapper containing both ghost and actual image
-            slide.$content = $('<div class="fancybox-image-wrap"></div>')
-                .addClass( 'fancybox-is-hidden' )
-                .appendTo( slide.$slide );
-
-
-            // If we have a thumbnail, we can display it while actual image is loading
-            // Users will not stare at black screen and actual image will appear gradually
-            if ( slide.opts.preload !== false && slide.opts.width && slide.opts.height && ( slide.opts.thumb || slide.opts.$thumb ) ) {
-
-                slide.width  = slide.opts.width;
-                slide.height = slide.opts.height;
-
-                slide.$ghost = $('<img />')
-                    .one('error', function() {
-
-                        $(this).remove();
-
-                        slide.$ghost = null;
-
-                        self.setBigImage( slide );
-
-                    })
-                    .one('load', function() {
-
-                        self.afterLoad( slide );
-
-                        self.setBigImage( slide );
-
-                    })
-                    .addClass( 'fancybox-image' )
-                    .appendTo( slide.$content )
-                    .attr( 'src', slide.opts.thumb || slide.opts.$thumb.attr( 'src' ) );
-
-            } else {
-
-                self.setBigImage( slide );
-
-            }
-
-        },
-
-
-        // Create full-size image
-        // ======================
-
-        setBigImage : function ( slide ) {
-            var self = this;
-            var $img = $('<img />');
-
-            slide.$image = $img
-                .one('error', function() {
-
-                    self.setError( slide );
-
-                })
-                .one('load', function() {
-
-                    // Clear timeout that checks if loading icon needs to be displayed
-                    clearTimeout( slide.timouts );
-
-                    slide.timouts = null;
-
-                    if ( self.isClosing ) {
-                        return;
-                    }
-
-                    slide.width  = this.naturalWidth;
-                    slide.height = this.naturalHeight;
-
-                    if ( slide.opts.image.srcset ) {
-                        $img.attr( 'sizes', '100vw' ).attr( 'srcset', slide.opts.image.srcset );
-                    }
-
-                    self.hideLoading( slide );
-
-                    if ( slide.$ghost ) {
-
-                        slide.timouts = setTimeout(function() {
-                            slide.timouts = null;
-
-                            slide.$ghost.hide();
-
-                        }, Math.min( 300, Math.max( 1000, slide.height / 1600 ) ) );
-
-                    } else {
-                        self.afterLoad( slide );
-                    }
-
-                })
-                .addClass( 'fancybox-image' )
-                .attr('src', slide.src)
-                .appendTo( slide.$content );
-
-            if ( ( $img[0].complete || $img[0].readyState == "complete" ) && $img[0].naturalWidth && $img[0].naturalHeight ) {
-                  $img.trigger( 'load' );
-
-            } else if( $img[0].error ) {
-                 $img.trigger( 'error' );
-
-            } else {
-
-                slide.timouts = setTimeout(function() {
-                    if ( !$img[0].complete && !slide.hasError ) {
-                        self.showLoading( slide );
-                    }
-
-                }, 100);
-
-            }
-
-        },
-
-
-        // Create iframe wrapper, iframe and bindings
-        // ==========================================
-
-        setIframe : function( slide ) {
-            var self	= this,
-                opts    = slide.opts.iframe,
-                $slide	= slide.$slide,
-                $iframe;
-
-            slide.$content = $('<div class="fancybox-content' + ( opts.preload ? ' fancybox-is-hidden' : '' ) + '"></div>')
-                .css( opts.css )
-                .appendTo( $slide );
-
-            $iframe = $( opts.tpl.replace(/\{rnd\}/g, new Date().getTime()) )
-                .attr( opts.attr )
-                .appendTo( slide.$content );
-
-            if ( opts.preload ) {
-
-                self.showLoading( slide );
-
-                // Unfortunately, it is not always possible to determine if iframe is successfully loaded
-                // (due to browser security policy)
-
-                $iframe.on('load.fb error.fb', function(e) {
-                    this.isReady = 1;
-
-                    slide.$slide.trigger( 'refresh' );
-
-                    self.afterLoad( slide );
-                });
-
-                // Recalculate iframe content size
-                // ===============================
-
-                $slide.on('refresh.fb', function() {
-                    var $wrap = slide.$content,
-                        frameWidth  = opts.css.width,
-                        frameHeight = opts.css.height,
-                        scrollWidth,
-                        $contents,
-                        $body;
-
-                    if ( $iframe[0].isReady !== 1 ) {
-                        return;
-                    }
-
-                    // Check if content is accessible,
-                    // it will fail if frame is not with the same origin
-
-                    try {
-                        $contents = $iframe.contents();
-                        $body     = $contents.find('body');
-
-                    } catch (ignore) {}
-
-                    // Calculate dimensions for the wrapper
-                    if ( $body && $body.length ) {
-
-                        if ( frameWidth === undefined ) {
-                            scrollWidth = $iframe[0].contentWindow.document.documentElement.scrollWidth;
-
-                            frameWidth = Math.ceil( $body.outerWidth(true) + ( $wrap.width() - scrollWidth ) );
-                            frameWidth += $wrap.outerWidth() - $wrap.innerWidth();
-                        }
-
-                        if ( frameHeight === undefined ) {
-                            frameHeight = Math.ceil( $body.outerHeight(true) );
-                            frameHeight += $wrap.outerHeight() - $wrap.innerHeight();
-                        }
-
-                        // Resize wrapper to fit iframe content
-                        if ( frameWidth ) {
-                            $wrap.width( frameWidth );
-                        }
-
-                        if ( frameHeight ) {
-                            $wrap.height( frameHeight );
-                        }
-                    }
-
-                    $wrap.removeClass( 'fancybox-is-hidden' );
-
-                });
-
-            } else {
-
-                this.afterLoad( slide );
-
-            }
-
-            $iframe.attr( 'src', slide.src );
-
-            if ( slide.opts.smallBtn === true ) {
-                slide.$content.prepend( self.translate( slide, slide.opts.btnTpl.smallBtn ) );
-            }
-
-            // Remove iframe if closing or changing gallery item
-            $slide.one( 'onReset', function () {
-
-                // This helps IE not to throw errors when closing
-                try {
-
-                    $( this ).find( 'iframe' ).hide().attr( 'src', '//about:blank' );
-
-                } catch ( ignore ) {}
-
-                $( this ).empty();
-
-                slide.isLoaded = false;
-
-            });
-
-        },
-
-
-        // Wrap and append content to the slide
-        // ======================================
-
-        setContent : function ( slide, content ) {
-
-            var self = this;
-
-            if ( self.isClosing ) {
-                return;
-            }
-
-            self.hideLoading( slide );
-
-            slide.$slide.empty();
-
-            if ( isQuery( content ) && content.parent().length ) {
-
-                // If content is a jQuery object, then it will be moved to the slide.
-                // The placeholder is created so we will know where to put it back.
-                // If user is navigating gallery fast, then the content might be already inside fancyBox
-                // =====================================================================================
-
-                // Make sure content is not already moved to fancyBox
-                content.parent( '.fancybox-slide--inline' ).trigger( 'onReset' );
-
-                // Create temporary element marking original place of the content
-                slide.$placeholder = $( '<div></div>' ).hide().insertAfter( content );
-
-                // Make sure content is visible
-                content.css('display', 'inline-block');
-
-            } else if ( !slide.hasError ) {
-
-                // If content is just a plain text, try to convert it to html
-                if ( $.type( content ) === 'string' ) {
-                    content = $('<div>').append( $.trim( content ) ).contents();
-
-                    // If we have text node, then add wrapping element to make vertical alignment work
-                    if ( content[0].nodeType === 3 ) {
-                        content = $('<div>').html( content );
-                    }
-                }
-
-                // If "filter" option is provided, then filter content
-                if ( slide.opts.filter ) {
-                    content = $('<div>').html( content ).find( slide.opts.filter );
-                }
-
-            }
-
-            slide.$slide.one('onReset', function () {
-
-                // Put content back
-                if ( slide.$placeholder ) {
-                    slide.$placeholder.after( content.hide() ).remove();
-
-                    slide.$placeholder = null;
-                }
-
-                // Remove custom close button
-                if ( slide.$smallBtn ) {
-                    slide.$smallBtn.remove();
-
-                    slide.$smallBtn = null;
-                }
-
-                // Remove content and mark slide as not loaded
-                if ( !slide.hasError ) {
-                    $(this).empty();
-
-                    slide.isLoaded = false;
-                }
-
-            });
-
-            slide.$content = $( content ).appendTo( slide.$slide );
-
-            this.afterLoad( slide );
-        },
-
-        // Display error message
-        // =====================
-
-        setError : function ( slide ) {
-
-            slide.hasError = true;
-
-            slide.$slide.removeClass( 'fancybox-slide--' + slide.type );
-
-            this.setContent( slide, this.translate( slide, slide.opts.errorTpl ) );
-
-        },
-
-
-        // Show loading icon inside the slide
-        // ==================================
-
-        showLoading : function( slide ) {
-
-            var self = this;
-
-            slide = slide || self.current;
-
-            if ( slide && !slide.$spinner ) {
-                slide.$spinner = $( self.opts.spinnerTpl ).appendTo( slide.$slide );
-            }
-
-        },
-
-        // Remove loading icon from the slide
-        // ==================================
-
-        hideLoading : function( slide ) {
-
-            var self = this;
-
-            slide = slide || self.current;
-
-            if ( slide && slide.$spinner ) {
-                slide.$spinner.remove();
-
-                delete slide.$spinner;
-            }
-
-        },
-
-
-        // Adjustments after slide content has been loaded
-        // ===============================================
-
-        afterLoad : function( slide ) {
-
-            var self = this;
-
-            if ( self.isClosing ) {
-                return;
-            }
-
-            slide.isLoading = false;
-            slide.isLoaded  = true;
-
-            self.trigger( 'afterLoad', slide );
-
-            self.hideLoading( slide );
-
-            if ( slide.opts.smallBtn && !slide.$smallBtn ) {
-                slide.$smallBtn = $( self.translate( slide, slide.opts.btnTpl.smallBtn ) ).appendTo( slide.$content.filter('div,form').first() );
-            }
-
-            if ( slide.opts.protect && slide.$content && !slide.hasError ) {
-
-                // Disable right click
-                slide.$content.on( 'contextmenu.fb', function( e ) {
-                     if ( e.button == 2 ) {
-                         e.preventDefault();
-                     }
-
-                    return true;
-                });
-
-                // Add fake element on top of the image
-                // This makes a bit harder for user to select image
-                if ( slide.type === 'image' ) {
-                    $( '<div class="fancybox-spaceball"></div>' ).appendTo( slide.$content );
-                }
-
-            }
-
-            self.revealContent( slide );
-
-        },
-
-
-        // Make content visible
-        // This method is called right after content has been loaded or
-        // user navigates gallery and transition should start
-        // ============================================================
-
-        revealContent : function( slide ) {
-
-            var self   = this;
-            var $slide = slide.$slide;
-
-            var effect, effectClassName, duration, opacity, end, start = false;
-
-            effect   = slide.opts[ self.firstRun ? 'animationEffect'   : 'transitionEffect' ];
-            duration = slide.opts[ self.firstRun ? 'animationDuration' : 'transitionDuration' ];
-
-            duration = parseInt( slide.forcedDuration === undefined ? duration : slide.forcedDuration, 10 );
-
-            if ( slide.isMoved || slide.pos !== self.currPos || !duration ) {
-                effect = false;
-            }
-
-            // Check if can zoom
-            if ( effect === 'zoom' && !( slide.pos === self.currPos && duration && slide.type === 'image' && !slide.hasError && ( start = self.getThumbPos( slide ) ) ) ) {
-                effect = 'fade';
-            }
-
-            // Zoom animation
-            // ==============
-
-            if ( effect === 'zoom' ) {
-                end = self.getFitPos( slide );
-
-                end.scaleX = end.width  / start.width;
-                end.scaleY = end.height / start.height;
-
-                delete end.width;
-                delete end.height;
-
-                // Check if we need to animate opacity
-                opacity = slide.opts.zoomOpacity;
-
-                if ( opacity == 'auto' ) {
-                    opacity = Math.abs( slide.width / slide.height - start.width / start.height ) > 0.1;
-                }
-
-                if ( opacity ) {
-                    start.opacity = 0.1;
-                    end.opacity   = 1;
-                }
-
-                // Draw image at start position
-                $.fancybox.setTranslate( slide.$content.removeClass( 'fancybox-is-hidden' ), start );
-
-                forceRedraw( slide.$content );
-
-                // Start animation
-                $.fancybox.animate( slide.$content, end, duration, function() {
-                    self.complete();
-                });
-
-                return;
-            }
-
-            self.updateSlide( slide );
-
-
-            // Simply show content
-            // ===================
-
-            if ( !effect ) {
-                forceRedraw( $slide );
-
-                slide.$content.removeClass( 'fancybox-is-hidden' );
-
-                if ( slide.pos === self.currPos ) {
-                    self.complete();
-                }
-
-                return;
-            }
-
-            $.fancybox.stop( $slide );
-
-            effectClassName = 'fancybox-animated fancybox-slide--' + ( slide.pos >= self.prevPos ? 'next' : 'previous' ) + ' fancybox-fx-' + effect;
-
-            $slide.removeAttr( 'style' ).removeClass( 'fancybox-slide--current fancybox-slide--next fancybox-slide--previous' ).addClass( effectClassName );
-
-            slide.$content.removeClass( 'fancybox-is-hidden' );
-
-            //Force reflow for CSS3 transitions
-            forceRedraw( $slide );
-
-            $.fancybox.animate( $slide, 'fancybox-slide--current', duration, function(e) {
-                $slide.removeClass( effectClassName ).removeAttr( 'style' );
-
-                if ( slide.pos === self.currPos ) {
-                    self.complete();
-                }
-
-            }, true);
-
-        },
-
-
-        // Check if we can and have to zoom from thumbnail
-        //================================================
-
-        getThumbPos : function( slide ) {
-
-            var self = this;
-            var rez  = false;
-
-            // Check if element is inside the viewport by at least 1 pixel
-            var isElementVisible = function( $el ) {
-                var element = $el[0];
-
-                var elementRect = element.getBoundingClientRect();
-                var parentRects = [];
-
-                var visibleInAllParents;
-
-                while ( element.parentElement !== null ) {
-                    if ( $(element.parentElement).css('overflow') === 'hidden'  || $(element.parentElement).css('overflow') === 'auto' ) {
-                        parentRects.push(element.parentElement.getBoundingClientRect());
-                    }
-
-                    element = element.parentElement;
-                }
-
-                visibleInAllParents = parentRects.every(function(parentRect){
-                    var visiblePixelX = Math.min(elementRect.right, parentRect.right) - Math.max(elementRect.left, parentRect.left);
-                    var visiblePixelY = Math.min(elementRect.bottom, parentRect.bottom) - Math.max(elementRect.top, parentRect.top);
-
-                    return visiblePixelX > 0 && visiblePixelY > 0;
-                });
-
-                return visibleInAllParents &&
-                    elementRect.bottom > 0 && elementRect.right > 0 &&
-                    elementRect.left < $(window).width() && elementRect.top < $(window).height();
-            };
-
-            var $thumb   = slide.opts.$thumb;
-            var thumbPos = $thumb ? $thumb.offset() : 0;
-            var slidePos;
-
-            if ( thumbPos && $thumb[0].ownerDocument === document && isElementVisible( $thumb ) ) {
-                slidePos = self.$refs.stage.offset();
-
-                rez = {
-                    top    : thumbPos.top  - slidePos.top  + parseFloat( $thumb.css( "border-top-width" ) || 0 ),
-                    left   : thumbPos.left - slidePos.left + parseFloat( $thumb.css( "border-left-width" ) || 0 ),
-                    width  : $thumb.width(),
-                    height : $thumb.height(),
-                    scaleX : 1,
-                    scaleY : 1
-                };
-            }
-
-            return rez;
-        },
-
-
-        // Final adjustments after current gallery item is moved to position
-        // and it`s content is loaded
-        // ==================================================================
-
-        complete : function() {
-
-            var self = this;
-
-            var current = self.current;
-            var slides  = {};
-
-            if ( current.isMoved || !current.isLoaded || current.isComplete ) {
-                return;
-            }
-
-            current.isComplete = true;
-
-            current.$slide.siblings().trigger( 'onReset' );
-
-            // Trigger any CSS3 transiton inside the slide
-            forceRedraw( current.$slide );
-
-            current.$slide.addClass( 'fancybox-slide--complete' );
-
-            // Remove unnecessary slides
-            $.each( self.slides, function( key, slide ) {
-                if ( slide.pos >= self.currPos - 1 && slide.pos <= self.currPos + 1 ) {
-                    slides[ slide.pos ] = slide;
-
-                } else if ( slide ) {
-
-                    $.fancybox.stop( slide.$slide );
-
-                    slide.$slide.off().remove();
-                }
-            });
-
-            self.slides = slides;
-
-            self.updateCursor();
-
-            self.trigger( 'afterShow' );
-
-            // Try to focus on the first focusable element
-            if ( $( document.activeElement ).is( '[disabled]' ) || ( current.opts.autoFocus && !( current.type == 'image' || current.type === 'iframe' ) ) ) {
-                self.focus();
-            }
-
-        },
-
-
-        // Preload next and previous slides
-        // ================================
-
-        preload : function() {
-            var self = this;
-            var next, prev;
-
-            if ( self.group.length < 2 ) {
-                return;
-            }
-
-            next  = self.slides[ self.currPos + 1 ];
-            prev  = self.slides[ self.currPos - 1 ];
-
-            if ( next && next.type === 'image' ) {
-                self.loadSlide( next );
-            }
-
-            if ( prev && prev.type === 'image' ) {
-                self.loadSlide( prev );
-            }
-
-        },
-
-
-        // Try to find and focus on the first focusable element
-        // ====================================================
-
-        focus : function() {
-            var current = this.current;
-            var $el;
-
-            if ( this.isClosing ) {
-                return;
-            }
-
-            if ( current && current.isComplete ) {
-
-                // Look for first input with autofocus attribute
-                $el = current.$slide.find('input[autofocus]:enabled:visible:first');
-
-                if ( !$el.length ) {
-                    $el = current.$slide.find('button,:input,[tabindex],a').filter(':enabled:visible:first');
-                }
-            }
-
-            $el = $el && $el.length ? $el : this.$refs.container;
-
-            $el.focus();
-        },
-
-
-        // Activates current instance - brings container to the front and enables keyboard,
-        // notifies other instances about deactivating
-        // =================================================================================
-
-        activate : function () {
-            var self = this;
-
-            // Deactivate all instances
-            $( '.fancybox-container' ).each(function () {
-                var instance = $(this).data( 'FancyBox' );
-
-                // Skip self and closing instances
-                if (instance && instance.id !== self.id && !instance.isClosing) {
-                    instance.trigger( 'onDeactivate' );
-
-                    instance.removeEvents();
-
-                    instance.isVisible = false;
-                }
-
-            });
-
-            self.isVisible = true;
-
-            if ( self.current || self.isIdle ) {
-                self.update();
-
-                self.updateControls();
-            }
-
-            self.trigger( 'onActivate' );
-
-            self.addEvents();
-        },
-
-
-        // Start closing procedure
-        // This will start "zoom-out" animation if needed and clean everything up afterwards
-        // =================================================================================
-
-        close : function( e, d ) {
-
-            var self    = this;
-            var current = self.current;
-
-            var effect, duration;
-            var $what, opacity, start, end;
-
-            var done = function() {
-                self.cleanUp( e );
-            };
-
-            if ( self.isClosing ) {
-                return false;
-            }
-
-            self.isClosing = true;
-
-            // If beforeClose callback prevents closing, make sure content is centered
-            if ( self.trigger( 'beforeClose', e ) === false ) {
-                self.isClosing = false;
-
-                requestAFrame(function() {
-                    self.update();
-                });
-
-                return false;
-            }
-
-            // Remove all events
-            // If there are multiple instances, they will be set again by "activate" method
-            self.removeEvents();
-
-            if ( current.timouts ) {
-                clearTimeout( current.timouts );
-            }
-
-            $what    = current.$content;
-            effect   = current.opts.animationEffect;
-            duration = $.isNumeric( d ) ? d : ( effect ? current.opts.animationDuration : 0 );
-
-            // Remove other slides
-            current.$slide.off( transitionEnd ).removeClass( 'fancybox-slide--complete fancybox-slide--next fancybox-slide--previous fancybox-animated' );
-
-            current.$slide.siblings().trigger( 'onReset' ).remove();
-
-            // Trigger animations
-            if ( duration ) {
-                self.$refs.container.removeClass( 'fancybox-is-open' ).addClass( 'fancybox-is-closing' );
-            }
-
-            // Clean up
-            self.hideLoading( current );
-
-            self.hideControls();
-
-            self.updateCursor();
-
-            // Check if possible to zoom-out
-            if ( effect === 'zoom' && !( e !== true && $what && duration && current.type === 'image' && !current.hasError && ( end = self.getThumbPos( current ) ) ) ) {
-                effect = 'fade';
-            }
-
-            if ( effect === 'zoom' ) {
-                $.fancybox.stop( $what );
-
-                start = $.fancybox.getTranslate( $what );
-
-                start.width  = start.width  * start.scaleX;
-                start.height = start.height * start.scaleY;
-
-                // Check if we need to animate opacity
-                opacity = current.opts.zoomOpacity;
-
-                if ( opacity == 'auto' ) {
-                    opacity = Math.abs( current.width / current.height - end.width / end.height ) > 0.1;
-                }
-
-                if ( opacity ) {
-                    end.opacity = 0;
-                }
-
-                start.scaleX = start.width  / end.width;
-                start.scaleY = start.height / end.height;
-
-                start.width  = end.width;
-                start.height = end.height;
-
-                $.fancybox.setTranslate( current.$content, start );
-
-                forceRedraw( current.$content );
-
-                $.fancybox.animate( current.$content, end, duration, done );
-
-                return true;
-            }
-
-            if ( effect && duration ) {
-
-                // If skip animation
-                if ( e === true ) {
-                    setTimeout( done, duration );
-
-                } else {
-                    $.fancybox.animate( current.$slide.removeClass( 'fancybox-slide--current' ), 'fancybox-animated fancybox-slide--previous fancybox-fx-' + effect, duration, done );
-                }
-
-            } else {
-                done();
-            }
-
-            return true;
-        },
-
-
-        // Final adjustments after removing the instance
-        // =============================================
-
-        cleanUp : function( e ) {
-            var self  = this,
-                $body = $( 'body' ),
-                instance,
-                offset;
-
-            self.current.$slide.trigger( 'onReset' );
-
-            self.$refs.container.empty().remove();
-
-            self.trigger( 'afterClose', e );
-
-            // Place back focus
-            if ( self.$lastFocus && !!self.current.opts.backFocus ) {
-                self.$lastFocus.focus();
-            }
-
-            self.current = null;
-
-            // Check if there are other instances
-            instance = $.fancybox.getInstance();
-
-            if ( instance ) {
-                instance.activate();
-
-            } else {
-
-                $W.scrollTop( self.scrollTop ).scrollLeft( self.scrollLeft );
-
-                $body.removeClass( 'fancybox-active compensate-for-scrollbar' );
-
-                if ( $body.hasClass( 'fancybox-iosfix' ) ) {
-                    offset = parseInt(document.body.style.top, 10);
-
-                    $body.removeClass( 'fancybox-iosfix' ).css( 'top', '' ).scrollTop( offset * -1 );
-                }
-
-                $( '#fancybox-style-noscroll' ).remove();
-
-            }
-
-        },
-
-
-        // Call callback and trigger an event
-        // ==================================
-
-        trigger : function( name, slide ) {
-            var args  = Array.prototype.slice.call(arguments, 1),
-                self  = this,
-                obj   = slide && slide.opts ? slide : self.current,
-                rez;
-
-            if ( obj ) {
-                args.unshift( obj );
-
-            } else {
-                obj = self;
-            }
-
-            args.unshift( self );
-
-            if ( $.isFunction( obj.opts[ name ] ) ) {
-                rez = obj.opts[ name ].apply( obj, args );
-            }
-
-            if ( rez === false ) {
-                return rez;
-            }
-
-            if ( name === 'afterClose' || !self.$refs ) {
-                $D.trigger( name + '.fb', args );
-
-            } else {
-                self.$refs.container.trigger( name + '.fb', args );
-            }
-
-        },
-
-
-        // Update infobar values, navigation button states and reveal caption
-        // ==================================================================
-
-        updateControls : function ( force ) {
-
-            var self = this;
-
-            var current  = self.current,
-                index    = current.index,
-                caption  = current.opts.caption,
-                $container = self.$refs.container,
-                $caption   = self.$refs.caption;
-
-            // Recalculate content dimensions
-            current.$slide.trigger( 'refresh' );
-
-            self.$caption = caption && caption.length ? $caption.html( caption ) : null;
-
-            if ( !self.isHiddenControls && !self.isIdle ) {
-                self.showControls();
-            }
-
-            // Update info and navigation elements
-            $container.find('[data-fancybox-count]').html( self.group.length );
-            $container.find('[data-fancybox-index]').html( index + 1 );
-
-            $container.find('[data-fancybox-prev]').prop( 'disabled', ( !current.opts.loop && index <= 0 ) );
-            $container.find('[data-fancybox-next]').prop( 'disabled', ( !current.opts.loop && index >= self.group.length - 1 ) );
-
-            if ( current.type === 'image' ) {
-
-                // Update download button source
-                $container.find('[data-fancybox-download]').attr( 'href', current.opts.image.src || current.src ).show();
-
-            } else {
-                $container.find('[data-fancybox-download],[data-fancybox-zoom]').hide();
-            }
-        },
-
-        // Hide toolbar and caption
-        // ========================
-
-        hideControls : function () {
-
-            this.isHiddenControls = true;
-
-            this.$refs.container.removeClass( 'fancybox-show-infobar fancybox-show-toolbar fancybox-show-caption fancybox-show-nav' );
-
-        },
-
-        showControls : function() {
-            var self = this;
-            var opts = self.current ? self.current.opts : self.opts;
-            var $container = self.$refs.container;
-
-            self.isHiddenControls   = false;
-            self.idleSecondsCounter = 0;
-
-            $container
-                .toggleClass( 'fancybox-show-toolbar', !!( opts.toolbar && opts.buttons ) )
-                .toggleClass( 'fancybox-show-infobar', !!( opts.infobar && self.group.length > 1 ) )
-                .toggleClass( 'fancybox-show-nav',     !!( opts.arrows && self.group.length > 1 ) )
-                .toggleClass( 'fancybox-is-modal',     !!opts.modal );
-
-            if ( self.$caption ) {
-                $container.addClass( 'fancybox-show-caption ');
-
-            } else {
-               $container.removeClass( 'fancybox-show-caption' );
-           }
-
-       },
-
-
-       // Toggle toolbar and caption
-       // ==========================
-
-       toggleControls : function() {
-           if ( this.isHiddenControls ) {
-               this.showControls();
-
-           } else {
-               this.hideControls();
-           }
-
-       },
-
-
-    });
-
-
-    $.fancybox = {
-
-        version  : "3.2.5",
-        defaults : defaults,
-
-
-        // Get current instance and execute a command.
-        //
-        // Examples of usage:
-        //
-        //   $instance = $.fancybox.getInstance();
-        //   $.fancybox.getInstance().jumpTo( 1 );
-        //   $.fancybox.getInstance( 'jumpTo', 1 );
-        //   $.fancybox.getInstance( function() {
-        //       console.info( this.currIndex );
-        //   });
-        // ======================================================
-
-        getInstance : function ( command ) {
-            var instance = $('.fancybox-container:not(".fancybox-is-closing"):last').data( 'FancyBox' );
-            var args     = Array.prototype.slice.call(arguments, 1);
-
-            if ( instance instanceof FancyBox ) {
-
-                if ( $.type( command ) === 'string' ) {
-                    instance[ command ].apply( instance, args );
-
-                } else if ( $.type( command ) === 'function' ) {
-                    command.apply( instance, args );
-                }
-
-                return instance;
-            }
-
-            return false;
-
-        },
-
-
-        // Create new instance
-        // ===================
-
-        open : function ( items, opts, index ) {
-            return new FancyBox( items, opts, index );
-        },
-
-
-        // Close current or all instances
-        // ==============================
-
-        close : function ( all ) {
-            var instance = this.getInstance();
-
-            if ( instance ) {
-                instance.close();
-
-                // Try to find and close next instance
-
-                if ( all === true ) {
-                    this.close();
-                }
-            }
-
-        },
-
-        // Close instances and unbind all events
-        // ==============================
-
-        destroy : function() {
-
-            this.close( true );
-
-            $D.off( 'click.fb-start' );
-
-        },
-
-
-        // Try to detect mobile devices
-        // ============================
-
-        isMobile : document.createTouch !== undefined && /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
-
-
-        // Detect if 'translate3d' support is available
-        // ============================================
-
-        use3d : (function() {
-            var div = document.createElement('div');
-
-            return window.getComputedStyle && window.getComputedStyle( div ).getPropertyValue('transform') && !(document.documentMode && document.documentMode < 11);
-        }()),
-
-        // Helper function to get current visual state of an element
-        // returns array[ top, left, horizontal-scale, vertical-scale, opacity ]
-        // =====================================================================
-
-        getTranslate : function( $el ) {
-            var matrix;
-
-            if ( !$el || !$el.length ) {
-                return false;
-            }
-
-            matrix  = $el.eq( 0 ).css('transform');
-
-            if ( matrix && matrix.indexOf( 'matrix' ) !== -1 ) {
-                matrix = matrix.split('(')[1];
-                matrix = matrix.split(')')[0];
-                matrix = matrix.split(',');
-            } else {
-                matrix = [];
-            }
-
-            if ( matrix.length ) {
-
-                // If IE
-                if ( matrix.length > 10 ) {
-                    matrix = [ matrix[13], matrix[12], matrix[0], matrix[5] ];
-
-                } else {
-                    matrix = [ matrix[5], matrix[4], matrix[0], matrix[3]];
-                }
-
-                matrix = matrix.map(parseFloat);
-
-            } else {
-                matrix = [ 0, 0, 1, 1 ];
-
-                var transRegex = /\.*translate\((.*)px,(.*)px\)/i;
-                var transRez = transRegex.exec( $el.eq( 0 ).attr('style') );
-
-                if ( transRez ) {
-                    matrix[ 0 ] = parseFloat( transRez[2] );
-                    matrix[ 1 ] = parseFloat( transRez[1] );
-                }
-            }
-
-            return {
-                top     : matrix[ 0 ],
-                left    : matrix[ 1 ],
-                scaleX  : matrix[ 2 ],
-                scaleY  : matrix[ 3 ],
-                opacity : parseFloat( $el.css('opacity') ),
-                width   : $el.width(),
-                height  : $el.height()
-            };
-
-        },
-
-
-        // Shortcut for setting "translate3d" properties for element
-        // Can set be used to set opacity, too
-        // ========================================================
-
-        setTranslate : function( $el, props ) {
-            var str  = '';
-            var css  = {};
-
-            if ( !$el || !props ) {
-                return;
-            }
-
-            if ( props.left !== undefined || props.top !== undefined ) {
-                str = ( props.left === undefined ? $el.position().left : props.left )  + 'px, ' + ( props.top === undefined ? $el.position().top : props.top ) + 'px';
-
-                if ( this.use3d ) {
-                    str = 'translate3d(' + str + ', 0px)';
-
-                } else {
-                    str = 'translate(' + str + ')';
-                }
-            }
-
-            if ( props.scaleX !== undefined && props.scaleY !== undefined ) {
-                str = (str.length ? str + ' ' : '') + 'scale(' + props.scaleX + ', ' + props.scaleY + ')';
-            }
-
-            if ( str.length ) {
-                css.transform = str;
-            }
-
-            if ( props.opacity !== undefined ) {
-                css.opacity = props.opacity;
-            }
-
-            if ( props.width !== undefined ) {
-                css.width = props.width;
-            }
-
-            if ( props.height !== undefined ) {
-                css.height = props.height;
-            }
-
-            return $el.css( css );
-        },
-
-
-        // Simple CSS transition handler
-        // =============================
-
-        animate : function ( $el, to, duration, callback, leaveAnimationName ) {
-            if ( $.isFunction( duration ) ) {
-                callback = duration;
-                duration = null;
-            }
-
-            if ( !$.isPlainObject( to ) ) {
-                $el.removeAttr('style');
-            }
-
-            $el.on( transitionEnd, function(e) {
-
-                // Skip events from child elements and z-index change
-                if ( e && e.originalEvent && ( !$el.is( e.originalEvent.target ) || e.originalEvent.propertyName == 'z-index' ) ) {
-                    return;
-                }
-
-                $.fancybox.stop( $el );
-
-                if ( $.isPlainObject( to ) ) {
-
-                    if ( to.scaleX !== undefined && to.scaleY !== undefined ) {
-                        $el.css( 'transition-duration', '' );
-
-                        to.width  = Math.round( $el.width()  * to.scaleX );
-                        to.height = Math.round( $el.height() * to.scaleY );
-
-                        to.scaleX = 1;
-                        to.scaleY = 1;
-
-                        $.fancybox.setTranslate( $el, to );
-                    }
-
-                } else if ( leaveAnimationName !== true ) {
-                    $el.removeClass( to );
-                }
-
-                if ( $.isFunction( callback ) ) {
-                    callback( e );
-                }
-
-            });
-
-            if ( $.isNumeric( duration ) ) {
-                $el.css( 'transition-duration', duration + 'ms' );
-            }
-
-            if ( $.isPlainObject( to ) ) {
-                $.fancybox.setTranslate( $el, to );
-
-            } else {
-                $el.addClass( to );
-            }
-
-            if ( to.scaleX && $el.hasClass( 'fancybox-image-wrap' ) ) {
-                $el.parent().addClass( 'fancybox-is-scaling' );
-            }
-
-            // Make sure that `transitionend` callback gets fired
-            $el.data("timer", setTimeout(function() {
-                $el.trigger( 'transitionend' );
-            }, duration + 16));
-
-        },
-
-        stop : function( $el ) {
-            clearTimeout( $el.data("timer") );
-
-            $el.off( 'transitionend' ).css( 'transition-duration', '' );
-
-            if ( $el.hasClass( 'fancybox-image-wrap' ) ) {
-                $el.parent().removeClass( 'fancybox-is-scaling' );
-            }
-        }
-
-    };
-
-
-    // Default click handler for "fancyboxed" links
-    // ============================================
-
-    function _run( e ) {
-        var $target	= $( e.currentTarget ),
-            opts	= e.data ? e.data.options : {},
-            value	= $target.attr( 'data-fancybox' ) || '',
-            index	= 0,
-            items   = [];
-
-        // Avoid opening multiple times
-        if ( e.isDefaultPrevented() ) {
-            return;
-        }
-
-        e.preventDefault();
-
-        // Get all related items and find index for clicked one
-        if ( value ) {
-            items = opts.selector ? $( opts.selector ) : ( e.data ? e.data.items : [] );
-            items = items.length ? items.filter( '[data-fancybox="' + value + '"]' ) : $( '[data-fancybox="' + value + '"]' );
-
-            index = items.index( $target );
-
-            // Sometimes current item can not be found
-            // (for example, when slider clones items)
-            if ( index < 0 ) {
-                index = 0;
-            }
-
-        } else {
-            items = [ $target ];
-        }
-
-        $.fancybox.open( items, opts, index );
+    for (t in transitions) {
+      if (el.style[t] !== undefined) {
+        return transitions[t];
+      }
     }
 
+    return "transitionend";
+  })();
 
-    // Create a jQuery plugin
-    // ======================
+  // Force redraw on an element.
+  // This helps in cases where the browser doesn't redraw an updated element properly
+  // ================================================================================
+  var forceRedraw = function($el) {
+    return $el && $el.length && $el[0].offsetHeight;
+  };
 
-    $.fn.fancybox = function (options) {
-        var selector;
+  // Exclude array (`buttons`) options from deep merging
+  // ===================================================
+  var mergeOpts = function(opts1, opts2) {
+    var rez = $.extend(true, {}, opts1, opts2);
 
-        options  = options || {};
-        selector = options.selector || false;
+    $.each(opts2, function(key, value) {
+      if ($.isArray(value)) {
+        rez[key] = value;
+      }
+    });
 
-        if ( selector ) {
+    return rez;
+  };
 
-            $( 'body' ).off( 'click.fb-start', selector ).on( 'click.fb-start', selector, {
-                options : options
-            }, _run );
+  // Class definition
+  // ================
 
-        } else {
+  var FancyBox = function(content, opts, index) {
+    var self = this;
 
-            this.off( 'click.fb-start' ).on( 'click.fb-start', {
-                items   : this,
-                options : options
-            }, _run);
+    self.opts = mergeOpts({index: index}, $.fancybox.defaults);
 
+    if ($.isPlainObject(opts)) {
+      self.opts = mergeOpts(self.opts, opts);
+    }
+
+    if ($.fancybox.isMobile) {
+      self.opts = mergeOpts(self.opts, self.opts.mobile);
+    }
+
+    self.id = self.opts.id || ++called;
+
+    self.currIndex = parseInt(self.opts.index, 10) || 0;
+    self.prevIndex = null;
+
+    self.prevPos = null;
+    self.currPos = 0;
+
+    self.firstRun = true;
+
+    // All group items
+    self.group = [];
+
+    // Existing slides (for current, next and previous gallery items)
+    self.slides = {};
+
+    // Create group elements
+    self.addContent(content);
+
+    if (!self.group.length) {
+      return;
+    }
+
+    // Save last active element
+    self.$lastFocus = $(document.activeElement).trigger("blur");
+
+    self.init();
+  };
+
+  $.extend(FancyBox.prototype, {
+    // Create DOM structure
+    // ====================
+
+    init: function() {
+      var self = this,
+        firstItem = self.group[self.currIndex],
+        firstItemOpts = firstItem.opts,
+        scrollbarWidth = $.fancybox.scrollbarWidth,
+        $scrollDiv,
+        $container,
+        buttonStr;
+
+      // Hide scrollbars
+      // ===============
+
+      if (!$.fancybox.getInstance() && firstItemOpts.hideScrollbar !== false) {
+        $("body").addClass("fancybox-active");
+
+        if (!$.fancybox.isMobile && document.body.scrollHeight > window.innerHeight) {
+          if (scrollbarWidth === undefined) {
+            $scrollDiv = $('<div style="width:100px;height:100px;overflow:scroll;" />').appendTo("body");
+
+            scrollbarWidth = $.fancybox.scrollbarWidth = $scrollDiv[0].offsetWidth - $scrollDiv[0].clientWidth;
+
+            $scrollDiv.remove();
+          }
+
+          $("head").append(
+            '<style id="fancybox-style-noscroll" type="text/css">.compensate-for-scrollbar { margin-right: ' +
+              scrollbarWidth +
+              "px; }</style>"
+          );
+
+          $("body").addClass("compensate-for-scrollbar");
+        }
+      }
+
+      // Build html markup and set references
+      // ====================================
+
+      // Build html code for buttons and insert into main template
+      buttonStr = "";
+
+      $.each(firstItemOpts.buttons, function(index, value) {
+        buttonStr += firstItemOpts.btnTpl[value] || "";
+      });
+
+      // Create markup from base template, it will be initially hidden to
+      // avoid unnecessary work like painting while initializing is not complete
+      $container = $(
+        self.translate(
+          self,
+          firstItemOpts.baseTpl
+            .replace("{{buttons}}", buttonStr)
+            .replace("{{arrows}}", firstItemOpts.btnTpl.arrowLeft + firstItemOpts.btnTpl.arrowRight)
+        )
+      )
+        .attr("id", "fancybox-container-" + self.id)
+        .addClass("fancybox-is-hidden")
+        .addClass(firstItemOpts.baseClass)
+        .data("FancyBox", self)
+        .appendTo(firstItemOpts.parentEl);
+
+      // Create object holding references to jQuery wrapped nodes
+      self.$refs = {
+        container: $container
+      };
+
+      ["bg", "inner", "infobar", "toolbar", "stage", "caption", "navigation"].forEach(function(item) {
+        self.$refs[item] = $container.find(".fancybox-" + item);
+      });
+
+      self.trigger("onInit");
+
+      // Enable events, deactive previous instances
+      self.activate();
+
+      // Build slides, load and reveal content
+      self.jumpTo(self.currIndex);
+    },
+
+    // Simple i18n support - replaces object keys found in template
+    // with corresponding values
+    // ============================================================
+
+    translate: function(obj, str) {
+      var arr = obj.opts.i18n[obj.opts.lang];
+
+      return str.replace(/\{\{(\w+)\}\}/g, function(match, n) {
+        var value = arr[n];
+
+        if (value === undefined) {
+          return match;
         }
 
-        return this;
-    };
+        return value;
+      });
+    },
 
+    // Populate current group with fresh content
+    // Check if each object has valid type and content
+    // ===============================================
 
-    // Self initializing plugin
+    addContent: function(content) {
+      var self = this,
+        items = $.makeArray(content),
+        thumbs;
+
+      $.each(items, function(i, item) {
+        var obj = {},
+          opts = {},
+          $item,
+          type,
+          found,
+          src,
+          srcParts;
+
+        // Step 1 - Make sure we have an object
+        // ====================================
+
+        if ($.isPlainObject(item)) {
+          // We probably have manual usage here, something like
+          // $.fancybox.open( [ { src : "image.jpg", type : "image" } ] )
+
+          obj = item;
+          opts = item.opts || item;
+        } else if ($.type(item) === "object" && $(item).length) {
+          // Here we probably have jQuery collection returned by some selector
+          $item = $(item);
+
+          // Support attributes like `data-options='{"touch" : false}'` and `data-touch='false'`
+          opts = $item.data() || {};
+          opts = $.extend(true, {}, opts, opts.options);
+
+          // Here we store clicked element
+          opts.$orig = $item;
+
+          obj.src = self.opts.src || opts.src || $item.attr("href");
+
+          // Assume that simple syntax is used, for example:
+          //   `$.fancybox.open( $("#test"), {} );`
+          if (!obj.type && !obj.src) {
+            obj.type = "inline";
+            obj.src = item;
+          }
+        } else {
+          // Assume we have a simple html code, for example:
+          //   $.fancybox.open( '<div><h1>Hi!</h1></div>' );
+          obj = {
+            type: "html",
+            src: item + ""
+          };
+        }
+
+        // Each gallery object has full collection of options
+        obj.opts = $.extend(true, {}, self.opts, opts);
+
+        // Do not merge buttons array
+        if ($.isArray(opts.buttons)) {
+          obj.opts.buttons = opts.buttons;
+        }
+
+        // Step 2 - Make sure we have content type, if not - try to guess
+        // ==============================================================
+
+        type = obj.type || obj.opts.type;
+        src = obj.src || "";
+
+        if (!type && src) {
+          if ((found = src.match(/\.(mp4|mov|ogv)((\?|#).*)?$/i))) {
+            type = "video";
+
+            if (!obj.opts.videoFormat) {
+              obj.opts.videoFormat = "video/" + (found[1] === "ogv" ? "ogg" : found[1]);
+            }
+          } else if (src.match(/(^data:image\/[a-z0-9+\/=]*,)|(\.(jp(e|g|eg)|gif|png|bmp|webp|svg|ico)((\?|#).*)?$)/i)) {
+            type = "image";
+          } else if (src.match(/\.(pdf)((\?|#).*)?$/i)) {
+            type = "iframe";
+          } else if (src.charAt(0) === "#") {
+            type = "inline";
+          }
+        }
+
+        if (type) {
+          obj.type = type;
+        } else {
+          self.trigger("objectNeedsType", obj);
+        }
+
+        if (!obj.contentType) {
+          obj.contentType = $.inArray(obj.type, ["html", "inline", "ajax"]) > -1 ? "html" : obj.type;
+        }
+
+        // Step 3 - Some adjustments
+        // =========================
+
+        obj.index = self.group.length;
+
+        if (obj.opts.smallBtn == "auto") {
+          obj.opts.smallBtn = $.inArray(obj.type, ["html", "inline", "ajax"]) > -1;
+        }
+
+        if (obj.opts.toolbar === "auto") {
+          obj.opts.toolbar = !obj.opts.smallBtn;
+        }
+
+        // Find thumbnail image
+        if (obj.opts.$trigger && obj.index === self.opts.index) {
+          obj.opts.$thumb = obj.opts.$trigger.find("img:first");
+        }
+
+        if ((!obj.opts.$thumb || !obj.opts.$thumb.length) && obj.opts.$orig) {
+          obj.opts.$thumb = obj.opts.$orig.find("img:first");
+        }
+
+        // "caption" is a "special" option, it can be used to customize caption per gallery item ..
+        if ($.type(obj.opts.caption) === "function") {
+          obj.opts.caption = obj.opts.caption.apply(item, [self, obj]);
+        }
+
+        if ($.type(self.opts.caption) === "function") {
+          obj.opts.caption = self.opts.caption.apply(item, [self, obj]);
+        }
+
+        // Make sure we have caption as a string or jQuery object
+        if (!(obj.opts.caption instanceof $)) {
+          obj.opts.caption = obj.opts.caption === undefined ? "" : obj.opts.caption + "";
+        }
+
+        // Check if url contains "filter" used to filter the content
+        // Example: "ajax.html #something"
+        if (obj.type === "ajax") {
+          srcParts = src.split(/\s+/, 2);
+
+          if (srcParts.length > 1) {
+            obj.src = srcParts.shift();
+
+            obj.opts.filter = srcParts.shift();
+          }
+        }
+
+        // Hide all buttons and disable interactivity for modal items
+        if (obj.opts.modal) {
+          obj.opts = $.extend(true, obj.opts, {
+            // Remove buttons
+            infobar: 0,
+            toolbar: 0,
+
+            smallBtn: 0,
+
+            // Disable keyboard navigation
+            keyboard: 0,
+
+            // Disable some modules
+            slideShow: 0,
+            fullScreen: 0,
+            thumbs: 0,
+            touch: 0,
+
+            // Disable click event handlers
+            clickContent: false,
+            clickSlide: false,
+            clickOutside: false,
+            dblclickContent: false,
+            dblclickSlide: false,
+            dblclickOutside: false
+          });
+        }
+
+        // Step 4 - Add processed object to group
+        // ======================================
+
+        self.group.push(obj);
+      });
+
+      // Update controls if gallery is already opened
+      if (Object.keys(self.slides).length) {
+        self.updateControls();
+
+        // Update thumbnails, if needed
+        thumbs = self.Thumbs;
+
+        if (thumbs && thumbs.isActive) {
+          thumbs.create();
+
+          thumbs.focus();
+        }
+      }
+    },
+
+    // Attach an event handler functions for:
+    //   - navigation buttons
+    //   - browser scrolling, resizing;
+    //   - focusing
+    //   - keyboard
+    //   - detect idle
+    // ======================================
+
+    addEvents: function() {
+      var self = this;
+
+      self.removeEvents();
+
+      // Make navigation elements clickable
+      self.$refs.container
+        .on("click.fb-close", "[data-fancybox-close]", function(e) {
+          e.stopPropagation();
+          e.preventDefault();
+
+          self.close(e);
+        })
+        .on("touchstart.fb-prev click.fb-prev", "[data-fancybox-prev]", function(e) {
+          e.stopPropagation();
+          e.preventDefault();
+
+          self.previous();
+        })
+        .on("touchstart.fb-next click.fb-next", "[data-fancybox-next]", function(e) {
+          e.stopPropagation();
+          e.preventDefault();
+
+          self.next();
+        })
+        .on("click.fb", "[data-fancybox-zoom]", function(e) {
+          // Click handler for zoom button
+          self[self.isScaledDown() ? "scaleToActual" : "scaleToFit"]();
+        });
+
+      // Handle page scrolling and browser resizing
+      $W.on("orientationchange.fb resize.fb", function(e) {
+        if (e && e.originalEvent && e.originalEvent.type === "resize") {
+          requestAFrame(function() {
+            self.update();
+          });
+        } else {
+          self.$refs.stage.hide();
+
+          setTimeout(function() {
+            self.$refs.stage.show();
+
+            self.update();
+          }, $.fancybox.isMobile ? 600 : 250);
+        }
+      });
+
+      // Trap keyboard focus inside of the modal, so the user does not accidentally tab outside of the modal
+      // (a.k.a. "escaping the modal")
+      $D.on("focusin.fb", function(e) {
+        var instance = $.fancybox ? $.fancybox.getInstance() : null;
+
+        if (
+          instance.isClosing ||
+          !instance.current ||
+          !instance.current.opts.trapFocus ||
+          $(e.target).hasClass("fancybox-container") ||
+          $(e.target).is(document)
+        ) {
+          return;
+        }
+
+        if (instance && $(e.target).css("position") !== "fixed" && !instance.$refs.container.has(e.target).length) {
+          e.stopPropagation();
+
+          instance.focus();
+        }
+      });
+
+      // Enable keyboard navigation
+      $D.on("keydown.fb", function(e) {
+        var current = self.current,
+          keycode = e.keyCode || e.which;
+
+        if (!current || !current.opts.keyboard) {
+          return;
+        }
+
+        if (e.ctrlKey || e.altKey || e.shiftKey || $(e.target).is("input") || $(e.target).is("textarea")) {
+          return;
+        }
+
+        // Backspace and Esc keys
+        if (keycode === 8 || keycode === 27) {
+          e.preventDefault();
+
+          self.close(e);
+
+          return;
+        }
+
+        // Left arrow and Up arrow
+        if (keycode === 37 || keycode === 38) {
+          e.preventDefault();
+
+          self.previous();
+
+          return;
+        }
+
+        // Righ arrow and Down arrow
+        if (keycode === 39 || keycode === 40) {
+          e.preventDefault();
+
+          self.next();
+
+          return;
+        }
+
+        self.trigger("afterKeydown", e, keycode);
+      });
+
+      // Hide controls after some inactivity period
+      if (self.group[self.currIndex].opts.idleTime) {
+        self.idleSecondsCounter = 0;
+
+        $D.on(
+          "mousemove.fb-idle mouseleave.fb-idle mousedown.fb-idle touchstart.fb-idle touchmove.fb-idle scroll.fb-idle keydown.fb-idle",
+          function(e) {
+            self.idleSecondsCounter = 0;
+
+            if (self.isIdle) {
+              self.showControls();
+            }
+
+            self.isIdle = false;
+          }
+        );
+
+        self.idleInterval = window.setInterval(function() {
+          self.idleSecondsCounter++;
+
+          if (self.idleSecondsCounter >= self.group[self.currIndex].opts.idleTime && !self.isDragging) {
+            self.isIdle = true;
+            self.idleSecondsCounter = 0;
+
+            self.hideControls();
+          }
+        }, 1000);
+      }
+    },
+
+    // Remove events added by the core
+    // ===============================
+
+    removeEvents: function() {
+      var self = this;
+
+      $W.off("orientationchange.fb resize.fb");
+      $D.off("focusin.fb keydown.fb .fb-idle");
+
+      this.$refs.container.off(".fb-close .fb-prev .fb-next");
+
+      if (self.idleInterval) {
+        window.clearInterval(self.idleInterval);
+
+        self.idleInterval = null;
+      }
+    },
+
+    // Change to previous gallery item
+    // ===============================
+
+    previous: function(duration) {
+      return this.jumpTo(this.currPos - 1, duration);
+    },
+
+    // Change to next gallery item
+    // ===========================
+
+    next: function(duration) {
+      return this.jumpTo(this.currPos + 1, duration);
+    },
+
+    // Switch to selected gallery item
+    // ===============================
+
+    jumpTo: function(pos, duration) {
+      var self = this,
+        groupLen = self.group.length,
+        firstRun,
+        loop,
+        current,
+        previous,
+        canvasWidth,
+        currentPos,
+        transitionProps;
+
+      if (self.isDragging || self.isClosing || (self.isAnimating && self.firstRun)) {
+        return;
+      }
+
+      pos = parseInt(pos, 10);
+
+      // Should loop?
+      loop = self.current ? self.current.opts.loop : self.opts.loop;
+
+      if (!loop && (pos < 0 || pos >= groupLen)) {
+        return false;
+      }
+
+      firstRun = self.firstRun = !Object.keys(self.slides).length;
+
+      if (groupLen < 2 && !firstRun && !!self.isDragging) {
+        return;
+      }
+
+      previous = self.current;
+
+      self.prevIndex = self.currIndex;
+      self.prevPos = self.currPos;
+
+      // Create slides
+      current = self.createSlide(pos);
+
+      if (groupLen > 1) {
+        if (loop || current.index > 0) {
+          self.createSlide(pos - 1);
+        }
+
+        if (loop || current.index < groupLen - 1) {
+          self.createSlide(pos + 1);
+        }
+      }
+
+      self.current = current;
+      self.currIndex = current.index;
+      self.currPos = current.pos;
+
+      self.trigger("beforeShow", firstRun);
+
+      self.updateControls();
+
+      currentPos = $.fancybox.getTranslate(current.$slide);
+
+      current.isMoved = (currentPos.left !== 0 || currentPos.top !== 0) && !current.$slide.hasClass("fancybox-animated");
+
+      // Validate duration length
+      current.forcedDuration = undefined;
+
+      if ($.isNumeric(duration)) {
+        current.forcedDuration = duration;
+      } else {
+        duration = current.opts[firstRun ? "animationDuration" : "transitionDuration"];
+      }
+
+      duration = parseInt(duration, 10);
+
+      // Fresh start - reveal container, current slide and start loading content
+      if (firstRun) {
+        if (current.opts.animationEffect && duration) {
+          self.$refs.container.css("transition-duration", duration + "ms");
+        }
+
+        self.$refs.container.removeClass("fancybox-is-hidden");
+
+        forceRedraw(self.$refs.container);
+
+        self.$refs.container.addClass("fancybox-is-open");
+
+        forceRedraw(self.$refs.container);
+
+        // Make current slide visible
+        current.$slide.addClass("fancybox-slide--previous");
+
+        // Attempt to load content into slide;
+        // at this point image would start loading, but inline/html content would load immediately
+        self.loadSlide(current);
+
+        current.$slide.removeClass("fancybox-slide--previous").addClass("fancybox-slide--current");
+
+        self.preload("image");
+
+        return;
+      }
+
+      // Clean up
+      $.each(self.slides, function(index, slide) {
+        $.fancybox.stop(slide.$slide);
+      });
+
+      // Make current that slide is visible even if content is still loading
+      current.$slide.removeClass("fancybox-slide--next fancybox-slide--previous").addClass("fancybox-slide--current");
+
+      // If slides have been dragged, animate them to correct position
+      if (current.isMoved) {
+        canvasWidth = Math.round(current.$slide.width());
+
+        $.each(self.slides, function(index, slide) {
+          var pos = slide.pos - current.pos;
+
+          $.fancybox.animate(
+            slide.$slide,
+            {
+              top: 0,
+              left: pos * canvasWidth + pos * slide.opts.gutter
+            },
+            duration,
+            function() {
+              slide.$slide.removeAttr("style").removeClass("fancybox-slide--next fancybox-slide--previous");
+
+              if (slide.pos === self.currPos) {
+                current.isMoved = false;
+
+                self.complete();
+              }
+            }
+          );
+        });
+      } else {
+        self.$refs.stage.children().removeAttr("style");
+      }
+
+      // Start transition that reveals current content
+      // or wait when it will be loaded
+
+      if (current.isLoaded) {
+        self.revealContent(current);
+      } else {
+        self.loadSlide(current);
+      }
+
+      self.preload("image");
+
+      if (previous.pos === current.pos) {
+        return;
+      }
+
+      // Handle previous slide
+      // =====================
+
+      transitionProps = "fancybox-slide--" + (previous.pos > current.pos ? "next" : "previous");
+
+      previous.$slide.removeClass("fancybox-slide--complete fancybox-slide--current fancybox-slide--next fancybox-slide--previous");
+
+      previous.isComplete = false;
+
+      if (!duration || (!current.isMoved && !current.opts.transitionEffect)) {
+        return;
+      }
+
+      if (current.isMoved) {
+        previous.$slide.addClass(transitionProps);
+      } else {
+        transitionProps = "fancybox-animated " + transitionProps + " fancybox-fx-" + current.opts.transitionEffect;
+
+        $.fancybox.animate(previous.$slide, transitionProps, duration, function() {
+          previous.$slide.removeClass(transitionProps).removeAttr("style");
+        });
+      }
+    },
+
+    // Create new "slide" element
+    // These are gallery items  that are actually added to DOM
+    // =======================================================
+
+    createSlide: function(pos) {
+      var self = this,
+        $slide,
+        index;
+
+      index = pos % self.group.length;
+      index = index < 0 ? self.group.length + index : index;
+
+      if (!self.slides[pos] && self.group[index]) {
+        $slide = $('<div class="fancybox-slide"></div>').appendTo(self.$refs.stage);
+
+        self.slides[pos] = $.extend(true, {}, self.group[index], {
+          pos: pos,
+          $slide: $slide,
+          isLoaded: false
+        });
+
+        self.updateSlide(self.slides[pos]);
+      }
+
+      return self.slides[pos];
+    },
+
+    // Scale image to the actual size of the image;
+    // x and y values should be relative to the slide
+    // ==============================================
+
+    scaleToActual: function(x, y, duration) {
+      var self = this,
+        current = self.current,
+        $content = current.$content,
+        canvasWidth = $.fancybox.getTranslate(current.$slide).width,
+        canvasHeight = $.fancybox.getTranslate(current.$slide).height,
+        newImgWidth = current.width,
+        newImgHeight = current.height,
+        imgPos,
+        posX,
+        posY,
+        scaleX,
+        scaleY;
+
+      if (self.isAnimating || !$content || !(current.type == "image" && current.isLoaded && !current.hasError)) {
+        return;
+      }
+
+      $.fancybox.stop($content);
+
+      self.isAnimating = true;
+
+      x = x === undefined ? canvasWidth * 0.5 : x;
+      y = y === undefined ? canvasHeight * 0.5 : y;
+
+      imgPos = $.fancybox.getTranslate($content);
+
+      imgPos.top -= $.fancybox.getTranslate(current.$slide).top;
+      imgPos.left -= $.fancybox.getTranslate(current.$slide).left;
+
+      scaleX = newImgWidth / imgPos.width;
+      scaleY = newImgHeight / imgPos.height;
+
+      // Get center position for original image
+      posX = canvasWidth * 0.5 - newImgWidth * 0.5;
+      posY = canvasHeight * 0.5 - newImgHeight * 0.5;
+
+      // Make sure image does not move away from edges
+      if (newImgWidth > canvasWidth) {
+        posX = imgPos.left * scaleX - (x * scaleX - x);
+
+        if (posX > 0) {
+          posX = 0;
+        }
+
+        if (posX < canvasWidth - newImgWidth) {
+          posX = canvasWidth - newImgWidth;
+        }
+      }
+
+      if (newImgHeight > canvasHeight) {
+        posY = imgPos.top * scaleY - (y * scaleY - y);
+
+        if (posY > 0) {
+          posY = 0;
+        }
+
+        if (posY < canvasHeight - newImgHeight) {
+          posY = canvasHeight - newImgHeight;
+        }
+      }
+
+      self.updateCursor(newImgWidth, newImgHeight);
+
+      $.fancybox.animate(
+        $content,
+        {
+          top: posY,
+          left: posX,
+          scaleX: scaleX,
+          scaleY: scaleY
+        },
+        duration || 330,
+        function() {
+          self.isAnimating = false;
+        }
+      );
+
+      // Stop slideshow
+      if (self.SlideShow && self.SlideShow.isActive) {
+        self.SlideShow.stop();
+      }
+    },
+
+    // Scale image to fit inside parent element
+    // ========================================
+
+    scaleToFit: function(duration) {
+      var self = this,
+        current = self.current,
+        $content = current.$content,
+        end;
+
+      if (self.isAnimating || !$content || !(current.type == "image" && current.isLoaded && !current.hasError)) {
+        return;
+      }
+
+      $.fancybox.stop($content);
+
+      self.isAnimating = true;
+
+      end = self.getFitPos(current);
+
+      self.updateCursor(end.width, end.height);
+
+      $.fancybox.animate(
+        $content,
+        {
+          top: end.top,
+          left: end.left,
+          scaleX: end.width / $content.width(),
+          scaleY: end.height / $content.height()
+        },
+        duration || 330,
+        function() {
+          self.isAnimating = false;
+        }
+      );
+    },
+
+    // Calculate image size to fit inside viewport
+    // ===========================================
+
+    getFitPos: function(slide) {
+      var self = this,
+        $content = slide.$content,
+        width = slide.width || slide.opts.width,
+        height = slide.height || slide.opts.height,
+        maxWidth,
+        maxHeight,
+        minRatio,
+        margin,
+        aspectRatio,
+        rez = {};
+
+      if (!slide.isLoaded || !$content || !$content.length) {
+        return false;
+      }
+
+      margin = {
+        top: parseInt(slide.$slide.css("paddingTop"), 10),
+        right: parseInt(slide.$slide.css("paddingRight"), 10),
+        bottom: parseInt(slide.$slide.css("paddingBottom"), 10),
+        left: parseInt(slide.$slide.css("paddingLeft"), 10)
+      };
+
+      // We can not use $slide width here, because it can have different diemensions while in transiton
+      maxWidth = parseInt(self.$refs.stage.width(), 10) - (margin.left + margin.right);
+      maxHeight = parseInt(self.$refs.stage.height(), 10) - (margin.top + margin.bottom);
+
+      if (!width || !height) {
+        width = maxWidth;
+        height = maxHeight;
+      }
+
+      minRatio = Math.min(1, maxWidth / width, maxHeight / height);
+
+      // Use floor rounding to make sure it really fits
+      width = Math.floor(minRatio * width);
+      height = Math.floor(minRatio * height);
+
+      if (slide.type === "image") {
+        rez.top = Math.floor((maxHeight - height) * 0.5) + margin.top;
+        rez.left = Math.floor((maxWidth - width) * 0.5) + margin.left;
+      } else if (slide.contentType === "video") {
+        // Force aspect ratio for the video
+        // "I say the whole world must learn of our peaceful ways… by force!"
+        aspectRatio = slide.opts.width && slide.opts.height ? width / height : slide.opts.ratio || 16 / 9;
+
+        if (height > width / aspectRatio) {
+          height = width / aspectRatio;
+        } else if (width > height * aspectRatio) {
+          width = height * aspectRatio;
+        }
+      }
+
+      rez.width = width;
+      rez.height = height;
+
+      return rez;
+    },
+
+    // Update content size and position for all slides
+    // ==============================================
+
+    update: function() {
+      var self = this;
+
+      $.each(self.slides, function(key, slide) {
+        self.updateSlide(slide);
+      });
+    },
+
+    // Update slide content position and size
+    // ======================================
+
+    updateSlide: function(slide, duration) {
+      var self = this,
+        $content = slide && slide.$content,
+        width = slide.width || slide.opts.width,
+        height = slide.height || slide.opts.height;
+
+      if ($content && (width || height || slide.contentType === "video") && !slide.hasError) {
+        $.fancybox.stop($content);
+
+        $.fancybox.setTranslate($content, self.getFitPos(slide));
+
+        if (slide.pos === self.currPos) {
+          self.isAnimating = false;
+
+          self.updateCursor();
+        }
+      }
+
+      slide.$slide.trigger("refresh");
+
+      self.$refs.toolbar.toggleClass("compensate-for-scrollbar", slide.$slide.get(0).scrollHeight > slide.$slide.get(0).clientHeight);
+
+      self.trigger("onUpdate", slide);
+    },
+
+    // Horizontally center slide
+    // =========================
+
+    centerSlide: function(slide, duration) {
+      var self = this,
+        canvasWidth,
+        pos;
+
+      if (self.current) {
+        canvasWidth = Math.round(slide.$slide.width());
+        pos = slide.pos - self.current.pos;
+
+        $.fancybox.animate(
+          slide.$slide,
+          {
+            top: 0,
+            left: pos * canvasWidth + pos * slide.opts.gutter,
+            opacity: 1
+          },
+          duration === undefined ? 0 : duration,
+          null,
+          false
+        );
+      }
+    },
+
+    // Update cursor style depending if content can be zoomed
+    // ======================================================
+
+    updateCursor: function(nextWidth, nextHeight) {
+      var self = this,
+        current = self.current,
+        $container = self.$refs.container.removeClass("fancybox-is-zoomable fancybox-can-zoomIn fancybox-can-drag fancybox-can-zoomOut"),
+        isZoomable;
+
+      if (!current || self.isClosing) {
+        return;
+      }
+
+      isZoomable = self.isZoomable();
+
+      $container.toggleClass("fancybox-is-zoomable", isZoomable);
+
+      $("[data-fancybox-zoom]").prop("disabled", !isZoomable);
+
+      // Set cursor to zoom in/out if click event is 'zoom'
+      if (
+        isZoomable &&
+        (current.opts.clickContent === "zoom" || ($.isFunction(current.opts.clickContent) && current.opts.clickContent(current) === "zoom"))
+      ) {
+        if (self.isScaledDown(nextWidth, nextHeight)) {
+          // If image is scaled down, then, obviously, it can be zoomed to full size
+          $container.addClass("fancybox-can-zoomIn");
+        } else {
+          if (current.opts.touch) {
+            // If image size ir largen than available available and touch module is not disable,
+            // then user can do panning
+            $container.addClass("fancybox-can-drag");
+          } else {
+            $container.addClass("fancybox-can-zoomOut");
+          }
+        }
+      } else if (current.opts.touch && current.contentType !== "video") {
+        $container.addClass("fancybox-can-drag");
+      }
+    },
+
+    // Check if current slide is zoomable
+    // ==================================
+
+    isZoomable: function() {
+      var self = this,
+        current = self.current,
+        fitPos;
+
+      // Assume that slide is zoomable if:
+      //   - image is still loading
+      //   - actual size of the image is smaller than available area
+      if (current && !self.isClosing && current.type === "image" && !current.hasError) {
+        if (!current.isLoaded) {
+          return true;
+        }
+
+        fitPos = self.getFitPos(current);
+
+        if (current.width > fitPos.width || current.height > fitPos.height) {
+          return true;
+        }
+      }
+
+      return false;
+    },
+
+    // Check if current image dimensions are smaller than actual
+    // =========================================================
+
+    isScaledDown: function(nextWidth, nextHeight) {
+      var self = this,
+        rez = false,
+        current = self.current,
+        $content = current.$content;
+
+      if (nextWidth !== undefined && nextHeight !== undefined) {
+        rez = nextWidth < current.width && nextHeight < current.height;
+      } else if ($content) {
+        rez = $.fancybox.getTranslate($content);
+        rez = rez.width < current.width && rez.height < current.height;
+      }
+
+      return rez;
+    },
+
+    // Check if image dimensions exceed parent element
+    // ===============================================
+
+    canPan: function() {
+      var self = this,
+        rez = false,
+        current = self.current,
+        $content;
+
+      if (current.type === "image" && ($content = current.$content) && !current.hasError) {
+        rez = self.getFitPos(current);
+        rez = Math.abs($content.width() - rez.width) > 1 || Math.abs($content.height() - rez.height) > 1;
+      }
+
+      return rez;
+    },
+
+    // Load content into the slide
+    // ===========================
+
+    loadSlide: function(slide) {
+      var self = this,
+        type,
+        $slide,
+        ajaxLoad;
+
+      if (slide.isLoading || slide.isLoaded) {
+        return;
+      }
+
+      slide.isLoading = true;
+
+      self.trigger("beforeLoad", slide);
+
+      type = slide.type;
+      $slide = slide.$slide;
+
+      $slide
+        .off("refresh")
+        .trigger("onReset")
+        .addClass(slide.opts.slideClass);
+
+      // Create content depending on the type
+      switch (type) {
+        case "image":
+          self.setImage(slide);
+
+          break;
+
+        case "iframe":
+          self.setIframe(slide);
+
+          break;
+
+        case "html":
+          self.setContent(slide, slide.src || slide.content);
+
+          break;
+
+        case "video":
+          self.setContent(
+            slide,
+            '<video class="fancybox-video" controls controlsList="nodownload">' +
+              '<source src="' +
+              slide.src +
+              '" type="' +
+              slide.opts.videoFormat +
+              '">' +
+              "Your browser doesn't support HTML5 video" +
+              "</video"
+          );
+
+          break;
+
+        case "inline":
+          if ($(slide.src).length) {
+            self.setContent(slide, $(slide.src));
+          } else {
+            self.setError(slide);
+          }
+
+          break;
+
+        case "ajax":
+          self.showLoading(slide);
+
+          ajaxLoad = $.ajax(
+            $.extend({}, slide.opts.ajax.settings, {
+              url: slide.src,
+              success: function(data, textStatus) {
+                if (textStatus === "success") {
+                  self.setContent(slide, data);
+                }
+              },
+              error: function(jqXHR, textStatus) {
+                if (jqXHR && textStatus !== "abort") {
+                  self.setError(slide);
+                }
+              }
+            })
+          );
+
+          $slide.one("onReset", function() {
+            ajaxLoad.abort();
+          });
+
+          break;
+
+        default:
+          self.setError(slide);
+
+          break;
+      }
+
+      return true;
+    },
+
+    // Use thumbnail image, if possible
+    // ================================
+
+    setImage: function(slide) {
+      var self = this,
+        srcset = slide.opts.srcset || slide.opts.image.srcset,
+        thumbSrc,
+        found,
+        temp,
+        pxRatio,
+        windowWidth;
+
+      // Check if need to show loading icon
+      slide.timouts = setTimeout(function() {
+        var $img = slide.$image;
+
+        if (slide.isLoading && (!$img || !$img[0].complete) && !slide.hasError) {
+          self.showLoading(slide);
+        }
+      }, 350);
+
+      // If we have "srcset", then we need to find first matching "src" value.
+      // This is necessary, because when you set an src attribute, the browser will preload the image
+      // before any javascript or even CSS is applied.
+      if (srcset) {
+        pxRatio = window.devicePixelRatio || 1;
+        windowWidth = window.innerWidth * pxRatio;
+
+        temp = srcset.split(",").map(function(el) {
+          var ret = {};
+
+          el
+            .trim()
+            .split(/\s+/)
+            .forEach(function(el, i) {
+              var value = parseInt(el.substring(0, el.length - 1), 10);
+
+              if (i === 0) {
+                return (ret.url = el);
+              }
+
+              if (value) {
+                ret.value = value;
+                ret.postfix = el[el.length - 1];
+              }
+            });
+
+          return ret;
+        });
+
+        // Sort by value
+        temp.sort(function(a, b) {
+          return a.value - b.value;
+        });
+
+        // Ok, now we have an array of all srcset values
+        for (var j = 0; j < temp.length; j++) {
+          var el = temp[j];
+
+          if ((el.postfix === "w" && el.value >= windowWidth) || (el.postfix === "x" && el.value >= pxRatio)) {
+            found = el;
+            break;
+          }
+        }
+
+        // If not found, take the last one
+        if (!found && temp.length) {
+          found = temp[temp.length - 1];
+        }
+
+        if (found) {
+          slide.src = found.url;
+
+          // If we have default width/height values, we can calculate height for matching source
+          if (slide.width && slide.height && found.postfix == "w") {
+            slide.height = slide.width / slide.height * found.value;
+            slide.width = found.value;
+          }
+
+          slide.opts.srcset = srcset;
+        }
+      }
+
+      // This will be wrapper containing both ghost and actual image
+      slide.$content = $('<div class="fancybox-content"></div>')
+        .addClass("fancybox-is-hidden")
+        .appendTo(slide.$slide.addClass("fancybox-slide--image"));
+
+      // If we have a thumbnail, we can display it while actual image is loading
+      // Users will not stare at black screen and actual image will appear gradually
+      thumbSrc = slide.opts.thumb || (slide.opts.$thumb && slide.opts.$thumb.length ? slide.opts.$thumb.attr("src") : false);
+
+      if (slide.opts.preload !== false && slide.opts.width && slide.opts.height && thumbSrc) {
+        slide.width = slide.opts.width;
+        slide.height = slide.opts.height;
+
+        slide.$ghost = $("<img />")
+          .one("error", function() {
+            $(this).remove();
+
+            slide.$ghost = null;
+          })
+          .one("load", function() {
+            self.afterLoad(slide);
+          })
+          .addClass("fancybox-image")
+          .appendTo(slide.$content)
+          .attr("src", thumbSrc);
+      }
+
+      // Start loading actual image
+      self.setBigImage(slide);
+    },
+
+    // Create full-size image
+    // ======================
+
+    setBigImage: function(slide) {
+      var self = this,
+        $img = $("<img />");
+
+      slide.$image = $img
+        .one("error", function() {
+          self.setError(slide);
+        })
+        .one("load", function() {
+          var sizes;
+
+          if (!slide.$ghost) {
+            self.resolveImageSlideSize(slide, this.naturalWidth, this.naturalHeight);
+
+            self.afterLoad(slide);
+          }
+
+          // Clear timeout that checks if loading icon needs to be displayed
+          if (slide.timouts) {
+            clearTimeout(slide.timouts);
+            slide.timouts = null;
+          }
+
+          if (self.isClosing) {
+            return;
+          }
+
+          if (slide.opts.srcset) {
+            sizes = slide.opts.sizes;
+
+            if (!sizes || sizes === "auto") {
+              sizes =
+                (slide.width / slide.height > 1 && $W.width() / $W.height() > 1 ? "100" : Math.round(slide.width / slide.height * 100)) +
+                "vw";
+            }
+
+            $img.attr("sizes", sizes).attr("srcset", slide.opts.srcset);
+          }
+
+          // Hide temporary image after some delay
+          if (slide.$ghost) {
+            setTimeout(function() {
+              if (slide.$ghost && !self.isClosing) {
+                slide.$ghost.hide();
+              }
+            }, Math.min(300, Math.max(1000, slide.height / 1600)));
+          }
+
+          self.hideLoading(slide);
+        })
+        .addClass("fancybox-image")
+        .attr("src", slide.src)
+        .appendTo(slide.$content);
+
+      if (($img[0].complete || $img[0].readyState == "complete") && $img[0].naturalWidth && $img[0].naturalHeight) {
+        $img.trigger("load");
+      } else if ($img[0].error) {
+        $img.trigger("error");
+      }
+    },
+
+    // Computes the slide size from image size and maxWidth/maxHeight
+    // ==============================================================
+
+    resolveImageSlideSize: function(slide, imgWidth, imgHeight) {
+      var maxWidth = parseInt(slide.opts.width, 10),
+        maxHeight = parseInt(slide.opts.height, 10);
+
+      // Sets the default values from the image
+      slide.width = imgWidth;
+      slide.height = imgHeight;
+
+      if (maxWidth > 0) {
+        slide.width = maxWidth;
+        slide.height = Math.floor(maxWidth * imgHeight / imgWidth);
+      }
+
+      if (maxHeight > 0) {
+        slide.width = Math.floor(maxHeight * imgWidth / imgHeight);
+        slide.height = maxHeight;
+      }
+    },
+
+    // Create iframe wrapper, iframe and bindings
+    // ==========================================
+
+    setIframe: function(slide) {
+      var self = this,
+        opts = slide.opts.iframe,
+        $slide = slide.$slide,
+        $iframe;
+
+      slide.$content = $('<div class="fancybox-content' + (opts.preload ? " fancybox-is-hidden" : "") + '"></div>')
+        .css(opts.css)
+        .appendTo($slide);
+
+      $slide.addClass("fancybox-slide--" + slide.contentType);
+
+      slide.$iframe = $iframe = $(opts.tpl.replace(/\{rnd\}/g, new Date().getTime()))
+        .attr(opts.attr)
+        .appendTo(slide.$content);
+
+      if (opts.preload) {
+        self.showLoading(slide);
+
+        // Unfortunately, it is not always possible to determine if iframe is successfully loaded
+        // (due to browser security policy)
+
+        $iframe.on("load.fb error.fb", function(e) {
+          this.isReady = 1;
+
+          slide.$slide.trigger("refresh");
+
+          self.afterLoad(slide);
+        });
+
+        // Recalculate iframe content size
+        // ===============================
+
+        $slide.on("refresh.fb", function() {
+          var $content = slide.$content,
+            frameWidth = opts.css.width,
+            frameHeight = opts.css.height,
+            $contents,
+            $body;
+
+          if ($iframe[0].isReady !== 1) {
+            return;
+          }
+
+          try {
+            $contents = $iframe.contents();
+            $body = $contents.find("body");
+          } catch (ignore) {}
+
+          // Calculate contnet dimensions if it is accessible
+          if ($body && $body.length && $body.children().length) {
+            $content.css({
+              width: "",
+              height: ""
+            });
+
+            if (frameWidth === undefined) {
+              frameWidth = Math.ceil(Math.max($body[0].clientWidth, $body.outerWidth(true)));
+            }
+
+            if (frameWidth) {
+              $content.width(frameWidth);
+            }
+
+            if (frameHeight === undefined) {
+              frameHeight = Math.ceil(Math.max($body[0].clientHeight, $body.outerHeight(true)));
+            }
+
+            if (frameHeight) {
+              $content.height(frameHeight);
+            }
+          }
+
+          $content.removeClass("fancybox-is-hidden");
+        });
+      } else {
+        this.afterLoad(slide);
+      }
+
+      $iframe.attr("src", slide.src);
+
+      // Remove iframe if closing or changing gallery item
+      $slide.one("onReset", function() {
+        // This helps IE not to throw errors when closing
+        try {
+          $(this)
+            .find("iframe")
+            .hide()
+            .unbind()
+            .attr("src", "//about:blank");
+        } catch (ignore) {}
+
+        $(this)
+          .off("refresh.fb")
+          .empty();
+
+        slide.isLoaded = false;
+      });
+    },
+
+    // Wrap and append content to the slide
+    // ======================================
+
+    setContent: function(slide, content) {
+      var self = this;
+
+      if (self.isClosing) {
+        return;
+      }
+
+      self.hideLoading(slide);
+
+      if (slide.$content) {
+        $.fancybox.stop(slide.$content);
+      }
+
+      slide.$slide.empty();
+
+      // If content is a jQuery object, then it will be moved to the slide.
+      // The placeholder is created so we will know where to put it back.
+      if (isQuery(content) && content.parent().length) {
+        // Make sure content is not already moved to fancyBox
+        content
+          .parent()
+          .parent(".fancybox-slide--inline")
+          .trigger("onReset");
+
+        // Create temporary element marking original place of the content
+        slide.$placeholder = $("<div>")
+          .hide()
+          .insertAfter(content);
+
+        // Make sure content is visible
+        content.css("display", "inline-block");
+      } else if (!slide.hasError) {
+        // If content is just a plain text, try to convert it to html
+        if ($.type(content) === "string") {
+          content = $("<div>")
+            .append($.trim(content))
+            .contents();
+
+          // If we have text node, then add wrapping element to make vertical alignment work
+          if (content[0].nodeType === 3) {
+            content = $("<div>").html(content);
+          }
+        }
+
+        // If "filter" option is provided, then filter content
+        if (slide.opts.filter) {
+          content = $("<div>")
+            .html(content)
+            .find(slide.opts.filter);
+        }
+      }
+
+      slide.$slide.one("onReset", function() {
+        // Pause all html5 video/audio
+        $(this)
+          .find("video,audio")
+          .trigger("pause");
+
+        // Put content back
+        if (slide.$placeholder) {
+          slide.$placeholder.after(content.hide()).remove();
+
+          slide.$placeholder = null;
+        }
+
+        // Remove custom close button
+        if (slide.$smallBtn) {
+          slide.$smallBtn.remove();
+
+          slide.$smallBtn = null;
+        }
+
+        // Remove content and mark slide as not loaded
+        if (!slide.hasError) {
+          $(this).empty();
+
+          slide.isLoaded = false;
+        }
+      });
+
+      $(content).appendTo(slide.$slide);
+
+      if ($(content).is("video,audio")) {
+        $(content).addClass("fancybox-video");
+
+        $(content).wrap("<div></div>");
+
+        slide.contentType = "video";
+
+        slide.opts.width = slide.opts.width || $(content).attr("width");
+        slide.opts.height = slide.opts.height || $(content).attr("height");
+      }
+
+      slide.$content = slide.$slide
+        .children()
+        .filter("div,form,main,video,audio")
+        .first()
+        .addClass("fancybox-content");
+
+      slide.$slide.addClass("fancybox-slide--" + slide.contentType);
+
+      this.afterLoad(slide);
+    },
+
+    // Display error message
+    // =====================
+
+    setError: function(slide) {
+      slide.hasError = true;
+
+      slide.$slide
+        .trigger("onReset")
+        .removeClass("fancybox-slide--" + slide.contentType)
+        .addClass("fancybox-slide--error");
+
+      slide.contentType = "html";
+
+      this.setContent(slide, this.translate(slide, slide.opts.errorTpl));
+
+      if (slide.pos === this.currPos) {
+        this.isAnimating = false;
+      }
+    },
+
+    // Show loading icon inside the slide
+    // ==================================
+
+    showLoading: function(slide) {
+      var self = this;
+
+      slide = slide || self.current;
+
+      if (slide && !slide.$spinner) {
+        slide.$spinner = $(self.translate(self, self.opts.spinnerTpl)).appendTo(slide.$slide);
+      }
+    },
+
+    // Remove loading icon from the slide
+    // ==================================
+
+    hideLoading: function(slide) {
+      var self = this;
+
+      slide = slide || self.current;
+
+      if (slide && slide.$spinner) {
+        slide.$spinner.remove();
+
+        delete slide.$spinner;
+      }
+    },
+
+    // Adjustments after slide content has been loaded
+    // ===============================================
+
+    afterLoad: function(slide) {
+      var self = this;
+
+      if (self.isClosing) {
+        return;
+      }
+
+      slide.isLoading = false;
+      slide.isLoaded = true;
+
+      self.trigger("afterLoad", slide);
+
+      self.hideLoading(slide);
+
+      if (slide.pos === self.currPos) {
+        self.updateCursor();
+      }
+
+      if (slide.opts.smallBtn && (!slide.$smallBtn || !slide.$smallBtn.length)) {
+        slide.$smallBtn = $(self.translate(slide, slide.opts.btnTpl.smallBtn)).prependTo(slide.$content);
+      }
+
+      if (slide.opts.protect && slide.$content && !slide.hasError) {
+        // Disable right click
+        slide.$content.on("contextmenu.fb", function(e) {
+          if (e.button == 2) {
+            e.preventDefault();
+          }
+
+          return true;
+        });
+
+        // Add fake element on top of the image
+        // This makes a bit harder for user to select image
+        if (slide.type === "image") {
+          $('<div class="fancybox-spaceball"></div>').appendTo(slide.$content);
+        }
+      }
+
+      self.revealContent(slide);
+    },
+
+    // Make content visible
+    // This method is called right after content has been loaded or
+    // user navigates gallery and transition should start
+    // ============================================================
+
+    revealContent: function(slide) {
+      var self = this,
+        $slide = slide.$slide,
+        end = false,
+        start = false,
+        effect,
+        effectClassName,
+        duration,
+        opacity;
+
+      effect = slide.opts[self.firstRun ? "animationEffect" : "transitionEffect"];
+      duration = slide.opts[self.firstRun ? "animationDuration" : "transitionDuration"];
+
+      duration = parseInt(slide.forcedDuration === undefined ? duration : slide.forcedDuration, 10);
+
+      // Do not animate if revealing the same slide
+      if (slide.pos === self.currPos) {
+        if (slide.isComplete) {
+          effect = false;
+        } else {
+          self.isAnimating = true;
+        }
+      }
+
+      if (slide.isMoved || slide.pos !== self.currPos || !duration) {
+        effect = false;
+      }
+
+      // Check if can zoom
+      if (effect === "zoom") {
+        if (slide.pos === self.currPos && duration && slide.type === "image" && !slide.hasError && (start = self.getThumbPos(slide))) {
+          end = self.getFitPos(slide);
+        } else {
+          effect = "fade";
+        }
+      }
+
+      // Zoom animation
+      // ==============
+      if (effect === "zoom") {
+        end.scaleX = end.width / start.width;
+        end.scaleY = end.height / start.height;
+
+        // Check if we need to animate opacity
+        opacity = slide.opts.zoomOpacity;
+
+        if (opacity == "auto") {
+          opacity = Math.abs(slide.width / slide.height - start.width / start.height) > 0.1;
+        }
+
+        if (opacity) {
+          start.opacity = 0.1;
+          end.opacity = 1;
+        }
+
+        // Draw image at start position
+        $.fancybox.setTranslate(slide.$content.removeClass("fancybox-is-hidden"), start);
+
+        forceRedraw(slide.$content);
+
+        // Start animation
+        $.fancybox.animate(slide.$content, end, duration, function() {
+          self.isAnimating = false;
+
+          self.complete();
+        });
+
+        return;
+      }
+
+      self.updateSlide(slide);
+
+      // Simply show content
+      // ===================
+
+      if (!effect) {
+        forceRedraw($slide);
+
+        slide.$content.removeClass("fancybox-is-hidden");
+
+        if (slide.pos === self.currPos) {
+          self.complete();
+        }
+
+        return;
+      }
+
+      $.fancybox.stop($slide);
+
+      effectClassName = "fancybox-animated fancybox-slide--" + (slide.pos >= self.prevPos ? "next" : "previous") + " fancybox-fx-" + effect;
+
+      $slide
+        .removeAttr("style")
+        .removeClass("fancybox-slide--current fancybox-slide--next fancybox-slide--previous")
+        .addClass(effectClassName);
+
+      slide.$content.removeClass("fancybox-is-hidden");
+
+      // Force reflow for CSS3 transitions
+      forceRedraw($slide);
+
+      $.fancybox.animate(
+        $slide,
+        "fancybox-slide--current",
+        duration,
+        function(e) {
+          $slide.removeClass(effectClassName).removeAttr("style");
+
+          if (slide.pos === self.currPos) {
+            self.complete();
+          }
+        },
+        true
+      );
+    },
+
+    // Check if we can and have to zoom from thumbnail
+    //================================================
+
+    getThumbPos: function(slide) {
+      var self = this,
+        rez = false,
+        $thumb = slide.opts.$thumb,
+        thumbPos = $thumb && $thumb.length && $thumb[0].ownerDocument === document ? $thumb.offset() : 0,
+        slidePos;
+
+      // Check if element is inside the viewport by at least 1 pixel
+      var isElementVisible = function($el) {
+        var element = $el[0],
+          elementRect = element.getBoundingClientRect(),
+          parentRects = [],
+          visibleInAllParents;
+
+        while (element.parentElement !== null) {
+          if ($(element.parentElement).css("overflow") === "hidden" || $(element.parentElement).css("overflow") === "auto") {
+            parentRects.push(element.parentElement.getBoundingClientRect());
+          }
+
+          element = element.parentElement;
+        }
+
+        visibleInAllParents = parentRects.every(function(parentRect) {
+          var visiblePixelX = Math.min(elementRect.right, parentRect.right) - Math.max(elementRect.left, parentRect.left);
+          var visiblePixelY = Math.min(elementRect.bottom, parentRect.bottom) - Math.max(elementRect.top, parentRect.top);
+
+          return visiblePixelX > 0 && visiblePixelY > 0;
+        });
+
+        return (
+          visibleInAllParents &&
+          elementRect.bottom > 0 &&
+          elementRect.right > 0 &&
+          elementRect.left < $(window).width() &&
+          elementRect.top < $(window).height()
+        );
+      };
+
+      if (thumbPos && isElementVisible($thumb)) {
+        slidePos = self.$refs.stage.offset();
+
+        rez = {
+          top: thumbPos.top - slidePos.top + parseFloat($thumb.css("border-top-width") || 0),
+          left: thumbPos.left - slidePos.left + parseFloat($thumb.css("border-left-width") || 0),
+          width: $thumb.width(),
+          height: $thumb.height(),
+          scaleX: 1,
+          scaleY: 1
+        };
+      }
+
+      return rez;
+    },
+
+    // Final adjustments after current gallery item is moved to position
+    // and it`s content is loaded
+    // ==================================================================
+
+    complete: function() {
+      var self = this,
+        current = self.current,
+        slides = {};
+
+      if (current.isMoved || !current.isLoaded) {
+        return;
+      }
+
+      if (!current.isComplete) {
+        current.isComplete = true;
+
+        current.$slide.siblings().trigger("onReset");
+
+        self.preload("inline");
+
+        // Trigger any CSS3 transiton inside the slide
+        forceRedraw(current.$slide);
+
+        current.$slide.addClass("fancybox-slide--complete");
+
+        // Remove unnecessary slides
+        $.each(self.slides, function(key, slide) {
+          if (slide.pos >= self.currPos - 1 && slide.pos <= self.currPos + 1) {
+            slides[slide.pos] = slide;
+          } else if (slide) {
+            $.fancybox.stop(slide.$slide);
+
+            slide.$slide.off().remove();
+          }
+        });
+
+        self.slides = slides;
+      }
+
+      self.isAnimating = false;
+
+      self.updateCursor();
+
+      self.trigger("afterShow");
+
+      // Play first html5 video/audio
+      current.$slide
+        .find("video,audio")
+        .filter(":visible:first")
+        .trigger("play");
+
+      // Try to focus on the first focusable element
+      if (
+        $(document.activeElement).is("[disabled]") ||
+        (current.opts.autoFocus && !(current.type == "image" || current.type === "iframe"))
+      ) {
+        self.focus();
+      }
+    },
+
+    // Preload next and previous slides
+    // ================================
+
+    preload: function(type) {
+      var self = this,
+        next = self.slides[self.currPos + 1],
+        prev = self.slides[self.currPos - 1];
+
+      if (next && next.type === type) {
+        self.loadSlide(next);
+      }
+
+      if (prev && prev.type === type) {
+        self.loadSlide(prev);
+      }
+    },
+
+    // Try to find and focus on the first focusable element
+    // ====================================================
+
+    focus: function() {
+      var current = this.current,
+        $el;
+
+      if (this.isClosing) {
+        return;
+      }
+
+      if (current && current.isComplete && current.$content) {
+        // Look for first input with autofocus attribute
+        $el = current.$content.find("input[autofocus]:enabled:visible:first");
+
+        if (!$el.length) {
+          $el = current.$content.find("button,:input,[tabindex],a").filter(":enabled:visible:first");
+        }
+
+        $el = $el && $el.length ? $el : current.$content;
+
+        $el.trigger("focus");
+      }
+    },
+
+    // Activates current instance - brings container to the front and enables keyboard,
+    // notifies other instances about deactivating
+    // =================================================================================
+
+    activate: function() {
+      var self = this;
+
+      // Deactivate all instances
+      $(".fancybox-container").each(function() {
+        var instance = $(this).data("FancyBox");
+
+        // Skip self and closing instances
+        if (instance && instance.id !== self.id && !instance.isClosing) {
+          instance.trigger("onDeactivate");
+
+          instance.removeEvents();
+
+          instance.isVisible = false;
+        }
+      });
+
+      self.isVisible = true;
+
+      if (self.current || self.isIdle) {
+        self.update();
+
+        self.updateControls();
+      }
+
+      self.trigger("onActivate");
+
+      self.addEvents();
+    },
+
+    // Start closing procedure
+    // This will start "zoom-out" animation if needed and clean everything up afterwards
+    // =================================================================================
+
+    close: function(e, d) {
+      var self = this,
+        current = self.current,
+        effect,
+        duration,
+        $content,
+        domRect,
+        opacity,
+        start,
+        end;
+
+      var done = function() {
+        self.cleanUp(e);
+      };
+
+      if (self.isClosing) {
+        return false;
+      }
+
+      self.isClosing = true;
+
+      // If beforeClose callback prevents closing, make sure content is centered
+      if (self.trigger("beforeClose", e) === false) {
+        self.isClosing = false;
+
+        requestAFrame(function() {
+          self.update();
+        });
+
+        return false;
+      }
+
+      // Remove all events
+      // If there are multiple instances, they will be set again by "activate" method
+      self.removeEvents();
+
+      if (current.timouts) {
+        clearTimeout(current.timouts);
+      }
+
+      $content = current.$content;
+      effect = current.opts.animationEffect;
+      duration = $.isNumeric(d) ? d : effect ? current.opts.animationDuration : 0;
+
+      // Remove other slides
+      current.$slide
+        .off(transitionEnd)
+        .removeClass("fancybox-slide--complete fancybox-slide--next fancybox-slide--previous fancybox-animated");
+
+      current.$slide
+        .siblings()
+        .trigger("onReset")
+        .remove();
+
+      // Trigger animations
+      if (duration) {
+        self.$refs.container.removeClass("fancybox-is-open").addClass("fancybox-is-closing");
+      }
+
+      // Clean up
+      self.hideLoading(current);
+
+      self.hideControls();
+
+      self.updateCursor();
+
+      // Check if possible to zoom-out
+      if (
+        effect === "zoom" &&
+        !(e !== true && $content && duration && current.type === "image" && !current.hasError && (end = self.getThumbPos(current)))
+      ) {
+        effect = "fade";
+      }
+
+      if (effect === "zoom") {
+        $.fancybox.stop($content);
+
+        domRect = $.fancybox.getTranslate($content);
+
+        start = {
+          top: domRect.top,
+          left: domRect.left,
+          scaleX: domRect.width / end.width,
+          scaleY: domRect.height / end.height,
+          width: end.width,
+          height: end.height
+        };
+
+        // Check if we need to animate opacity
+        opacity = current.opts.zoomOpacity;
+
+        if (opacity == "auto") {
+          opacity = Math.abs(current.width / current.height - end.width / end.height) > 0.1;
+        }
+
+        if (opacity) {
+          end.opacity = 0;
+        }
+
+        $.fancybox.setTranslate($content, start);
+
+        forceRedraw($content);
+
+        $.fancybox.animate($content, end, duration, done);
+
+        return true;
+      }
+
+      if (effect && duration) {
+        // If skip animation
+        if (e === true) {
+          setTimeout(done, duration);
+        } else {
+          $.fancybox.animate(
+            current.$slide.removeClass("fancybox-slide--current"),
+            "fancybox-animated fancybox-slide--previous fancybox-fx-" + effect,
+            duration,
+            done
+          );
+        }
+      } else {
+        done();
+      }
+
+      return true;
+    },
+
+    // Final adjustments after removing the instance
+    // =============================================
+
+    cleanUp: function(e) {
+      var self = this,
+        $body = $("body"),
+        instance,
+        scrollTop;
+
+      self.current.$slide.trigger("onReset");
+
+      self.$refs.container.empty().remove();
+
+      self.trigger("afterClose", e);
+
+      // Place back focus
+      if (self.$lastFocus && !!self.current.opts.backFocus) {
+        self.$lastFocus.trigger("focus");
+      }
+
+      self.current = null;
+
+      // Check if there are other instances
+      instance = $.fancybox.getInstance();
+
+      if (instance) {
+        instance.activate();
+      } else {
+        $body.removeClass("fancybox-active compensate-for-scrollbar");
+
+        $("#fancybox-style-noscroll").remove();
+      }
+    },
+
+    // Call callback and trigger an event
+    // ==================================
+
+    trigger: function(name, slide) {
+      var args = Array.prototype.slice.call(arguments, 1),
+        self = this,
+        obj = slide && slide.opts ? slide : self.current,
+        rez;
+
+      if (obj) {
+        args.unshift(obj);
+      } else {
+        obj = self;
+      }
+
+      args.unshift(self);
+
+      if ($.isFunction(obj.opts[name])) {
+        rez = obj.opts[name].apply(obj, args);
+      }
+
+      if (rez === false) {
+        return rez;
+      }
+
+      if (name === "afterClose" || !self.$refs) {
+        $D.trigger(name + ".fb", args);
+      } else {
+        self.$refs.container.trigger(name + ".fb", args);
+      }
+    },
+
+    // Update infobar values, navigation button states and reveal caption
+    // ==================================================================
+
+    updateControls: function(force) {
+      var self = this,
+        current = self.current,
+        index = current.index,
+        caption = current.opts.caption,
+        $container = self.$refs.container,
+        $caption = self.$refs.caption;
+
+      // Recalculate content dimensions
+      current.$slide.trigger("refresh");
+
+      self.$caption = caption && caption.length ? $caption.html(caption) : null;
+
+      if (!self.isHiddenControls && !self.isIdle) {
+        self.showControls();
+      }
+
+      // Update info and navigation elements
+      $container.find("[data-fancybox-count]").html(self.group.length);
+      $container.find("[data-fancybox-index]").html(index + 1);
+
+      $container.find("[data-fancybox-prev]").toggleClass("disabled", !current.opts.loop && index <= 0);
+      $container.find("[data-fancybox-next]").toggleClass("disabled", !current.opts.loop && index >= self.group.length - 1);
+
+      if (current.type === "image") {
+        // Re-enable buttons; update download button source
+        $container
+          .find("[data-fancybox-zoom]")
+          .show()
+          .end()
+          .find("[data-fancybox-download]")
+          .attr("href", current.opts.image.src || current.src)
+          .show();
+      } else if (current.opts.toolbar) {
+        $container.find("[data-fancybox-download],[data-fancybox-zoom]").hide();
+      }
+    },
+
+    // Hide toolbar and caption
     // ========================
 
-    $D.on( 'click.fb-start', '[data-fancybox]', _run );
+    hideControls: function() {
+      this.isHiddenControls = true;
 
-}( window, document, window.jQuery || jQuery ));
+      this.$refs.container.removeClass("fancybox-show-infobar fancybox-show-toolbar fancybox-show-caption fancybox-show-nav");
+    },
+
+    showControls: function() {
+      var self = this,
+        opts = self.current ? self.current.opts : self.opts,
+        $container = self.$refs.container;
+
+      self.isHiddenControls = false;
+      self.idleSecondsCounter = 0;
+
+      $container
+        .toggleClass("fancybox-show-toolbar", !!(opts.toolbar && opts.buttons))
+        .toggleClass("fancybox-show-infobar", !!(opts.infobar && self.group.length > 1))
+        .toggleClass("fancybox-show-nav", !!(opts.arrows && self.group.length > 1))
+        .toggleClass("fancybox-is-modal", !!opts.modal);
+
+      if (self.$caption) {
+        $container.addClass("fancybox-show-caption ");
+      } else {
+        $container.removeClass("fancybox-show-caption");
+      }
+    },
+
+    // Toggle toolbar and caption
+    // ==========================
+
+    toggleControls: function() {
+      if (this.isHiddenControls) {
+        this.showControls();
+      } else {
+        this.hideControls();
+      }
+    }
+  });
+
+  $.fancybox = {
+    version: "3.3.5",
+    defaults: defaults,
+
+    // Get current instance and execute a command.
+    //
+    // Examples of usage:
+    //
+    //   $instance = $.fancybox.getInstance();
+    //   $.fancybox.getInstance().jumpTo( 1 );
+    //   $.fancybox.getInstance( 'jumpTo', 1 );
+    //   $.fancybox.getInstance( function() {
+    //       console.info( this.currIndex );
+    //   });
+    // ======================================================
+
+    getInstance: function(command) {
+      var instance = $('.fancybox-container:not(".fancybox-is-closing"):last').data("FancyBox"),
+        args = Array.prototype.slice.call(arguments, 1);
+
+      if (instance instanceof FancyBox) {
+        if ($.type(command) === "string") {
+          instance[command].apply(instance, args);
+        } else if ($.type(command) === "function") {
+          command.apply(instance, args);
+        }
+
+        return instance;
+      }
+
+      return false;
+    },
+
+    // Create new instance
+    // ===================
+
+    open: function(items, opts, index) {
+      return new FancyBox(items, opts, index);
+    },
+
+    // Close current or all instances
+    // ==============================
+
+    close: function(all) {
+      var instance = this.getInstance();
+
+      if (instance) {
+        instance.close();
+
+        // Try to find and close next instance
+
+        if (all === true) {
+          this.close();
+        }
+      }
+    },
+
+    // Close all instances and unbind all events
+    // =========================================
+
+    destroy: function() {
+      this.close(true);
+
+      $D.add("body").off("click.fb-start", "**");
+    },
+
+    // Try to detect mobile devices
+    // ============================
+
+    isMobile:
+      document.createTouch !== undefined && /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
+
+    // Detect if 'translate3d' support is available
+    // ============================================
+
+    use3d: (function() {
+      var div = document.createElement("div");
+
+      return (
+        window.getComputedStyle &&
+        window.getComputedStyle(div) &&
+        window.getComputedStyle(div).getPropertyValue("transform") &&
+        !(document.documentMode && document.documentMode < 11)
+      );
+    })(),
+
+    // Helper function to get current visual state of an element
+    // returns array[ top, left, horizontal-scale, vertical-scale, opacity ]
+    // =====================================================================
+
+    getTranslate: function($el) {
+      var domRect;
+
+      if (!$el || !$el.length) {
+        return false;
+      }
+
+      domRect = $el[0].getBoundingClientRect();
+
+      return {
+        top: domRect.top || 0,
+        left: domRect.left || 0,
+        width: domRect.width,
+        height: domRect.height,
+        opacity: parseFloat($el.css("opacity"))
+      };
+    },
+
+    // Shortcut for setting "translate3d" properties for element
+    // Can set be used to set opacity, too
+    // ========================================================
+
+    setTranslate: function($el, props) {
+      var str = "",
+        css = {};
+
+      if (!$el || !props) {
+        return;
+      }
+
+      if (props.left !== undefined || props.top !== undefined) {
+        str =
+          (props.left === undefined ? $el.position().left : props.left) +
+          "px, " +
+          (props.top === undefined ? $el.position().top : props.top) +
+          "px";
+
+        if (this.use3d) {
+          str = "translate3d(" + str + ", 0px)";
+        } else {
+          str = "translate(" + str + ")";
+        }
+      }
+
+      if (props.scaleX !== undefined && props.scaleY !== undefined) {
+        str = (str.length ? str + " " : "") + "scale(" + props.scaleX + ", " + props.scaleY + ")";
+      }
+
+      if (str.length) {
+        css.transform = str;
+      }
+
+      if (props.opacity !== undefined) {
+        css.opacity = props.opacity;
+      }
+
+      if (props.width !== undefined) {
+        css.width = props.width;
+      }
+
+      if (props.height !== undefined) {
+        css.height = props.height;
+      }
+
+      return $el.css(css);
+    },
+
+    // Simple CSS transition handler
+    // =============================
+
+    animate: function($el, to, duration, callback, leaveAnimationName) {
+      var final = false;
+
+      if ($.isFunction(duration)) {
+        callback = duration;
+        duration = null;
+      }
+
+      if (!$.isPlainObject(to)) {
+        $el.removeAttr("style");
+      }
+
+      $.fancybox.stop($el);
+
+      $el.on(transitionEnd, function(e) {
+        // Skip events from child elements and z-index change
+        if (e && e.originalEvent && (!$el.is(e.originalEvent.target) || e.originalEvent.propertyName == "z-index")) {
+          return;
+        }
+
+        $.fancybox.stop($el);
+
+        if (final) {
+          $.fancybox.setTranslate($el, final);
+        }
+
+        if ($.isPlainObject(to)) {
+          if (leaveAnimationName === false) {
+            $el.removeAttr("style");
+          }
+        } else if (leaveAnimationName !== true) {
+          $el.removeClass(to);
+        }
+
+        if ($.isFunction(callback)) {
+          callback(e);
+        }
+      });
+
+      if ($.isNumeric(duration)) {
+        $el.css("transition-duration", duration + "ms");
+      }
+
+      // Start animation by changing CSS properties or class name
+      if ($.isPlainObject(to)) {
+        if (to.scaleX !== undefined && to.scaleY !== undefined) {
+          final = $.extend({}, to, {
+            width: $el.width() * to.scaleX,
+            height: $el.height() * to.scaleY,
+            scaleX: 1,
+            scaleY: 1
+          });
+
+          delete to.width;
+          delete to.height;
+
+          if ($el.parent().hasClass("fancybox-slide--image")) {
+            $el.parent().addClass("fancybox-is-scaling");
+          }
+        }
+
+        $.fancybox.setTranslate($el, to);
+      } else {
+        $el.addClass(to);
+      }
+
+      // Make sure that `transitionend` callback gets fired
+      $el.data(
+        "timer",
+        setTimeout(function() {
+          $el.trigger("transitionend");
+        }, duration + 16)
+      );
+    },
+
+    stop: function($el) {
+      if ($el && $el.length) {
+        clearTimeout($el.data("timer"));
+
+        $el.off("transitionend").css("transition-duration", "");
+
+        $el.parent().removeClass("fancybox-is-scaling");
+      }
+    }
+  };
+
+  // Default click handler for "fancyboxed" links
+  // ============================================
+
+  function _run(e, opts) {
+    var items = [],
+      index = 0,
+      $target,
+      value;
+
+    // Avoid opening multiple times
+    if (e && e.isDefaultPrevented()) {
+      return;
+    }
+
+    e.preventDefault();
+
+    opts = e && e.data ? e.data.options : opts || {};
+
+    $target = opts.$target || $(e.currentTarget);
+    value = $target.attr("data-fancybox") || "";
+
+    // Get all related items and find index for clicked one
+    if (value) {
+      items = opts.selector ? $(opts.selector) : e.data ? e.data.items : [];
+      items = items.length ? items.filter('[data-fancybox="' + value + '"]') : $('[data-fancybox="' + value + '"]');
+
+      index = items.index($target);
+
+      // Sometimes current item can not be found (for example, if some script clones items)
+      if (index < 0) {
+        index = 0;
+      }
+    } else {
+      items = [$target];
+    }
+
+    $.fancybox.open(items, opts, index);
+  }
+
+  // Create a jQuery plugin
+  // ======================
+
+  $.fn.fancybox = function(options) {
+    var selector;
+
+    options = options || {};
+    selector = options.selector || false;
+
+    if (selector) {
+      // Use body element instead of document so it executes first
+      $("body")
+        .off("click.fb-start", selector)
+        .on("click.fb-start", selector, {options: options}, _run);
+    } else {
+      this.off("click.fb-start").on(
+        "click.fb-start",
+        {
+          items: this,
+          options: options
+        },
+        _run
+      );
+    }
+
+    return this;
+  };
+
+  // Self initializing plugin for all elements having `data-fancybox` attribute
+  // ==========================================================================
+
+  $D.on("click.fb-start", "[data-fancybox]", _run);
+
+  // Enable "trigger elements"
+  // =========================
+
+  $D.on("click.fb-start", "[data-trigger]", function(e) {
+    _run(e, {
+      $target: $('[data-fancybox="' + $(e.currentTarget).attr("data-trigger") + '"]').eq($(e.currentTarget).attr("data-index") || 0),
+      $trigger: $(this)
+    });
+  });
+})(window, document, window.jQuery || jQuery);
 
 // ==========================================================================
 //
@@ -16446,211 +16456,201 @@ return jQuery;
 // Adds additional media type support
 //
 // ==========================================================================
-;(function ($) {
+(function($) {
+  "use strict";
 
-	'use strict';
+  // Formats matching url to final form
 
-	// Formats matching url to final form
+  var format = function(url, rez, params) {
+    if (!url) {
+      return;
+    }
 
-	var format = function (url, rez, params) {
-		if ( !url ) {
-			return;
-		}
+    params = params || "";
 
-		params = params || '';
+    if ($.type(params) === "object") {
+      params = $.param(params, true);
+    }
 
-		if ( $.type(params) === "object" ) {
-			params = $.param(params, true);
-		}
+    $.each(rez, function(key, value) {
+      url = url.replace("$" + key, value || "");
+    });
 
-		$.each(rez, function (key, value) {
-			url = url.replace('$' + key, value || '');
-		});
+    if (params.length) {
+      url += (url.indexOf("?") > 0 ? "&" : "?") + params;
+    }
 
-		if (params.length) {
-			url += (url.indexOf('?') > 0 ? '&' : '?') + params;
-		}
+    return url;
+  };
 
-		return url;
-	};
+  // Object containing properties for each media type
 
-	// Object containing properties for each media type
+  var defaults = {
+    youtube: {
+      matcher: /(youtube\.com|youtu\.be|youtube\-nocookie\.com)\/(watch\?(.*&)?v=|v\/|u\/|embed\/?)?(videoseries\?list=(.*)|[\w-]{11}|\?listType=(.*)&list=(.*))(.*)/i,
+      params: {
+        autoplay: 1,
+        autohide: 1,
+        fs: 1,
+        rel: 0,
+        hd: 1,
+        wmode: "transparent",
+        enablejsapi: 1,
+        html5: 1
+      },
+      paramPlace: 8,
+      type: "iframe",
+      url: "//www.youtube.com/embed/$4",
+      thumb: "//img.youtube.com/vi/$4/hqdefault.jpg"
+    },
 
-	var defaults = {
-		youtube : {
-			matcher : /(youtube\.com|youtu\.be|youtube\-nocookie\.com)\/(watch\?(.*&)?v=|v\/|u\/|embed\/?)?(videoseries\?list=(.*)|[\w-]{11}|\?listType=(.*)&list=(.*))(.*)/i,
-			params  : {
-				autoplay : 1,
-				autohide : 1,
-				fs  : 1,
-				rel : 0,
-				hd  : 1,
-				wmode : 'transparent',
-				enablejsapi : 1,
-				html5 : 1
-			},
-			paramPlace : 8,
-			type  : 'iframe',
-			url   : '//www.youtube.com/embed/$4',
-			thumb : '//img.youtube.com/vi/$4/hqdefault.jpg'
-		},
+    vimeo: {
+      matcher: /^.+vimeo.com\/(.*\/)?([\d]+)(.*)?/,
+      params: {
+        autoplay: 1,
+        hd: 1,
+        show_title: 1,
+        show_byline: 1,
+        show_portrait: 0,
+        fullscreen: 1,
+        api: 1
+      },
+      paramPlace: 3,
+      type: "iframe",
+      url: "//player.vimeo.com/video/$2"
+    },
 
-		vimeo : {
-			matcher : /^.+vimeo.com\/(.*\/)?([\d]+)(.*)?/,
-			params  : {
-				autoplay : 1,
-				hd : 1,
-				show_title    : 1,
-				show_byline   : 1,
-				show_portrait : 0,
-				fullscreen    : 1,
-				api : 1
-			},
-			paramPlace : 3,
-			type : 'iframe',
-			url : '//player.vimeo.com/video/$2'
-		},
+    instagram: {
+      matcher: /(instagr\.am|instagram\.com)\/p\/([a-zA-Z0-9_\-]+)\/?/i,
+      type: "image",
+      url: "//$1/p/$2/media/?size=l"
+    },
 
-		metacafe : {
-			matcher : /metacafe.com\/watch\/(\d+)\/(.*)?/,
-			type    : 'iframe',
-			url     : '//www.metacafe.com/embed/$1/?ap=1'
-		},
+    // Examples:
+    // http://maps.google.com/?ll=48.857995,2.294297&spn=0.007666,0.021136&t=m&z=16
+    // https://www.google.com/maps/@37.7852006,-122.4146355,14.65z
+    // https://www.google.com/maps/@52.2111123,2.9237542,6.61z?hl=en
+    // https://www.google.com/maps/place/Googleplex/@37.4220041,-122.0833494,17z/data=!4m5!3m4!1s0x0:0x6c296c66619367e0!8m2!3d37.4219998!4d-122.0840572
+    gmap_place: {
+      matcher: /(maps\.)?google\.([a-z]{2,3}(\.[a-z]{2})?)\/(((maps\/(place\/(.*)\/)?\@(.*),(\d+.?\d+?)z))|(\?ll=))(.*)?/i,
+      type: "iframe",
+      url: function(rez) {
+        return (
+          "//maps.google." +
+          rez[2] +
+          "/?ll=" +
+          (rez[9] ? rez[9] + "&z=" + Math.floor(rez[10]) + (rez[12] ? rez[12].replace(/^\//, "&") : "") : rez[12] + "").replace(/\?/, "&") +
+          "&output=" +
+          (rez[12] && rez[12].indexOf("layer=c") > 0 ? "svembed" : "embed")
+        );
+      }
+    },
 
-		dailymotion : {
-			matcher : /dailymotion.com\/video\/(.*)\/?(.*)/,
-			params : {
-				additionalInfos : 0,
-				autoStart : 1
-			},
-			type : 'iframe',
-			url  : '//www.dailymotion.com/embed/video/$1'
-		},
+    // Examples:
+    // https://www.google.com/maps/search/Empire+State+Building/
+    // https://www.google.com/maps/search/?api=1&query=centurylink+field
+    // https://www.google.com/maps/search/?api=1&query=47.5951518,-122.3316393
+    gmap_search: {
+      matcher: /(maps\.)?google\.([a-z]{2,3}(\.[a-z]{2})?)\/(maps\/search\/)(.*)/i,
+      type: "iframe",
+      url: function(rez) {
+        return "//maps.google." + rez[2] + "/maps?q=" + rez[5].replace("query=", "q=").replace("api=1", "") + "&output=embed";
+      }
+    }
+  };
 
-		vine : {
-			matcher : /vine.co\/v\/([a-zA-Z0-9\?\=\-]+)/,
-			type    : 'iframe',
-			url     : '//vine.co/v/$1/embed/simple'
-		},
+  $(document).on("objectNeedsType.fb", function(e, instance, item) {
+    var url = item.src || "",
+      type = false,
+      media,
+      thumb,
+      rez,
+      params,
+      urlParams,
+      paramObj,
+      provider;
 
-		instagram : {
-			matcher : /(instagr\.am|instagram\.com)\/p\/([a-zA-Z0-9_\-]+)\/?/i,
-			type    : 'image',
-			url     : '//$1/p/$2/media/?size=l'
-		},
+    media = $.extend(true, {}, defaults, item.opts.media);
 
-		// Examples:
-		// http://maps.google.com/?ll=48.857995,2.294297&spn=0.007666,0.021136&t=m&z=16
-		// https://www.google.com/maps/@37.7852006,-122.4146355,14.65z
-		// https://www.google.com/maps/place/Googleplex/@37.4220041,-122.0833494,17z/data=!4m5!3m4!1s0x0:0x6c296c66619367e0!8m2!3d37.4219998!4d-122.0840572
-		gmap_place : {
-			matcher : /(maps\.)?google\.([a-z]{2,3}(\.[a-z]{2})?)\/(((maps\/(place\/(.*)\/)?\@(.*),(\d+.?\d+?)z))|(\?ll=))(.*)?/i,
-			type    : 'iframe',
-			url     : function (rez) {
-				return '//maps.google.' + rez[2] + '/?ll=' + ( rez[9] ? rez[9] + '&z=' + Math.floor(  rez[10]  ) + ( rez[12] ? rez[12].replace(/^\//, "&") : '' )  : rez[12] ) + '&output=' + ( rez[12] && rez[12].indexOf('layer=c') > 0 ? 'svembed' : 'embed' );
-			}
-		},
+    // Look for any matching media type
+    $.each(media, function(providerName, providerOpts) {
+      rez = url.match(providerOpts.matcher);
 
-		// Examples:
-		// https://www.google.com/maps/search/Empire+State+Building/
-		// https://www.google.com/maps/search/?api=1&query=centurylink+field
-		// https://www.google.com/maps/search/?api=1&query=47.5951518,-122.3316393
-		gmap_search : {
-			matcher : /(maps\.)?google\.([a-z]{2,3}(\.[a-z]{2})?)\/(maps\/search\/)(.*)/i,
-			type    : 'iframe',
-			url     : function (rez) {
-				return '//maps.google.' + rez[2] + '/maps?q=' + rez[5].replace('query=', 'q=').replace('api=1', '') + '&output=embed';
-			}
-		}
-	};
+      if (!rez) {
+        return;
+      }
 
-	$(document).on('objectNeedsType.fb', function (e, instance, item) {
+      type = providerOpts.type;
+      provider = providerName;
+      paramObj = {};
 
-		var url	 = item.src || '',
-			type = false,
-			media,
-			thumb,
-			rez,
-			params,
-			urlParams,
-			paramObj,
-			provider;
+      if (providerOpts.paramPlace && rez[providerOpts.paramPlace]) {
+        urlParams = rez[providerOpts.paramPlace];
 
-		media = $.extend( true, {}, defaults, item.opts.media );
+        if (urlParams[0] == "?") {
+          urlParams = urlParams.substring(1);
+        }
 
-		// Look for any matching media type
-		$.each(media, function ( providerName, providerOpts ) {
-			rez = url.match( providerOpts.matcher );
+        urlParams = urlParams.split("&");
 
-			if ( !rez ) {
-				return;
-			}
+        for (var m = 0; m < urlParams.length; ++m) {
+          var p = urlParams[m].split("=", 2);
 
-			type     = providerOpts.type;
-			paramObj = {};
+          if (p.length == 2) {
+            paramObj[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
+          }
+        }
+      }
 
-			if ( providerOpts.paramPlace && rez[ providerOpts.paramPlace ] ) {
-				urlParams = rez[ providerOpts.paramPlace ];
+      params = $.extend(true, {}, providerOpts.params, item.opts[providerName], paramObj);
 
-				if ( urlParams[ 0 ] == '?' ) {
-					urlParams = urlParams.substring(1);
-				}
+      url =
+        $.type(providerOpts.url) === "function" ? providerOpts.url.call(this, rez, params, item) : format(providerOpts.url, rez, params);
 
-				urlParams = urlParams.split('&');
+      thumb =
+        $.type(providerOpts.thumb) === "function" ? providerOpts.thumb.call(this, rez, params, item) : format(providerOpts.thumb, rez);
 
-				for ( var m = 0; m < urlParams.length; ++m ) {
-					var p = urlParams[ m ].split('=', 2);
+      if (providerName === "youtube") {
+        url = url.replace(/&t=((\d+)m)?(\d+)s/, function(match, p1, m, s) {
+          return "&start=" + ((m ? parseInt(m, 10) * 60 : 0) + parseInt(s, 10));
+        });
+      } else if (providerName === "vimeo") {
+        url = url.replace("&%23", "#");
+      }
 
-					if ( p.length == 2 ) {
-						paramObj[ p[0] ] = decodeURIComponent( p[1].replace(/\+/g, " ") );
-					}
-				}
-			}
+      return false;
+    });
 
-			params = $.extend( true, {}, providerOpts.params, item.opts[ providerName ], paramObj );
+    // If it is found, then change content type and update the url
 
-			url   = $.type( providerOpts.url ) === "function" ? providerOpts.url.call( this, rez, params, item ) : format( providerOpts.url, rez, params );
-			thumb = $.type( providerOpts.thumb ) === "function" ? providerOpts.thumb.call( this, rez, params, item ) : format( providerOpts.thumb, rez );
+    if (type) {
+      if (!item.opts.thumb && !(item.opts.$thumb && item.opts.$thumb.length)) {
+        item.opts.thumb = thumb;
+      }
 
-			if ( providerName === 'vimeo' ) {
-				url = url.replace('&%23', '#');
-			}
+      if (type === "iframe") {
+        item.opts = $.extend(true, item.opts, {
+          iframe: {
+            preload: false,
+            attr: {
+              scrolling: "no"
+            }
+          }
+        });
+      }
 
-			return false;
-		});
-
-		// If it is found, then change content type and update the url
-
-		if ( type ) {
-			item.src  = url;
-			item.type = type;
-
-			if ( !item.opts.thumb && !( item.opts.$thumb && item.opts.$thumb.length ) ) {
-				item.opts.thumb = thumb;
-			}
-
-			if ( type === 'iframe' ) {
-				$.extend(true, item.opts, {
-					iframe : {
-						preload : false,
-						attr : {
-							scrolling : "no"
-						}
-					}
-				});
-
-				item.contentProvider = provider;
-
-				item.opts.slideClass += ' fancybox-slide--' + ( provider == 'gmap_place' || provider == 'gmap_search' ? 'map' : 'video' );
-			}
-
-		} else if ( url ) {
-			item.type = item.opts.defaultType;
-		}
-
-	});
-
-}( window.jQuery || jQuery ));
+      $.extend(item, {
+        type: type,
+        src: url,
+        origSrc: item.src,
+        contentSource: provider,
+        contentType: type === "image" ? "image" : provider == "gmap_place" || provider == "gmap_search" ? "map" : "video"
+      });
+    } else if (url) {
+      item.type = item.opts.defaultType;
+    }
+  });
+})(window.jQuery || jQuery);
 
 // ==========================================================================
 //
@@ -16658,922 +16658,885 @@ return jQuery;
 // Adds touch guestures, handles click and tap events
 //
 // ==========================================================================
-;(function (window, document, $) {
-	'use strict';
+(function(window, document, $) {
+  "use strict";
 
-	var requestAFrame = (function () {
-        return window.requestAnimationFrame ||
-                window.webkitRequestAnimationFrame ||
-                window.mozRequestAnimationFrame ||
-                window.oRequestAnimationFrame ||
-                // if all else fails, use setTimeout
-                function (callback) {
-                    return window.setTimeout(callback, 1000 / 60);
-                };
-    })();
+  var requestAFrame = (function() {
+    return (
+      window.requestAnimationFrame ||
+      window.webkitRequestAnimationFrame ||
+      window.mozRequestAnimationFrame ||
+      window.oRequestAnimationFrame ||
+      // if all else fails, use setTimeout
+      function(callback) {
+        return window.setTimeout(callback, 1000 / 60);
+      }
+    );
+  })();
 
+  var cancelAFrame = (function() {
+    return (
+      window.cancelAnimationFrame ||
+      window.webkitCancelAnimationFrame ||
+      window.mozCancelAnimationFrame ||
+      window.oCancelAnimationFrame ||
+      function(id) {
+        window.clearTimeout(id);
+      }
+    );
+  })();
 
-    var cancelAFrame = (function () {
-        return window.cancelAnimationFrame ||
-                window.webkitCancelAnimationFrame ||
-                window.mozCancelAnimationFrame ||
-                window.oCancelAnimationFrame ||
-                function (id) {
-                    window.clearTimeout(id);
-                };
-    })();
+  var getPointerXY = function(e) {
+    var result = [];
 
+    e = e.originalEvent || e || window.e;
+    e = e.touches && e.touches.length ? e.touches : e.changedTouches && e.changedTouches.length ? e.changedTouches : [e];
 
-	var pointers = function( e ) {
-		var result = [];
+    for (var key in e) {
+      if (e[key].pageX) {
+        result.push({
+          x: e[key].pageX,
+          y: e[key].pageY
+        });
+      } else if (e[key].clientX) {
+        result.push({
+          x: e[key].clientX,
+          y: e[key].clientY
+        });
+      }
+    }
 
-		e = e.originalEvent || e || window.e;
-		e = e.touches && e.touches.length ? e.touches : ( e.changedTouches && e.changedTouches.length ? e.changedTouches : [ e ] );
+    return result;
+  };
 
-		for ( var key in e ) {
+  var distance = function(point2, point1, what) {
+    if (!point1 || !point2) {
+      return 0;
+    }
 
-			if ( e[ key ].pageX ) {
-				result.push( { x : e[ key ].pageX, y : e[ key ].pageY } );
+    if (what === "x") {
+      return point2.x - point1.x;
+    } else if (what === "y") {
+      return point2.y - point1.y;
+    }
 
-			} else if ( e[ key ].clientX ) {
-				result.push( { x : e[ key ].clientX, y : e[ key ].clientY } );
-			}
-		}
+    return Math.sqrt(Math.pow(point2.x - point1.x, 2) + Math.pow(point2.y - point1.y, 2));
+  };
 
-		return result;
-	};
+  var isClickable = function($el) {
+    if (
+      $el.is('a,area,button,[role="button"],input,label,select,summary,textarea,video,audio') ||
+      $.isFunction($el.get(0).onclick) ||
+      $el.data("selectable")
+    ) {
+      return true;
+    }
 
-	var distance = function( point2, point1, what ) {
-		if ( !point1 || !point2 ) {
-			return 0;
-		}
+    // Check for attributes like data-fancybox-next or data-fancybox-close
+    for (var i = 0, atts = $el[0].attributes, n = atts.length; i < n; i++) {
+      if (atts[i].nodeName.substr(0, 14) === "data-fancybox-") {
+        return true;
+      }
+    }
 
-		if ( what === 'x' ) {
-			return point2.x - point1.x;
+    return false;
+  };
 
-		} else if ( what === 'y' ) {
-			return point2.y - point1.y;
-		}
+  var hasScrollbars = function(el) {
+    var overflowY = window.getComputedStyle(el)["overflow-y"],
+      overflowX = window.getComputedStyle(el)["overflow-x"],
+      vertical = (overflowY === "scroll" || overflowY === "auto") && el.scrollHeight > el.clientHeight,
+      horizontal = (overflowX === "scroll" || overflowX === "auto") && el.scrollWidth > el.clientWidth;
 
-		return Math.sqrt( Math.pow( point2.x - point1.x, 2 ) + Math.pow( point2.y - point1.y, 2 ) );
-	};
+    return vertical || horizontal;
+  };
 
-	var isClickable = function( $el ) {
+  var isScrollable = function($el) {
+    var rez = false;
 
-		if ( $el.is('a,area,button,[role="button"],input,label,select,summary,textarea') || $.isFunction( $el.get(0).onclick ) || $el.data('selectable') ) {
-			return true;
-		}
+    while (true) {
+      rez = hasScrollbars($el.get(0));
 
-		// Check for attributes like data-fancybox-next or data-fancybox-close
-		for ( var i = 0, atts = $el[0].attributes, n = atts.length; i < n; i++ ) {
-            if ( atts[i].nodeName.substr(0, 14) === 'data-fancybox-' ) {
-                return true;
-            }
+      if (rez) {
+        break;
+      }
+
+      $el = $el.parent();
+
+      if (!$el.length || $el.hasClass("fancybox-stage") || $el.is("body")) {
+        break;
+      }
+    }
+
+    return rez;
+  };
+
+  var Guestures = function(instance) {
+    var self = this;
+
+    self.instance = instance;
+
+    self.$bg = instance.$refs.bg;
+    self.$stage = instance.$refs.stage;
+    self.$container = instance.$refs.container;
+
+    self.destroy();
+
+    self.$container.on("touchstart.fb.touch mousedown.fb.touch", $.proxy(self, "ontouchstart"));
+  };
+
+  Guestures.prototype.destroy = function() {
+    this.$container.off(".fb.touch");
+  };
+
+  Guestures.prototype.ontouchstart = function(e) {
+    var self = this,
+      $target = $(e.target),
+      instance = self.instance,
+      current = instance.current,
+      $content = current.$content,
+      isTouchDevice = e.type == "touchstart";
+
+    // Do not respond to both (touch and mouse) events
+    if (isTouchDevice) {
+      self.$container.off("mousedown.fb.touch");
+    }
+
+    // Ignore right click
+    if (e.originalEvent && e.originalEvent.button == 2) {
+      return;
+    }
+
+    // Ignore taping on links, buttons, input elements
+    if (!$target.length || isClickable($target) || isClickable($target.parent())) {
+      return;
+    }
+
+    // Ignore clicks on the scrollbar
+    if (!$target.is("img") && e.originalEvent.clientX > $target[0].clientWidth + $target.offset().left) {
+      return;
+    }
+
+    // Ignore clicks while zooming or closing
+    if (!current || instance.isAnimating || instance.isClosing) {
+      e.stopPropagation();
+      e.preventDefault();
+
+      return;
+    }
+
+    self.realPoints = self.startPoints = getPointerXY(e);
+
+    if (!self.startPoints.length) {
+      return;
+    }
+
+    e.stopPropagation();
+
+    self.startEvent = e;
+
+    self.canTap = true;
+    self.$target = $target;
+    self.$content = $content;
+    self.opts = current.opts.touch;
+
+    self.isPanning = false;
+    self.isSwiping = false;
+    self.isZooming = false;
+    self.isScrolling = false;
+
+    self.startTime = new Date().getTime();
+    self.distanceX = self.distanceY = self.distance = 0;
+
+    self.canvasWidth = Math.round(current.$slide[0].clientWidth);
+    self.canvasHeight = Math.round(current.$slide[0].clientHeight);
+
+    self.contentLastPos = null;
+    self.contentStartPos = $.fancybox.getTranslate(self.$content) || {top: 0, left: 0};
+    self.sliderStartPos = self.sliderLastPos || $.fancybox.getTranslate(current.$slide);
+
+    // Since position will be absolute, but we need to make it relative to the stage
+    self.stagePos = $.fancybox.getTranslate(instance.$refs.stage);
+
+    self.sliderStartPos.top -= self.stagePos.top;
+    self.sliderStartPos.left -= self.stagePos.left;
+
+    self.contentStartPos.top -= self.stagePos.top;
+    self.contentStartPos.left -= self.stagePos.left;
+
+    $(document)
+      .off(".fb.touch")
+      .on(isTouchDevice ? "touchend.fb.touch touchcancel.fb.touch" : "mouseup.fb.touch mouseleave.fb.touch", $.proxy(self, "ontouchend"))
+      .on(isTouchDevice ? "touchmove.fb.touch" : "mousemove.fb.touch", $.proxy(self, "ontouchmove"));
+
+    if ($.fancybox.isMobile) {
+      document.addEventListener("scroll", self.onscroll, true);
+    }
+
+    if (!(self.opts || instance.canPan()) || !($target.is(self.$stage) || self.$stage.find($target).length)) {
+      if ($target.is(".fancybox-image")) {
+        e.preventDefault();
+      }
+
+      return;
+    }
+
+    if (!($.fancybox.isMobile && (isScrollable($target) || isScrollable($target.parent())))) {
+      e.preventDefault();
+    }
+
+    if (self.startPoints.length === 1 || current.hasError) {
+      if (self.instance.canPan()) {
+        $.fancybox.stop(self.$content);
+
+        self.$content.css("transition-duration", "");
+
+        self.isPanning = true;
+      } else {
+        self.isSwiping = true;
+      }
+
+      self.$container.addClass("fancybox-controls--isGrabbing");
+    }
+
+    if (self.startPoints.length === 2 && current.type === "image" && (current.isLoaded || current.$ghost)) {
+      self.canTap = false;
+      self.isSwiping = false;
+      self.isPanning = false;
+
+      self.isZooming = true;
+
+      $.fancybox.stop(self.$content);
+
+      self.$content.css("transition-duration", "");
+
+      self.centerPointStartX = (self.startPoints[0].x + self.startPoints[1].x) * 0.5 - $(window).scrollLeft();
+      self.centerPointStartY = (self.startPoints[0].y + self.startPoints[1].y) * 0.5 - $(window).scrollTop();
+
+      self.percentageOfImageAtPinchPointX = (self.centerPointStartX - self.contentStartPos.left) / self.contentStartPos.width;
+      self.percentageOfImageAtPinchPointY = (self.centerPointStartY - self.contentStartPos.top) / self.contentStartPos.height;
+
+      self.startDistanceBetweenFingers = distance(self.startPoints[0], self.startPoints[1]);
+    }
+  };
+
+  Guestures.prototype.onscroll = function(e) {
+    var self = this;
+
+    self.isScrolling = true;
+
+    document.removeEventListener("scroll", self.onscroll, true);
+  };
+
+  Guestures.prototype.ontouchmove = function(e) {
+    var self = this,
+      $target = $(e.target);
+
+    // Make sure user has not released over iframe or disabled element
+    if (e.originalEvent.buttons !== undefined && e.originalEvent.buttons === 0) {
+      self.ontouchend(e);
+      return;
+    }
+
+    if (self.isScrolling || !($target.is(self.$stage) || self.$stage.find($target).length)) {
+      self.canTap = false;
+
+      return;
+    }
+
+    self.newPoints = getPointerXY(e);
+
+    if (!(self.opts || self.instance.canPan()) || !self.newPoints.length || !self.newPoints.length) {
+      return;
+    }
+
+    if (!(self.isSwiping && self.isSwiping === true)) {
+      e.preventDefault();
+    }
+
+    self.distanceX = distance(self.newPoints[0], self.startPoints[0], "x");
+    self.distanceY = distance(self.newPoints[0], self.startPoints[0], "y");
+
+    self.distance = distance(self.newPoints[0], self.startPoints[0]);
+
+    // Skip false ontouchmove events (Chrome)
+    if (self.distance > 0) {
+      if (self.isSwiping) {
+        self.onSwipe(e);
+      } else if (self.isPanning) {
+        self.onPan();
+      } else if (self.isZooming) {
+        self.onZoom();
+      }
+    }
+  };
+
+  Guestures.prototype.onSwipe = function(e) {
+    var self = this,
+      swiping = self.isSwiping,
+      left = self.sliderStartPos.left || 0,
+      angle;
+
+    // If direction is not yet determined
+    if (swiping === true) {
+      // We need at least 10px distance to correctly calculate an angle
+      if (Math.abs(self.distance) > 10) {
+        self.canTap = false;
+
+        if (self.instance.group.length < 2 && self.opts.vertical) {
+          self.isSwiping = "y";
+        } else if (self.instance.isDragging || self.opts.vertical === false || (self.opts.vertical === "auto" && $(window).width() > 800)) {
+          self.isSwiping = "x";
+        } else {
+          angle = Math.abs(Math.atan2(self.distanceY, self.distanceX) * 180 / Math.PI);
+
+          self.isSwiping = angle > 45 && angle < 135 ? "y" : "x";
         }
 
-	 	return false;
-	};
+        self.canTap = false;
+
+        if (self.isSwiping === "y" && $.fancybox.isMobile && (isScrollable(self.$target) || isScrollable(self.$target.parent()))) {
+          self.isScrolling = true;
+
+          return;
+        }
+
+        self.instance.isDragging = self.isSwiping;
+
+        // Reset points to avoid jumping, because we dropped first swipes to calculate the angle
+        self.startPoints = self.newPoints;
+
+        $.each(self.instance.slides, function(index, slide) {
+          $.fancybox.stop(slide.$slide);
 
-	var hasScrollbars = function( el ) {
-		var overflowY = window.getComputedStyle( el )['overflow-y'];
-		var overflowX = window.getComputedStyle( el )['overflow-x'];
+          slide.$slide.css("transition-duration", "");
+
+          slide.inTransition = false;
 
-		var vertical   = (overflowY === 'scroll' || overflowY === 'auto') && el.scrollHeight > el.clientHeight;
-		var horizontal = (overflowX === 'scroll' || overflowX === 'auto') && el.scrollWidth > el.clientWidth;
+          if (slide.pos === self.instance.current.pos) {
+            self.sliderStartPos.left = $.fancybox.getTranslate(slide.$slide).left - $.fancybox.getTranslate(self.instance.$refs.stage).left;
+          }
+        });
 
-		return vertical || horizontal;
-	};
+        // Stop slideshow
+        if (self.instance.SlideShow && self.instance.SlideShow.isActive) {
+          self.instance.SlideShow.stop();
+        }
+      }
 
-	var isScrollable = function ( $el ) {
-		var rez = false;
+      return;
+    }
 
-		while ( true ) {
-			rez	= hasScrollbars( $el.get(0) );
+    // Sticky edges
+    if (swiping == "x") {
+      if (
+        self.distanceX > 0 &&
+        (self.instance.group.length < 2 || (self.instance.current.index === 0 && !self.instance.current.opts.loop))
+      ) {
+        left = left + Math.pow(self.distanceX, 0.8);
+      } else if (
+        self.distanceX < 0 &&
+        (self.instance.group.length < 2 ||
+          (self.instance.current.index === self.instance.group.length - 1 && !self.instance.current.opts.loop))
+      ) {
+        left = left - Math.pow(-self.distanceX, 0.8);
+      } else {
+        left = left + self.distanceX;
+      }
+    }
 
-			if ( rez ) {
-				break;
-			}
+    self.sliderLastPos = {
+      top: swiping == "x" ? 0 : self.sliderStartPos.top + self.distanceY,
+      left: left
+    };
 
-			$el = $el.parent();
+    if (self.requestId) {
+      cancelAFrame(self.requestId);
 
-			if ( !$el.length || $el.hasClass( 'fancybox-stage' ) || $el.is( 'body' ) ) {
-				break;
-			}
-		}
+      self.requestId = null;
+    }
+
+    self.requestId = requestAFrame(function() {
+      if (self.sliderLastPos) {
+        $.each(self.instance.slides, function(index, slide) {
+          var pos = slide.pos - self.instance.currPos;
 
-		return rez;
-	};
+          $.fancybox.setTranslate(slide.$slide, {
+            top: self.sliderLastPos.top,
+            left: self.sliderLastPos.left + pos * self.canvasWidth + pos * slide.opts.gutter
+          });
+        });
+
+        self.$container.addClass("fancybox-is-sliding");
+      }
+    });
+  };
+
+  Guestures.prototype.onPan = function() {
+    var self = this;
+
+    // Prevent accidental movement (sometimes, when tapping casually, finger can move a bit)
+    if (distance(self.newPoints[0], self.realPoints[0]) < ($.fancybox.isMobile ? 10 : 5)) {
+      self.startPoints = self.newPoints;
+      return;
+    }
+
+    self.canTap = false;
+
+    self.contentLastPos = self.limitMovement();
+
+    if (self.requestId) {
+      cancelAFrame(self.requestId);
+
+      self.requestId = null;
+    }
+
+    self.requestId = requestAFrame(function() {
+      $.fancybox.setTranslate(self.$content, self.contentLastPos);
+    });
+  };
+
+  // Make panning sticky to the edges
+  Guestures.prototype.limitMovement = function() {
+    var self = this;
 
+    var canvasWidth = self.canvasWidth;
+    var canvasHeight = self.canvasHeight;
 
-	var Guestures = function ( instance ) {
-		var self = this;
+    var distanceX = self.distanceX;
+    var distanceY = self.distanceY;
 
-		self.instance = instance;
+    var contentStartPos = self.contentStartPos;
 
-		self.$bg        = instance.$refs.bg;
-		self.$stage     = instance.$refs.stage;
-		self.$container = instance.$refs.container;
+    var currentOffsetX = contentStartPos.left;
+    var currentOffsetY = contentStartPos.top;
 
-		self.destroy();
+    var currentWidth = contentStartPos.width;
+    var currentHeight = contentStartPos.height;
 
-		self.$container.on( 'touchstart.fb.touch mousedown.fb.touch', $.proxy(self, 'ontouchstart') );
-	};
+    var minTranslateX, minTranslateY, maxTranslateX, maxTranslateY, newOffsetX, newOffsetY;
 
-	Guestures.prototype.destroy = function() {
-		this.$container.off( '.fb.touch' );
-	};
+    if (currentWidth > canvasWidth) {
+      newOffsetX = currentOffsetX + distanceX;
+    } else {
+      newOffsetX = currentOffsetX;
+    }
 
-	Guestures.prototype.ontouchstart = function( e ) {
-		var self = this;
+    newOffsetY = currentOffsetY + distanceY;
 
-		var $target  = $( e.target );
-		var instance = self.instance;
-		var current  = instance.current;
-		var $content = current.$content;
+    // Slow down proportionally to traveled distance
+    minTranslateX = Math.max(0, canvasWidth * 0.5 - currentWidth * 0.5);
+    minTranslateY = Math.max(0, canvasHeight * 0.5 - currentHeight * 0.5);
+
+    maxTranslateX = Math.min(canvasWidth - currentWidth, canvasWidth * 0.5 - currentWidth * 0.5);
+    maxTranslateY = Math.min(canvasHeight - currentHeight, canvasHeight * 0.5 - currentHeight * 0.5);
 
-		var isTouchDevice = ( e.type == 'touchstart' );
+    //   ->
+    if (distanceX > 0 && newOffsetX > minTranslateX) {
+      newOffsetX = minTranslateX - 1 + Math.pow(-minTranslateX + currentOffsetX + distanceX, 0.8) || 0;
+    }
 
-		// Do not respond to both events
-		if ( isTouchDevice ) {
-	        self.$container.off( 'mousedown.fb.touch' );
-	    }
+    //    <-
+    if (distanceX < 0 && newOffsetX < maxTranslateX) {
+      newOffsetX = maxTranslateX + 1 - Math.pow(maxTranslateX - currentOffsetX - distanceX, 0.8) || 0;
+    }
 
-		// Ignore clicks while zooming or closing
-		if ( !current || self.instance.isAnimating || self.instance.isClosing ) {
-			e.stopPropagation();
-			e.preventDefault();
+    //   \/
+    if (distanceY > 0 && newOffsetY > minTranslateY) {
+      newOffsetY = minTranslateY - 1 + Math.pow(-minTranslateY + currentOffsetY + distanceY, 0.8) || 0;
+    }
 
-			return;
-		}
+    //   /\
+    if (distanceY < 0 && newOffsetY < maxTranslateY) {
+      newOffsetY = maxTranslateY + 1 - Math.pow(maxTranslateY - currentOffsetY - distanceY, 0.8) || 0;
+    }
 
-		// Ignore right click
-		if ( e.originalEvent && e.originalEvent.button == 2 ) {
-			return;
-		}
+    return {
+      top: newOffsetY,
+      left: newOffsetX
+    };
+  };
 
-		// Ignore taping on links, buttons, input elements
-		if ( !$target.length || isClickable( $target ) || isClickable( $target.parent() ) ) {
-			return;
-		}
+  Guestures.prototype.limitPosition = function(newOffsetX, newOffsetY, newWidth, newHeight) {
+    var self = this;
 
-		// Ignore clicks on the scrollbar
-		if ( e.originalEvent.clientX > $target[0].clientWidth + $target.offset().left ) {
-			return;
-		}
+    var canvasWidth = self.canvasWidth;
+    var canvasHeight = self.canvasHeight;
 
-		self.startPoints = pointers( e );
+    if (newWidth > canvasWidth) {
+      newOffsetX = newOffsetX > 0 ? 0 : newOffsetX;
+      newOffsetX = newOffsetX < canvasWidth - newWidth ? canvasWidth - newWidth : newOffsetX;
+    } else {
+      // Center horizontally
+      newOffsetX = Math.max(0, canvasWidth / 2 - newWidth / 2);
+    }
 
-		// Prevent zooming if already swiping
-		if ( !self.startPoints || ( self.startPoints.length > 1 && instance.isSliding ) ) {
-			return;
-		}
+    if (newHeight > canvasHeight) {
+      newOffsetY = newOffsetY > 0 ? 0 : newOffsetY;
+      newOffsetY = newOffsetY < canvasHeight - newHeight ? canvasHeight - newHeight : newOffsetY;
+    } else {
+      // Center vertically
+      newOffsetY = Math.max(0, canvasHeight / 2 - newHeight / 2);
+    }
 
-		self.$target  = $target;
-		self.$content = $content;
-		self.canTap   = true;
-		self.opts     = current.opts.touch;
+    return {
+      top: newOffsetY,
+      left: newOffsetX
+    };
+  };
 
-		$(document).off( '.fb.touch' );
+  Guestures.prototype.onZoom = function() {
+    var self = this;
 
-		$(document).on( isTouchDevice ? 'touchend.fb.touch touchcancel.fb.touch' : 'mouseup.fb.touch mouseleave.fb.touch',  $.proxy(self, "ontouchend"));
-		$(document).on( isTouchDevice ? 'touchmove.fb.touch' : 'mousemove.fb.touch',  $.proxy(self, "ontouchmove"));
+    // Calculate current distance between points to get pinch ratio and new width and height
+    var contentStartPos = self.contentStartPos;
 
-		if ( !(self.opts || instance.canPan() ) || !( $target.is( self.$stage ) || self.$stage.find( $target ).length ) ) {
+    var currentWidth = contentStartPos.width;
+    var currentHeight = contentStartPos.height;
 
-			// Prevent ghosting
-			if ( $target.is('img') ) {
-				e.preventDefault();
-			}
+    var currentOffsetX = contentStartPos.left;
+    var currentOffsetY = contentStartPos.top;
 
-			return;
-		}
+    var endDistanceBetweenFingers = distance(self.newPoints[0], self.newPoints[1]);
 
-		e.stopPropagation();
+    var pinchRatio = endDistanceBetweenFingers / self.startDistanceBetweenFingers;
 
-		if ( !( $.fancybox.isMobile && ( isScrollable( self.$target ) || isScrollable( self.$target.parent() ) ) ) ) {
-			e.preventDefault();
-		}
+    var newWidth = Math.floor(currentWidth * pinchRatio);
+    var newHeight = Math.floor(currentHeight * pinchRatio);
 
-		self.canvasWidth  = Math.round( current.$slide[0].clientWidth );
-		self.canvasHeight = Math.round( current.$slide[0].clientHeight );
+    // This is the translation due to pinch-zooming
+    var translateFromZoomingX = (currentWidth - newWidth) * self.percentageOfImageAtPinchPointX;
+    var translateFromZoomingY = (currentHeight - newHeight) * self.percentageOfImageAtPinchPointY;
 
-		self.startTime = new Date().getTime();
-		self.distanceX = self.distanceY = self.distance = 0;
+    // Point between the two touches
+    var centerPointEndX = (self.newPoints[0].x + self.newPoints[1].x) / 2 - $(window).scrollLeft();
+    var centerPointEndY = (self.newPoints[0].y + self.newPoints[1].y) / 2 - $(window).scrollTop();
 
-		self.isPanning = false;
-		self.isSwiping = false;
-		self.isZooming = false;
+    // And this is the translation due to translation of the centerpoint
+    // between the two fingers
+    var translateFromTranslatingX = centerPointEndX - self.centerPointStartX;
+    var translateFromTranslatingY = centerPointEndY - self.centerPointStartY;
 
-		self.sliderStartPos  = self.sliderLastPos || { top: 0, left: 0 };
-		self.contentStartPos = $.fancybox.getTranslate( self.$content );
-		self.contentLastPos  = null;
+    // The new offset is the old/current one plus the total translation
+    var newOffsetX = currentOffsetX + (translateFromZoomingX + translateFromTranslatingX);
+    var newOffsetY = currentOffsetY + (translateFromZoomingY + translateFromTranslatingY);
 
-		if ( self.startPoints.length === 1 && !self.isZooming ) {
-			self.canTap = !instance.isSliding;
+    var newPos = {
+      top: newOffsetY,
+      left: newOffsetX,
+      scaleX: pinchRatio,
+      scaleY: pinchRatio
+    };
 
-			if ( current.type === 'image' && ( self.contentStartPos.width > self.canvasWidth + 1 || self.contentStartPos.height > self.canvasHeight + 1 ) ) {
+    self.canTap = false;
 
-				$.fancybox.stop( self.$content );
+    self.newWidth = newWidth;
+    self.newHeight = newHeight;
 
-				self.$content.css( 'transition-duration', '0ms' );
+    self.contentLastPos = newPos;
 
-				self.isPanning = true;
+    if (self.requestId) {
+      cancelAFrame(self.requestId);
 
-			} else {
+      self.requestId = null;
+    }
 
-				self.isSwiping = true;
-			}
+    self.requestId = requestAFrame(function() {
+      $.fancybox.setTranslate(self.$content, self.contentLastPos);
+    });
+  };
 
-			self.$container.addClass('fancybox-controls--isGrabbing');
-		}
+  Guestures.prototype.ontouchend = function(e) {
+    var self = this;
+    var dMs = Math.max(new Date().getTime() - self.startTime, 1);
 
-		if ( self.startPoints.length === 2 && !instance.isAnimating && !current.hasError && current.type === 'image' && ( current.isLoaded || current.$ghost ) ) {
-			self.isZooming = true;
+    var swiping = self.isSwiping;
+    var panning = self.isPanning;
+    var zooming = self.isZooming;
+    var scrolling = self.isScrolling;
+
+    self.endPoints = getPointerXY(e);
+
+    self.$container.removeClass("fancybox-controls--isGrabbing");
+
+    $(document).off(".fb.touch");
 
-			self.isSwiping = false;
-			self.isPanning = false;
+    document.removeEventListener("scroll", self.onscroll, true);
+
+    if (self.requestId) {
+      cancelAFrame(self.requestId);
 
-			$.fancybox.stop( self.$content );
+      self.requestId = null;
+    }
 
-			self.$content.css( 'transition-duration', '0ms' );
+    self.isSwiping = false;
+    self.isPanning = false;
+    self.isZooming = false;
+    self.isScrolling = false;
 
-			self.centerPointStartX = ( ( self.startPoints[0].x + self.startPoints[1].x ) * 0.5 ) - $(window).scrollLeft();
-			self.centerPointStartY = ( ( self.startPoints[0].y + self.startPoints[1].y ) * 0.5 ) - $(window).scrollTop();
+    self.instance.isDragging = false;
 
-			self.percentageOfImageAtPinchPointX = ( self.centerPointStartX - self.contentStartPos.left ) / self.contentStartPos.width;
-			self.percentageOfImageAtPinchPointY = ( self.centerPointStartY - self.contentStartPos.top  ) / self.contentStartPos.height;
+    if (self.canTap) {
+      return self.onTap(e);
+    }
 
-			self.startDistanceBetweenFingers = distance( self.startPoints[0], self.startPoints[1] );
-		}
+    self.speed = 366;
 
-	};
+    // Speed in px/ms
+    self.velocityX = self.distanceX / dMs * 0.5;
+    self.velocityY = self.distanceY / dMs * 0.5;
 
-	Guestures.prototype.ontouchmove = function( e ) {
+    self.speedX = Math.max(self.speed * 0.5, Math.min(self.speed * 1.5, 1 / Math.abs(self.velocityX) * self.speed));
 
-		var self = this;
+    if (panning) {
+      self.endPanning();
+    } else if (zooming) {
+      self.endZooming();
+    } else {
+      self.endSwiping(swiping, scrolling);
+    }
 
-		self.newPoints = pointers( e );
+    return;
+  };
+
+  Guestures.prototype.endSwiping = function(swiping, scrolling) {
+    var self = this,
+      ret = false,
+      len = self.instance.group.length;
 
-		if ( $.fancybox.isMobile && ( isScrollable( self.$target ) || isScrollable( self.$target.parent() ) ) ) {
-			e.stopPropagation();
+    self.sliderLastPos = null;
 
-			self.canTap = false;
+    // Close if swiped vertically / navigate if horizontally
+    if (swiping == "y" && !scrolling && Math.abs(self.distanceY) > 50) {
+      // Continue vertical movement
+      $.fancybox.animate(
+        self.instance.current.$slide,
+        {
+          top: self.sliderStartPos.top + self.distanceY + self.velocityY * 150,
+          opacity: 0
+        },
+        200
+      );
 
-			return;
-		}
+      ret = self.instance.close(true, 200);
+    } else if (swiping == "x" && self.distanceX > 50 && len > 1) {
+      ret = self.instance.previous(self.speedX);
+    } else if (swiping == "x" && self.distanceX < -50 && len > 1) {
+      ret = self.instance.next(self.speedX);
+    }
 
-		if ( !( self.opts || self.instance.canPan() ) || !self.newPoints || !self.newPoints.length ) {
-			return;
-		}
+    if (ret === false && (swiping == "x" || swiping == "y")) {
+      if (scrolling || len < 2) {
+        self.instance.centerSlide(self.instance.current, 150);
+      } else {
+        self.instance.jumpTo(self.instance.current.index);
+      }
+    }
 
-		self.distanceX = distance( self.newPoints[0], self.startPoints[0], 'x' );
-		self.distanceY = distance( self.newPoints[0], self.startPoints[0], 'y' );
+    self.$container.removeClass("fancybox-is-sliding");
+  };
 
-		self.distance = distance( self.newPoints[0], self.startPoints[0] );
+  // Limit panning from edges
+  // ========================
+  Guestures.prototype.endPanning = function() {
+    var self = this;
+    var newOffsetX, newOffsetY, newPos;
 
-		// Skip false ontouchmove events (Chrome)
-		if ( self.distance > 0 ) {
+    if (!self.contentLastPos) {
+      return;
+    }
 
-			if ( !( self.$target.is( self.$stage ) || self.$stage.find( self.$target ).length ) ) {
-				return;
-			}
+    if (self.opts.momentum === false) {
+      newOffsetX = self.contentLastPos.left;
+      newOffsetY = self.contentLastPos.top;
+    } else {
+      // Continue movement
+      newOffsetX = self.contentLastPos.left + self.velocityX * self.speed;
+      newOffsetY = self.contentLastPos.top + self.velocityY * self.speed;
+    }
 
-			e.stopPropagation();
-			e.preventDefault();
+    newPos = self.limitPosition(newOffsetX, newOffsetY, self.contentStartPos.width, self.contentStartPos.height);
 
-			if ( self.isSwiping ) {
-				self.onSwipe();
+    newPos.width = self.contentStartPos.width;
+    newPos.height = self.contentStartPos.height;
 
-			} else if ( self.isPanning ) {
-				self.onPan();
+    $.fancybox.animate(self.$content, newPos, 330);
+  };
 
-			} else if ( self.isZooming ) {
-				self.onZoom();
-			}
+  Guestures.prototype.endZooming = function() {
+    var self = this;
 
-		}
+    var current = self.instance.current;
 
-	};
+    var newOffsetX, newOffsetY, newPos, reset;
 
-	Guestures.prototype.onSwipe = function() {
+    var newWidth = self.newWidth;
+    var newHeight = self.newHeight;
 
-		var self = this;
+    if (!self.contentLastPos) {
+      return;
+    }
 
-		var swiping = self.isSwiping;
-		var left    = self.sliderStartPos.left || 0;
-		var angle;
+    newOffsetX = self.contentLastPos.left;
+    newOffsetY = self.contentLastPos.top;
 
-		if ( swiping === true ) {
+    reset = {
+      top: newOffsetY,
+      left: newOffsetX,
+      width: newWidth,
+      height: newHeight,
+      scaleX: 1,
+      scaleY: 1
+    };
 
-			if ( Math.abs( self.distance ) > 10 )  {
-
-				self.canTap = false;
-
-				if ( self.instance.group.length < 2 && self.opts.vertical ) {
-					self.isSwiping  = 'y';
-
-				} else if ( self.instance.isSliding || self.opts.vertical === false || ( self.opts.vertical === 'auto' && $( window ).width() > 800 ) ) {
-					self.isSwiping  = 'x';
-
-				} else {
-					angle = Math.abs( Math.atan2( self.distanceY, self.distanceX ) * 180 / Math.PI );
-
-					self.isSwiping = ( angle > 45 && angle < 135 ) ? 'y' : 'x';
-				}
-
-				self.instance.isSliding = self.isSwiping;
-
-				// Reset points to avoid jumping, because we dropped first swipes to calculate the angle
-				self.startPoints = self.newPoints;
-
-				$.each(self.instance.slides, function( index, slide ) {
-					$.fancybox.stop( slide.$slide );
-
-					slide.$slide.css( 'transition-duration', '0ms' );
-
-					slide.inTransition = false;
-
-					if ( slide.pos === self.instance.current.pos ) {
-						self.sliderStartPos.left = $.fancybox.getTranslate( slide.$slide ).left;
-					}
-				});
-
-				//self.instance.current.isMoved = true;
-
-				// Stop slideshow
-				if ( self.instance.SlideShow && self.instance.SlideShow.isActive ) {
-					self.instance.SlideShow.stop();
-				}
-			}
-
-		} else {
-
-			if ( swiping == 'x' ) {
-
-				// Sticky edges
-				if ( self.distanceX > 0 && ( self.instance.group.length < 2 || ( self.instance.current.index === 0 && !self.instance.current.opts.loop ) ) ) {
-					left = left + Math.pow( self.distanceX, 0.8 );
-
-				} else if ( self.distanceX < 0 && ( self.instance.group.length < 2 || ( self.instance.current.index === self.instance.group.length - 1 && !self.instance.current.opts.loop ) ) ) {
-					left = left - Math.pow( -self.distanceX, 0.8 );
-
-				} else {
-					left = left + self.distanceX;
-				}
-
-			}
-
-			self.sliderLastPos = {
-				top  : swiping == 'x' ? 0 : self.sliderStartPos.top + self.distanceY,
-				left : left
-			};
-
-			if ( self.requestId ) {
-				cancelAFrame( self.requestId );
-
-				self.requestId = null;
-			}
-
-			self.requestId = requestAFrame(function() {
-
-				if ( self.sliderLastPos ) {
-					$.each(self.instance.slides, function( index, slide ) {
-						var pos = slide.pos - self.instance.currPos;
-
-						$.fancybox.setTranslate( slide.$slide, {
-							top  : self.sliderLastPos.top,
-							left : self.sliderLastPos.left + ( pos * self.canvasWidth ) + ( pos * slide.opts.gutter )
-						});
-					});
-
-					self.$container.addClass( 'fancybox-is-sliding' );
-				}
-
-			});
-
-		}
-
-	};
-
-	Guestures.prototype.onPan = function() {
-
-		var self = this;
-
-		var newOffsetX, newOffsetY, newPos;
-
-		self.canTap = false;
-
-		if ( self.contentStartPos.width > self.canvasWidth ) {
-			newOffsetX = self.contentStartPos.left + self.distanceX;
-
-		} else {
-			newOffsetX = self.contentStartPos.left;
-		}
-
-		newOffsetY = self.contentStartPos.top + self.distanceY;
-
-		newPos = self.limitMovement( newOffsetX, newOffsetY, self.contentStartPos.width, self.contentStartPos.height );
-
-		newPos.scaleX = self.contentStartPos.scaleX;
-		newPos.scaleY = self.contentStartPos.scaleY;
-
-		self.contentLastPos = newPos;
-
-		if ( self.requestId ) {
-			cancelAFrame( self.requestId );
-
-			self.requestId = null;
-		}
-
-		self.requestId = requestAFrame(function() {
-			$.fancybox.setTranslate( self.$content, self.contentLastPos );
-		});
-	};
-
-	// Make panning sticky to the edges
-	Guestures.prototype.limitMovement = function( newOffsetX, newOffsetY, newWidth, newHeight ) {
-
-		var self = this;
-
-		var minTranslateX, minTranslateY, maxTranslateX, maxTranslateY;
-
-		var canvasWidth  = self.canvasWidth;
-		var canvasHeight = self.canvasHeight;
-
-		var currentOffsetX = self.contentStartPos.left;
-		var currentOffsetY = self.contentStartPos.top;
-
-		var distanceX = self.distanceX;
-		var distanceY = self.distanceY;
-
-		// Slow down proportionally to traveled distance
-
-		minTranslateX = Math.max(0, canvasWidth  * 0.5 - newWidth  * 0.5 );
-		minTranslateY = Math.max(0, canvasHeight * 0.5 - newHeight * 0.5 );
-
-		maxTranslateX = Math.min( canvasWidth  - newWidth,  canvasWidth  * 0.5 - newWidth  * 0.5 );
-		maxTranslateY = Math.min( canvasHeight - newHeight, canvasHeight * 0.5 - newHeight * 0.5 );
-
-		if ( newWidth > canvasWidth ) {
-
-			//   ->
-			if ( distanceX > 0 && newOffsetX > minTranslateX ) {
-				newOffsetX = minTranslateX - 1 + Math.pow( -minTranslateX + currentOffsetX + distanceX, 0.8 ) || 0;
-			}
-
-			//    <-
-			if ( distanceX  < 0 && newOffsetX < maxTranslateX ) {
-				newOffsetX = maxTranslateX + 1 - Math.pow( maxTranslateX - currentOffsetX - distanceX, 0.8 ) || 0;
-			}
-
-		}
-
-		if ( newHeight > canvasHeight ) {
-
-			//   \/
-			if ( distanceY > 0 && newOffsetY > minTranslateY ) {
-				newOffsetY = minTranslateY - 1 + Math.pow(-minTranslateY + currentOffsetY + distanceY, 0.8 ) || 0;
-			}
-
-			//   /\
-			if ( distanceY < 0 && newOffsetY < maxTranslateY ) {
-				newOffsetY = maxTranslateY + 1 - Math.pow ( maxTranslateY - currentOffsetY - distanceY, 0.8 ) || 0;
-			}
-
-		}
-
-		return {
-			top  : newOffsetY,
-			left : newOffsetX
-		};
-
-	};
-
-
-	Guestures.prototype.limitPosition = function( newOffsetX, newOffsetY, newWidth, newHeight ) {
-
-		var self = this;
-
-		var canvasWidth  = self.canvasWidth;
-		var canvasHeight = self.canvasHeight;
-
-		if ( newWidth > canvasWidth ) {
-			newOffsetX = newOffsetX > 0 ? 0 : newOffsetX;
-			newOffsetX = newOffsetX < canvasWidth - newWidth ? canvasWidth - newWidth : newOffsetX;
-
-		} else {
-
-			// Center horizontally
-			newOffsetX = Math.max( 0, canvasWidth / 2 - newWidth / 2 );
-
-		}
-
-		if ( newHeight > canvasHeight ) {
-			newOffsetY = newOffsetY > 0 ? 0 : newOffsetY;
-			newOffsetY = newOffsetY < canvasHeight - newHeight ? canvasHeight - newHeight : newOffsetY;
-
-		} else {
-
-			// Center vertically
-			newOffsetY = Math.max( 0, canvasHeight / 2 - newHeight / 2 );
-
-		}
-
-		return {
-			top  : newOffsetY,
-			left : newOffsetX
-		};
-
-	};
-
-	Guestures.prototype.onZoom = function() {
-
-		var self = this;
-
-		// Calculate current distance between points to get pinch ratio and new width and height
-
-		var currentWidth  = self.contentStartPos.width;
-		var currentHeight = self.contentStartPos.height;
-
-		var currentOffsetX = self.contentStartPos.left;
-		var currentOffsetY = self.contentStartPos.top;
-
-		var endDistanceBetweenFingers = distance( self.newPoints[0], self.newPoints[1] );
-
-		var pinchRatio = endDistanceBetweenFingers / self.startDistanceBetweenFingers;
-
-		var newWidth  = Math.floor( currentWidth  * pinchRatio );
-		var newHeight = Math.floor( currentHeight * pinchRatio );
-
-		// This is the translation due to pinch-zooming
-		var translateFromZoomingX = (currentWidth  - newWidth)  * self.percentageOfImageAtPinchPointX;
-		var translateFromZoomingY = (currentHeight - newHeight) * self.percentageOfImageAtPinchPointY;
-
-		//Point between the two touches
-
-		var centerPointEndX = ((self.newPoints[0].x + self.newPoints[1].x) / 2) - $(window).scrollLeft();
-		var centerPointEndY = ((self.newPoints[0].y + self.newPoints[1].y) / 2) - $(window).scrollTop();
-
-		// And this is the translation due to translation of the centerpoint
-		// between the two fingers
-
-		var translateFromTranslatingX = centerPointEndX - self.centerPointStartX;
-		var translateFromTranslatingY = centerPointEndY - self.centerPointStartY;
-
-		// The new offset is the old/current one plus the total translation
-
-		var newOffsetX = currentOffsetX + ( translateFromZoomingX + translateFromTranslatingX );
-		var newOffsetY = currentOffsetY + ( translateFromZoomingY + translateFromTranslatingY );
-
-		var newPos = {
-			top    : newOffsetY,
-			left   : newOffsetX,
-			scaleX : self.contentStartPos.scaleX * pinchRatio,
-			scaleY : self.contentStartPos.scaleY * pinchRatio
-		};
-
-		self.canTap = false;
-
-		self.newWidth  = newWidth;
-		self.newHeight = newHeight;
-
-		self.contentLastPos = newPos;
-
-		if ( self.requestId ) {
-			cancelAFrame( self.requestId );
-
-			self.requestId = null;
-		}
-
-		self.requestId = requestAFrame(function() {
-			$.fancybox.setTranslate( self.$content, self.contentLastPos );
-		});
-
-	};
-
-	Guestures.prototype.ontouchend = function( e ) {
-
-		var self = this;
-		var dMs  = Math.max( (new Date().getTime() ) - self.startTime, 1);
-
-		var swiping = self.isSwiping;
-		var panning = self.isPanning;
-		var zooming = self.isZooming;
-
-		self.endPoints = pointers( e );
-
-		self.$container.removeClass( 'fancybox-controls--isGrabbing' );
-
-		$(document).off( '.fb.touch' );
-
-		if ( self.requestId ) {
-			cancelAFrame( self.requestId );
-
-			self.requestId = null;
-		}
-
-		self.isSwiping = false;
-		self.isPanning = false;
-		self.isZooming = false;
-
-		if ( self.canTap )  {
-			return self.onTap( e );
-		}
-
-		self.speed = 366;
-
-		// Speed in px/ms
-		self.velocityX = self.distanceX / dMs * 0.5;
-		self.velocityY = self.distanceY / dMs * 0.5;
-
-		self.speedX = Math.max( self.speed * 0.5, Math.min( self.speed * 1.5, ( 1 / Math.abs( self.velocityX ) ) * self.speed ) );
-
-		if ( panning ) {
-			self.endPanning();
-
-		} else if ( zooming ) {
-			self.endZooming();
-
-		} else {
-			self.endSwiping( swiping );
-		}
-
-		return;
-	};
-
-	Guestures.prototype.endSwiping = function( swiping ) {
-
-		var self = this;
-		var ret = false;
-
-		self.instance.isSliding = false;
-		self.sliderLastPos      = null;
-
-		// Close if swiped vertically / navigate if horizontally
-		if ( swiping == 'y' && Math.abs( self.distanceY ) > 50 ) {
-
-			// Continue vertical movement
-			$.fancybox.animate( self.instance.current.$slide, {
-				top     : self.sliderStartPos.top + self.distanceY + ( self.velocityY * 150 ),
-				opacity : 0
-			}, 150 );
-
-			ret = self.instance.close( true, 300 );
-
-		} else if ( swiping == 'x' && self.distanceX > 50 && self.instance.group.length > 1 ) {
-			ret = self.instance.previous( self.speedX );
-
-		} else if ( swiping == 'x' && self.distanceX < -50  && self.instance.group.length > 1 ) {
-			ret = self.instance.next( self.speedX );
-		}
-
-		if ( ret === false && ( swiping == 'x' || swiping == 'y' ) ) {
-			self.instance.jumpTo( self.instance.current.index, 150 );
-		}
-
-		self.$container.removeClass( 'fancybox-is-sliding' );
-
-	};
-
-	// Limit panning from edges
-	// ========================
-
-	Guestures.prototype.endPanning = function() {
-
-		var self = this;
-		var newOffsetX, newOffsetY, newPos;
-
-		if ( !self.contentLastPos ) {
-			return;
-		}
-
-		if ( self.opts.momentum === false ) {
-			newOffsetX = self.contentLastPos.left;
-			newOffsetY = self.contentLastPos.top;
-
-		} else {
-
-			// Continue movement
-			newOffsetX = self.contentLastPos.left + ( self.velocityX * self.speed );
-			newOffsetY = self.contentLastPos.top  + ( self.velocityY * self.speed );
-		}
-
-		newPos = self.limitPosition( newOffsetX, newOffsetY, self.contentStartPos.width, self.contentStartPos.height );
-
-		 newPos.width  = self.contentStartPos.width;
-		 newPos.height = self.contentStartPos.height;
-
-		$.fancybox.animate( self.$content, newPos, 330 );
-	};
-
-
-	Guestures.prototype.endZooming = function() {
-
-		var self = this;
-
-		var current = self.instance.current;
-
-		var newOffsetX, newOffsetY, newPos, reset;
-
-		var newWidth  = self.newWidth;
-		var newHeight = self.newHeight;
-
-		if ( !self.contentLastPos ) {
-			return;
-		}
-
-		newOffsetX = self.contentLastPos.left;
-		newOffsetY = self.contentLastPos.top;
-
-		reset = {
-		   	top    : newOffsetY,
-		   	left   : newOffsetX,
-		   	width  : newWidth,
-		   	height : newHeight,
-			scaleX : 1,
-			scaleY : 1
-	   };
-
-	   // Reset scalex/scaleY values; this helps for perfomance and does not break animation
-	   $.fancybox.setTranslate( self.$content, reset );
-
-		if ( newWidth < self.canvasWidth && newHeight < self.canvasHeight ) {
-			self.instance.scaleToFit( 150 );
-
-		} else if ( newWidth > current.width || newHeight > current.height ) {
-			self.instance.scaleToActual( self.centerPointStartX, self.centerPointStartY, 150 );
-
-		} else {
-
-			newPos = self.limitPosition( newOffsetX, newOffsetY, newWidth, newHeight );
-
-			// Switch from scale() to width/height or animation will not work correctly
-			$.fancybox.setTranslate( self.content, $.fancybox.getTranslate( self.$content ) );
-
-			$.fancybox.animate( self.$content, newPos, 150 );
-		}
-
-	};
-
-	Guestures.prototype.onTap = function(e) {
-		var self    = this;
-		var $target = $( e.target );
-
-		var instance = self.instance;
-		var current  = instance.current;
-
-		var endPoints = ( e && pointers( e ) ) || self.startPoints;
-
-		var tapX = endPoints[0] ? endPoints[0].x - self.$stage.offset().left : 0;
-		var tapY = endPoints[0] ? endPoints[0].y - self.$stage.offset().top  : 0;
-
-		var where;
-
-		var process = function ( prefix ) {
-
-			var action = current.opts[ prefix ];
-
-			if ( $.isFunction( action ) ) {
-				action = action.apply( instance, [ current, e ] );
-			}
-
-			if ( !action) {
-				return;
-			}
-
-			switch ( action ) {
-
-				case "close" :
-
-					instance.close( self.startEvent );
-
-				break;
-
-				case "toggleControls" :
-
-					instance.toggleControls( true );
-
-				break;
-
-				case "next" :
-
-					instance.next();
-
-				break;
-
-				case "nextOrClose" :
-
-					if ( instance.group.length > 1 ) {
-						instance.next();
-
-					} else {
-						instance.close( self.startEvent );
-					}
-
-				break;
-
-				case "zoom" :
-
-					if ( current.type == 'image' && ( current.isLoaded || current.$ghost ) ) {
-
-						if ( instance.canPan() ) {
-							instance.scaleToFit();
-
-						} else if ( instance.isScaledDown() ) {
-							instance.scaleToActual( tapX, tapY );
-
-						} else if ( instance.group.length < 2 ) {
-							instance.close( self.startEvent );
-						}
-					}
-
-				break;
-			}
-
-		};
-
-		// Ignore right click
-		if ( e.originalEvent && e.originalEvent.button == 2 ) {
-			return;
-		}
-
-		// Skip if current slide is not in the center
-		if ( instance.isSliding ) {
-			return;
-		}
-
-		// Skip if clicked on the scrollbar
-		if ( tapX > $target[0].clientWidth + $target.offset().left ) {
-			return;
-		}
-
-		// Check where is clicked
-		if ( $target.is( '.fancybox-bg,.fancybox-inner,.fancybox-outer,.fancybox-container' ) ) {
-			where = 'Outside';
-
-		} else if ( $target.is( '.fancybox-slide' ) ) {
-			where = 'Slide';
-
-		} else if  ( instance.current.$content && instance.current.$content.has( e.target ).length ) {
-		 	where = 'Content';
-
-		} else {
-			return;
-		}
-
-		// Check if this is a double tap
-		if ( self.tapped ) {
-
-			// Stop previously created single tap
-			clearTimeout( self.tapped );
-			self.tapped = null;
-
-			// Skip if distance between taps is too big
-			if ( Math.abs( tapX - self.tapX ) > 50 || Math.abs( tapY - self.tapY ) > 50 || instance.isSliding ) {
-				return this;
-			}
-
-			// OK, now we assume that this is a double-tap
-			process( 'dblclick' + where );
-
-		} else {
-
-			// Single tap will be processed if user has not clicked second time within 300ms
-			// or there is no need to wait for double-tap
-			self.tapX = tapX;
-			self.tapY = tapY;
-
-			if ( current.opts[ 'dblclick' + where ] && current.opts[ 'dblclick' + where ] !== current.opts[ 'click' + where ] ) {
-				self.tapped = setTimeout(function() {
-					self.tapped = null;
-
-					process( 'click' + where );
-
-				}, 300);
-
-			} else {
-				process( 'click' + where );
-			}
-
-		}
-
-		return this;
-	};
-
-	$(document).on('onActivate.fb', function (e, instance) {
-		if ( instance && !instance.Guestures ) {
-			instance.Guestures = new Guestures( instance );
-		}
-	});
-
-	$(document).on('beforeClose.fb', function (e, instance) {
-		if ( instance && instance.Guestures ) {
-			instance.Guestures.destroy();
-		}
-	});
-
-
-}( window, document, window.jQuery || jQuery ));
+    // Reset scalex/scaleY values; this helps for perfomance and does not break animation
+    $.fancybox.setTranslate(self.$content, reset);
+
+    if (newWidth < self.canvasWidth && newHeight < self.canvasHeight) {
+      self.instance.scaleToFit(150);
+    } else if (newWidth > current.width || newHeight > current.height) {
+      self.instance.scaleToActual(self.centerPointStartX, self.centerPointStartY, 150);
+    } else {
+      newPos = self.limitPosition(newOffsetX, newOffsetY, newWidth, newHeight);
+
+      // Switch from scale() to width/height or animation will not work correctly
+      $.fancybox.setTranslate(self.$content, $.fancybox.getTranslate(self.$content));
+
+      $.fancybox.animate(self.$content, newPos, 150);
+    }
+  };
+
+  Guestures.prototype.onTap = function(e) {
+    var self = this;
+    var $target = $(e.target);
+
+    var instance = self.instance;
+    var current = instance.current;
+
+    var endPoints = (e && getPointerXY(e)) || self.startPoints;
+
+    var tapX = endPoints[0] ? endPoints[0].x - $(window).scrollLeft() - self.stagePos.left : 0;
+    var tapY = endPoints[0] ? endPoints[0].y - $(window).scrollTop() - self.stagePos.top : 0;
+
+    var where;
+
+    var process = function(prefix) {
+      var action = current.opts[prefix];
+
+      if ($.isFunction(action)) {
+        action = action.apply(instance, [current, e]);
+      }
+
+      if (!action) {
+        return;
+      }
+
+      switch (action) {
+        case "close":
+          instance.close(self.startEvent);
+
+          break;
+
+        case "toggleControls":
+          instance.toggleControls(true);
+
+          break;
+
+        case "next":
+          instance.next();
+
+          break;
+
+        case "nextOrClose":
+          if (instance.group.length > 1) {
+            instance.next();
+          } else {
+            instance.close(self.startEvent);
+          }
+
+          break;
+
+        case "zoom":
+          if (current.type == "image" && (current.isLoaded || current.$ghost)) {
+            if (instance.canPan()) {
+              instance.scaleToFit();
+            } else if (instance.isScaledDown()) {
+              instance.scaleToActual(tapX, tapY);
+            } else if (instance.group.length < 2) {
+              instance.close(self.startEvent);
+            }
+          }
+
+          break;
+      }
+    };
+
+    // Ignore right click
+    if (e.originalEvent && e.originalEvent.button == 2) {
+      return;
+    }
+
+    // Skip if clicked on the scrollbar
+    if (!$target.is("img") && tapX > $target[0].clientWidth + $target.offset().left) {
+      return;
+    }
+
+    // Check where is clicked
+    if ($target.is(".fancybox-bg,.fancybox-inner,.fancybox-outer,.fancybox-container")) {
+      where = "Outside";
+    } else if ($target.is(".fancybox-slide")) {
+      where = "Slide";
+    } else if (
+      instance.current.$content &&
+      instance.current.$content
+        .find($target)
+        .addBack()
+        .filter($target).length
+    ) {
+      where = "Content";
+    } else {
+      return;
+    }
+
+    // Check if this is a double tap
+    if (self.tapped) {
+      // Stop previously created single tap
+      clearTimeout(self.tapped);
+      self.tapped = null;
+
+      // Skip if distance between taps is too big
+      if (Math.abs(tapX - self.tapX) > 50 || Math.abs(tapY - self.tapY) > 50) {
+        return this;
+      }
+
+      // OK, now we assume that this is a double-tap
+      process("dblclick" + where);
+    } else {
+      // Single tap will be processed if user has not clicked second time within 300ms
+      // or there is no need to wait for double-tap
+      self.tapX = tapX;
+      self.tapY = tapY;
+
+      if (current.opts["dblclick" + where] && current.opts["dblclick" + where] !== current.opts["click" + where]) {
+        self.tapped = setTimeout(function() {
+          self.tapped = null;
+
+          process("click" + where);
+        }, 500);
+      } else {
+        process("click" + where);
+      }
+    }
+
+    return this;
+  };
+
+  $(document).on("onActivate.fb", function(e, instance) {
+    if (instance && !instance.Guestures) {
+      instance.Guestures = new Guestures(instance);
+    }
+  });
+})(window, document, window.jQuery || jQuery);
 
 // ==========================================================================
 //
@@ -17584,182 +17547,178 @@ return jQuery;
 // $.fancybox.getInstance().SlideShow.start()
 //
 // ==========================================================================
-;(function (document, $) {
-	'use strict';
+(function(document, $) {
+  "use strict";
 
-	$.extend(true, $.fancybox.defaults, {
-		btnTpl : {
-			slideShow :
-				'<button data-fancybox-play class="fancybox-button fancybox-button--play" title="{{PLAY_START}}">' +
-					'<svg viewBox="0 0 40 40">' +
-						'<path d="M13,12 L27,20 L13,27 Z" />' +
-						'<path d="M15,10 v19 M23,10 v19" />' +
-					'</svg>' +
-				'</button>'
-		},
-		slideShow : {
-			autoStart : false,
-            speed     : 3000
-		}
-	});
+  $.extend(true, $.fancybox.defaults, {
+    btnTpl: {
+      slideShow:
+        '<button data-fancybox-play class="fancybox-button fancybox-button--play" title="{{PLAY_START}}">' +
+        '<svg viewBox="0 0 40 40">' +
+        '<path d="M13,12 L27,20 L13,27 Z" />' +
+        '<path d="M15,10 v19 M23,10 v19" />' +
+        "</svg>" +
+        "</button>"
+    },
+    slideShow: {
+      autoStart: false,
+      speed: 3000
+    }
+  });
 
-	var SlideShow = function( instance ) {
-		this.instance = instance;
-		this.init();
-	};
+  var SlideShow = function(instance) {
+    this.instance = instance;
+    this.init();
+  };
 
-	$.extend( SlideShow.prototype, {
-		timer    : null,
-		isActive : false,
-		$button  : null,
+  $.extend(SlideShow.prototype, {
+    timer: null,
+    isActive: false,
+    $button: null,
 
-		init : function() {
-			var self = this;
+    init: function() {
+      var self = this;
 
-			self.$button = self.instance.$refs.toolbar.find('[data-fancybox-play]').on('click', function() {
-				self.toggle();
-			});
+      self.$button = self.instance.$refs.toolbar.find("[data-fancybox-play]").on("click", function() {
+        self.toggle();
+      });
 
-			if ( self.instance.group.length < 2 || !self.instance.group[ self.instance.currIndex ].opts.slideShow ) {
-				self.$button.hide();
-			}
-		},
+      if (self.instance.group.length < 2 || !self.instance.group[self.instance.currIndex].opts.slideShow) {
+        self.$button.hide();
+      }
+    },
 
-		set : function( force ) {
-			var self = this;
+    set: function(force) {
+      var self = this;
 
-			// Check if reached last element
-			if ( self.instance && self.instance.current && (force === true || self.instance.current.opts.loop || self.instance.currIndex < self.instance.group.length - 1 )) {
-				self.timer = setTimeout(function() {
-					if ( self.isActive ) {
-						self.instance.jumpTo( (self.instance.currIndex + 1) % self.instance.group.length );
-					}
+      // Check if reached last element
+      if (
+        self.instance &&
+        self.instance.current &&
+        (force === true || self.instance.current.opts.loop || self.instance.currIndex < self.instance.group.length - 1)
+      ) {
+        self.timer = setTimeout(function() {
+          if (self.isActive) {
+            self.instance.jumpTo((self.instance.currIndex + 1) % self.instance.group.length);
+          }
+        }, self.instance.current.opts.slideShow.speed);
+      } else {
+        self.stop();
+        self.instance.idleSecondsCounter = 0;
+        self.instance.showControls();
+      }
+    },
 
-				}, self.instance.current.opts.slideShow.speed);
+    clear: function() {
+      var self = this;
 
-			} else {
-				self.stop();
-				self.instance.idleSecondsCounter = 0;
-				self.instance.showControls();
-			}
-		},
+      clearTimeout(self.timer);
 
-		clear : function() {
-			var self = this;
+      self.timer = null;
+    },
 
-			clearTimeout( self.timer );
+    start: function() {
+      var self = this;
+      var current = self.instance.current;
 
-			self.timer = null;
-		},
+      if (current) {
+        self.isActive = true;
 
-		start : function() {
-			var self = this;
-			var current = self.instance.current;
+        self.$button
+          .attr("title", current.opts.i18n[current.opts.lang].PLAY_STOP)
+          .removeClass("fancybox-button--play")
+          .addClass("fancybox-button--pause");
 
-			if ( current ) {
-				self.isActive = true;
+        self.set(true);
+      }
+    },
 
-				self.$button
-					.attr( 'title', current.opts.i18n[ current.opts.lang ].PLAY_STOP )
-					.removeClass( 'fancybox-button--play' )
-					.addClass( 'fancybox-button--pause' );
+    stop: function() {
+      var self = this;
+      var current = self.instance.current;
 
-					self.set( true );
-			}
-		},
+      self.clear();
 
-		stop : function() {
-			var self = this;
-			var current = self.instance.current;
+      self.$button
+        .attr("title", current.opts.i18n[current.opts.lang].PLAY_START)
+        .removeClass("fancybox-button--pause")
+        .addClass("fancybox-button--play");
 
-			self.clear();
+      self.isActive = false;
+    },
 
-			self.$button
-				.attr( 'title', current.opts.i18n[ current.opts.lang ].PLAY_START )
-				.removeClass( 'fancybox-button--pause' )
-				.addClass( 'fancybox-button--play' );
+    toggle: function() {
+      var self = this;
 
-			self.isActive = false;
-		},
+      if (self.isActive) {
+        self.stop();
+      } else {
+        self.start();
+      }
+    }
+  });
 
-		toggle : function() {
-			var self = this;
+  $(document).on({
+    "onInit.fb": function(e, instance) {
+      if (instance && !instance.SlideShow) {
+        instance.SlideShow = new SlideShow(instance);
+      }
+    },
 
-			if ( self.isActive ) {
-				self.stop();
+    "beforeShow.fb": function(e, instance, current, firstRun) {
+      var SlideShow = instance && instance.SlideShow;
 
-			} else {
-				self.start();
-			}
-		}
+      if (firstRun) {
+        if (SlideShow && current.opts.slideShow.autoStart) {
+          SlideShow.start();
+        }
+      } else if (SlideShow && SlideShow.isActive) {
+        SlideShow.clear();
+      }
+    },
 
-	});
+    "afterShow.fb": function(e, instance, current) {
+      var SlideShow = instance && instance.SlideShow;
 
-	$(document).on({
-		'onInit.fb' : function(e, instance) {
-			if ( instance && !instance.SlideShow ) {
-				instance.SlideShow = new SlideShow( instance );
-			}
-		},
+      if (SlideShow && SlideShow.isActive) {
+        SlideShow.set();
+      }
+    },
 
-		'beforeShow.fb' : function(e, instance, current, firstRun) {
-			var SlideShow = instance && instance.SlideShow;
+    "afterKeydown.fb": function(e, instance, current, keypress, keycode) {
+      var SlideShow = instance && instance.SlideShow;
 
-			if ( firstRun ) {
+      // "P" or Spacebar
+      if (SlideShow && current.opts.slideShow && (keycode === 80 || keycode === 32) && !$(document.activeElement).is("button,a,input")) {
+        keypress.preventDefault();
 
-				if ( SlideShow && current.opts.slideShow.autoStart ) {
-					SlideShow.start();
-				}
+        SlideShow.toggle();
+      }
+    },
 
-			} else if ( SlideShow && SlideShow.isActive )  {
-				SlideShow.clear();
-			}
-		},
+    "beforeClose.fb onDeactivate.fb": function(e, instance) {
+      var SlideShow = instance && instance.SlideShow;
 
-		'afterShow.fb' : function(e, instance, current) {
-			var SlideShow = instance && instance.SlideShow;
+      if (SlideShow) {
+        SlideShow.stop();
+      }
+    }
+  });
 
-			if ( SlideShow && SlideShow.isActive ) {
-				SlideShow.set();
-			}
-		},
+  // Page Visibility API to pause slideshow when window is not active
+  $(document).on("visibilitychange", function() {
+    var instance = $.fancybox.getInstance();
+    var SlideShow = instance && instance.SlideShow;
 
-		'afterKeydown.fb' : function(e, instance, current, keypress, keycode) {
-			var SlideShow = instance && instance.SlideShow;
-
-			// "P" or Spacebar
-			if ( SlideShow && current.opts.slideShow && ( keycode === 80 || keycode === 32 ) && !$(document.activeElement).is( 'button,a,input' ) ) {
-				keypress.preventDefault();
-
-				SlideShow.toggle();
-			}
-		},
-
-		'beforeClose.fb onDeactivate.fb' : function(e, instance) {
-			var SlideShow = instance && instance.SlideShow;
-
-			if ( SlideShow ) {
-				SlideShow.stop();
-			}
-		}
-	});
-
-	// Page Visibility API to pause slideshow when window is not active
-	$(document).on("visibilitychange", function() {
-		var instance  = $.fancybox.getInstance();
-		var SlideShow = instance && instance.SlideShow;
-
-		if ( SlideShow && SlideShow.isActive ) {
-			if ( document.hidden ) {
-				SlideShow.clear();
-
-			} else {
-				SlideShow.set();
-			}
-		}
-	});
-
-}( document, window.jQuery || jQuery ));
+    if (SlideShow && SlideShow.isActive) {
+      if (document.hidden) {
+        SlideShow.clear();
+      } else {
+        SlideShow.set();
+      }
+    }
+  });
+})(document, window.jQuery || jQuery);
 
 // ==========================================================================
 //
@@ -17767,210 +17726,169 @@ return jQuery;
 // Adds fullscreen functionality
 //
 // ==========================================================================
-;(function (document, $) {
-	'use strict';
+(function(document, $) {
+  "use strict";
 
-	// Collection of methods supported by user browser
-	var fn = (function () {
+  // Collection of methods supported by user browser
+  var fn = (function() {
+    var fnMap = [
+      ["requestFullscreen", "exitFullscreen", "fullscreenElement", "fullscreenEnabled", "fullscreenchange", "fullscreenerror"],
+      // new WebKit
+      [
+        "webkitRequestFullscreen",
+        "webkitExitFullscreen",
+        "webkitFullscreenElement",
+        "webkitFullscreenEnabled",
+        "webkitfullscreenchange",
+        "webkitfullscreenerror"
+      ],
+      // old WebKit (Safari 5.1)
+      [
+        "webkitRequestFullScreen",
+        "webkitCancelFullScreen",
+        "webkitCurrentFullScreenElement",
+        "webkitCancelFullScreen",
+        "webkitfullscreenchange",
+        "webkitfullscreenerror"
+      ],
+      [
+        "mozRequestFullScreen",
+        "mozCancelFullScreen",
+        "mozFullScreenElement",
+        "mozFullScreenEnabled",
+        "mozfullscreenchange",
+        "mozfullscreenerror"
+      ],
+      ["msRequestFullscreen", "msExitFullscreen", "msFullscreenElement", "msFullscreenEnabled", "MSFullscreenChange", "MSFullscreenError"]
+    ];
 
-		var fnMap = [
-			[
-				'requestFullscreen',
-				'exitFullscreen',
-				'fullscreenElement',
-				'fullscreenEnabled',
-				'fullscreenchange',
-				'fullscreenerror'
-			],
-			// new WebKit
-			[
-				'webkitRequestFullscreen',
-				'webkitExitFullscreen',
-				'webkitFullscreenElement',
-				'webkitFullscreenEnabled',
-				'webkitfullscreenchange',
-				'webkitfullscreenerror'
+    var ret = {};
 
-			],
-			// old WebKit (Safari 5.1)
-			[
-				'webkitRequestFullScreen',
-				'webkitCancelFullScreen',
-				'webkitCurrentFullScreenElement',
-				'webkitCancelFullScreen',
-				'webkitfullscreenchange',
-				'webkitfullscreenerror'
+    for (var i = 0; i < fnMap.length; i++) {
+      var val = fnMap[i];
 
-			],
-			[
-				'mozRequestFullScreen',
-				'mozCancelFullScreen',
-				'mozFullScreenElement',
-				'mozFullScreenEnabled',
-				'mozfullscreenchange',
-				'mozfullscreenerror'
-			],
-			[
-				'msRequestFullscreen',
-				'msExitFullscreen',
-				'msFullscreenElement',
-				'msFullscreenEnabled',
-				'MSFullscreenChange',
-				'MSFullscreenError'
-			]
-		];
+      if (val && val[1] in document) {
+        for (var j = 0; j < val.length; j++) {
+          ret[fnMap[0][j]] = val[j];
+        }
 
-		var val;
-		var ret = {};
-		var i, j;
+        return ret;
+      }
+    }
 
-		for ( i = 0; i < fnMap.length; i++ ) {
-			val = fnMap[ i ];
+    return false;
+  })();
 
-			if ( val && val[ 1 ] in document ) {
-				for ( j = 0; j < val.length; j++ ) {
-					ret[ fnMap[ 0 ][ j ] ] = val[ j ];
-				}
+  // If browser does not have Full Screen API, then simply unset default button template and stop
+  if (!fn) {
+    if ($ && $.fancybox) {
+      $.fancybox.defaults.btnTpl.fullScreen = false;
+    }
 
-				return ret;
-			}
-		}
+    return;
+  }
 
-		return false;
-	})();
+  var FullScreen = {
+    request: function(elem) {
+      elem = elem || document.documentElement;
 
-	// If browser does not have Full Screen API, then simply unset default button template and stop
-	if ( !fn ) {
+      elem[fn.requestFullscreen](elem.ALLOW_KEYBOARD_INPUT);
+    },
+    exit: function() {
+      document[fn.exitFullscreen]();
+    },
+    toggle: function(elem) {
+      elem = elem || document.documentElement;
 
-		if ( $ && $.fancybox ) {
-			$.fancybox.defaults.btnTpl.fullScreen = false;
-		}
+      if (this.isFullscreen()) {
+        this.exit();
+      } else {
+        this.request(elem);
+      }
+    },
+    isFullscreen: function() {
+      return Boolean(document[fn.fullscreenElement]);
+    },
+    enabled: function() {
+      return Boolean(document[fn.fullscreenEnabled]);
+    }
+  };
 
-		return;
-	}
+  $.extend(true, $.fancybox.defaults, {
+    btnTpl: {
+      fullScreen:
+        '<button data-fancybox-fullscreen class="fancybox-button fancybox-button--fullscreen" title="{{FULL_SCREEN}}">' +
+        '<svg viewBox="0 0 40 40">' +
+        '<path d="M9,12 v16 h22 v-16 h-22 v8" />' +
+        "</svg>" +
+        "</button>"
+    },
+    fullScreen: {
+      autoStart: false
+    }
+  });
 
-	var FullScreen = {
+  $(document).on({
+    "onInit.fb": function(e, instance) {
+      var $container;
 
-		request : function ( elem ) {
+      if (instance && instance.group[instance.currIndex].opts.fullScreen) {
+        $container = instance.$refs.container;
 
-			elem = elem || document.documentElement;
+        $container.on("click.fb-fullscreen", "[data-fancybox-fullscreen]", function(e) {
+          e.stopPropagation();
+          e.preventDefault();
 
-			elem[ fn.requestFullscreen ]( elem.ALLOW_KEYBOARD_INPUT );
+          FullScreen.toggle();
+        });
 
-		},
-		exit : function () {
+        if (instance.opts.fullScreen && instance.opts.fullScreen.autoStart === true) {
+          FullScreen.request();
+        }
 
-			document[ fn.exitFullscreen ]();
+        // Expose API
+        instance.FullScreen = FullScreen;
+      } else if (instance) {
+        instance.$refs.toolbar.find("[data-fancybox-fullscreen]").hide();
+      }
+    },
 
-		},
-		toggle : function ( elem ) {
+    "afterKeydown.fb": function(e, instance, current, keypress, keycode) {
+      // "F"
+      if (instance && instance.FullScreen && keycode === 70) {
+        keypress.preventDefault();
 
-			elem = elem || document.documentElement;
+        instance.FullScreen.toggle();
+      }
+    },
 
-			if ( this.isFullscreen() ) {
-				this.exit();
+    "beforeClose.fb": function(e, instance) {
+      if (instance && instance.FullScreen && instance.$refs.container.hasClass("fancybox-is-fullscreen")) {
+        FullScreen.exit();
+      }
+    }
+  });
 
-			} else {
-				this.request( elem );
-			}
+  $(document).on(fn.fullscreenchange, function() {
+    var isFullscreen = FullScreen.isFullscreen(),
+      instance = $.fancybox.getInstance();
 
-		},
-		isFullscreen : function()  {
+    if (instance) {
+      // If image is zooming, then force to stop and reposition properly
+      if (instance.current && instance.current.type === "image" && instance.isAnimating) {
+        instance.current.$content.css("transition", "none");
 
-			return Boolean( document[ fn.fullscreenElement ] );
+        instance.isAnimating = false;
 
-		},
-		enabled : function()  {
+        instance.update(true, true, 0);
+      }
 
-			return Boolean( document[ fn.fullscreenEnabled ] );
+      instance.trigger("onFullscreenChange", isFullscreen);
 
-		}
-	};
-
-	$.extend(true, $.fancybox.defaults, {
-		btnTpl : {
-			fullScreen :
-				'<button data-fancybox-fullscreen class="fancybox-button fancybox-button--fullscreen" title="{{FULL_SCREEN}}">' +
-					'<svg viewBox="0 0 40 40">' +
-						'<path d="M9,12 h22 v16 h-22 v-16 v16 h22 v-16 Z" />' +
-					'</svg>' +
-				'</button>'
-		},
-		fullScreen : {
-			autoStart : false
-		}
-	});
-
-	$(document).on({
-		'onInit.fb' : function(e, instance) {
-			var $container;
-
-			if ( instance && instance.group[ instance.currIndex ].opts.fullScreen ) {
-				$container = instance.$refs.container;
-
-				$container.on('click.fb-fullscreen', '[data-fancybox-fullscreen]', function(e) {
-
-					e.stopPropagation();
-					e.preventDefault();
-
-					FullScreen.toggle( $container[ 0 ] );
-
-				});
-
-				if ( instance.opts.fullScreen && instance.opts.fullScreen.autoStart === true ) {
-					FullScreen.request( $container[ 0 ] );
-				}
-
-				// Expose API
-				instance.FullScreen = FullScreen;
-
-			} else if ( instance ) {
-				instance.$refs.toolbar.find('[data-fancybox-fullscreen]').hide();
-			}
-
-		},
-
-		'afterKeydown.fb' : function(e, instance, current, keypress, keycode) {
-
-			// "P" or Spacebar
-			if ( instance && instance.FullScreen && keycode === 70 ) {
-				keypress.preventDefault();
-
-				instance.FullScreen.toggle( instance.$refs.container[ 0 ] );
-			}
-
-		},
-
-		'beforeClose.fb' : function( instance ) {
-			if ( instance && instance.FullScreen ) {
-				FullScreen.exit();
-			}
-		}
-	});
-
-	$(document).on(fn.fullscreenchange, function() {
-		var isFullscreen = FullScreen.isFullscreen(),
-			instance = $.fancybox.getInstance();
-
-		if ( instance ) {
-
-			// If image is zooming, then force to stop and reposition properly
-			if ( instance.current && instance.current.type === 'image' && instance.isAnimating ) {
-				instance.current.$content.css( 'transition', 'none' );
-
-				instance.isAnimating = false;
-
-				instance.update( true, true, 0 );
-			}
-
-			instance.trigger( 'onFullscreenChange', isFullscreen );
-
-			instance.$refs.container.toggleClass( 'fancybox-is-fullscreen', isFullscreen );
-		}
-
-	});
-
-}( document, window.jQuery || jQuery ));
+      instance.$refs.container.toggleClass("fancybox-is-fullscreen", isFullscreen);
+    }
+  });
+})(document, window.jQuery || jQuery);
 
 // ==========================================================================
 //
@@ -17978,252 +17896,259 @@ return jQuery;
 // Displays thumbnails in a grid
 //
 // ==========================================================================
-;(function (document, $) {
-	'use strict';
+(function(document, $) {
+  "use strict";
 
-	// Make sure there are default values
-	$.fancybox.defaults = $.extend(true, {
-		btnTpl : {
-			thumbs :
-			'<button data-fancybox-thumbs class="fancybox-button fancybox-button--thumbs" title="{{THUMBS}}">' +
-				'<svg viewBox="0 0 120 120">' +
-					'<path d="M30,30 h14 v14 h-14 Z M50,30 h14 v14 h-14 Z M70,30 h14 v14 h-14 Z M30,50 h14 v14 h-14 Z M50,50 h14 v14 h-14 Z M70,50 h14 v14 h-14 Z M30,70 h14 v14 h-14 Z M50,70 h14 v14 h-14 Z M70,70 h14 v14 h-14 Z" />' +
-				'</svg>' +
-			'</button>'
-		},
-		thumbs : {
-			autoStart   : false,                  // Display thumbnails on opening
-			hideOnClose : true,                   // Hide thumbnail grid when closing animation starts
-			parentEl    : '.fancybox-container',  // Container is injected into this element
-			axis        : 'y'                     // Vertical (y) or horizontal (x) scrolling
-		}
-	}, $.fancybox.defaults);
+  var CLASS = "fancybox-thumbs",
+    CLASS_ACTIVE = CLASS + "-active",
+    CLASS_LOAD = CLASS + "-loading";
 
-	var FancyThumbs = function( instance ) {
-		this.init( instance );
-	};
+  // Make sure there are default values
+  $.fancybox.defaults = $.extend(
+    true,
+    {
+      btnTpl: {
+        thumbs:
+          '<button data-fancybox-thumbs class="fancybox-button fancybox-button--thumbs" title="{{THUMBS}}">' +
+          '<svg viewBox="0 0 120 120">' +
+          '<path d="M30,30 h14 v14 h-14 Z M50,30 h14 v14 h-14 Z M70,30 h14 v14 h-14 Z M30,50 h14 v14 h-14 Z M50,50 h14 v14 h-14 Z M70,50 h14 v14 h-14 Z M30,70 h14 v14 h-14 Z M50,70 h14 v14 h-14 Z M70,70 h14 v14 h-14 Z" />' +
+          "</svg>" +
+          "</button>"
+      },
+      thumbs: {
+        autoStart: false, // Display thumbnails on opening
+        hideOnClose: true, // Hide thumbnail grid when closing animation starts
+        parentEl: ".fancybox-container", // Container is injected into this element
+        axis: "y" // Vertical (y) or horizontal (x) scrolling
+      }
+    },
+    $.fancybox.defaults
+  );
 
-	$.extend( FancyThumbs.prototype, {
+  var FancyThumbs = function(instance) {
+    this.init(instance);
+  };
 
-		$button		: null,
-		$grid		: null,
-		$list		: null,
-		isVisible	: false,
-		isActive	: false,
+  $.extend(FancyThumbs.prototype, {
+    $button: null,
+    $grid: null,
+    $list: null,
+    isVisible: false,
+    isActive: false,
 
-		init : function( instance ) {
-			var self = this;
+    init: function(instance) {
+      var self = this,
+        first,
+        second;
 
-			self.instance = instance;
+      self.instance = instance;
 
-			instance.Thumbs = self;
+      instance.Thumbs = self;
 
-			// Enable thumbs if at least two group items have thumbnails
-			var first  = instance.group[0],
-				second = instance.group[1];
+      self.opts = instance.group[instance.currIndex].opts.thumbs;
 
-			self.opts = instance.group[ instance.currIndex ].opts.thumbs;
+      // Enable thumbs if at least two group items have thumbnails
+      first = instance.group[0];
+      first = first.opts.thumb || (first.opts.$thumb && first.opts.$thumb.length ? first.opts.$thumb.attr("src") : false);
 
-			self.$button = instance.$refs.toolbar.find( '[data-fancybox-thumbs]' );
+      if (instance.group.length > 1) {
+        second = instance.group[1];
+        second = second.opts.thumb || (second.opts.$thumb && second.opts.$thumb.length ? second.opts.$thumb.attr("src") : false);
+      }
 
-			if ( self.opts && first && second && (
-		    		( first.type == 'image'  || first.opts.thumb  || first.opts.$thumb ) &&
-		    		( second.type == 'image' || second.opts.thumb || second.opts.$thumb )
-			)) {
+      self.$button = instance.$refs.toolbar.find("[data-fancybox-thumbs]");
 
-				self.$button.show().on('click', function() {
-					self.toggle();
-				});
+      if (self.opts && first && second && first && second) {
+        self.$button.show().on("click", function() {
+          self.toggle();
+        });
 
-				self.isActive = true;
+        self.isActive = true;
+      } else {
+        self.$button.hide();
+      }
+    },
 
-			} else {
-				self.$button.hide();
-			}
-		},
+    create: function() {
+      var self = this,
+        instance = self.instance,
+        parentEl = self.opts.parentEl,
+        list = [],
+        src;
 
-		create : function() {
-			var self = this,
-				instance = self.instance,
-				parentEl = self.opts.parentEl,
-				list,
-				src;
+      if (!self.$grid) {
+        // Create main element
+        self.$grid = $('<div class="' + CLASS + " " + CLASS + "-" + self.opts.axis + '"></div>').appendTo(
+          instance.$refs.container
+            .find(parentEl)
+            .addBack()
+            .filter(parentEl)
+        );
 
-			self.$grid = $('<div class="fancybox-thumbs fancybox-thumbs-' + self.opts.axis + '"></div>').appendTo( instance.$refs.container.find( parentEl ).addBack().filter( parentEl ) );
+        // Add "click" event that performs gallery navigation
+        self.$grid.on("click", "li", function() {
+          instance.jumpTo($(this).attr("data-index"));
+        });
+      }
 
-			// Build list HTML
-			list = '<ul>';
+      // Build the list
+      if (!self.$list) {
+        self.$list = $("<ul>").appendTo(self.$grid);
+      }
 
-			$.each(instance.group, function( i, item ) {
-				src = item.opts.thumb || ( item.opts.$thumb ? item.opts.$thumb.attr( 'src' ) : null );
+      $.each(instance.group, function(i, item) {
+        src = item.opts.thumb || (item.opts.$thumb ? item.opts.$thumb.attr("src") : null);
 
-				if ( !src && item.type === 'image' ) {
-					src = item.src;
-				}
+        if (!src && item.type === "image") {
+          src = item.src;
+        }
 
-				if ( src && src.length ) {
-					list += '<li data-index="' + i + '"  tabindex="0" class="fancybox-thumbs-loading"><img data-src="' + src + '" /></li>';
-				}
-			});
+        list.push(
+          '<li data-index="' +
+            i +
+            '" tabindex="0" class="' +
+            CLASS_LOAD +
+            '"' +
+            (src && src.length ? ' style="background-image:url(' + src + ')" />' : "") +
+            "></li>"
+        );
+      });
 
-			list += '</ul>';
+      self.$list[0].innerHTML = list.join("");
 
-			self.$list = $( list ).appendTo( self.$grid ).on('click', 'li', function() {
-				instance.jumpTo( $(this).data('index') );
-			});
+      if (self.opts.axis === "x") {
+        // Set fixed width for list element to enable horizontal scrolling
+        self.$list.width(
+          parseInt(self.$grid.css("padding-right"), 10) +
+            instance.group.length *
+              self.$list
+                .children()
+                .eq(0)
+                .outerWidth(true)
+        );
+      }
+    },
 
-			self.$list.find( 'img' ).hide().one('load', function() {
-				var $parent		= $(this).parent().removeClass( 'fancybox-thumbs-loading' ),
-					thumbWidth	= $parent.outerWidth(),
-					thumbHeight	= $parent.outerHeight(),
-					width,
-					height,
-					widthRatio,
-					heightRatio;
+    focus: function(duration) {
+      var self = this,
+        $list = self.$list,
+        $grid = self.$grid,
+        thumb,
+        thumbPos;
 
-				width  = this.naturalWidth	|| this.width;
-				height = this.naturalHeight	|| this.height;
+      if (!self.instance.current) {
+        return;
+      }
 
-				// Calculate thumbnail dimensions; center vertically and horizontally
-				widthRatio  = width  / thumbWidth;
-				heightRatio = height / thumbHeight;
+      thumb = $list
+        .children()
+        .removeClass(CLASS_ACTIVE)
+        .filter('[data-index="' + self.instance.current.index + '"]')
+        .addClass(CLASS_ACTIVE);
 
-				if (widthRatio >= 1 && heightRatio >= 1) {
-					if (widthRatio > heightRatio) {
-						width  = width / heightRatio;
-						height = thumbHeight;
+      thumbPos = thumb.position();
 
-					} else {
-						width  = thumbWidth;
-						height = height / widthRatio;
-					}
-				}
+      // Check if need to scroll to make current thumb visible
+      if (self.opts.axis === "y" && (thumbPos.top < 0 || thumbPos.top > $list.height() - thumb.outerHeight())) {
+        $list.stop().animate(
+          {
+            scrollTop: $list.scrollTop() + thumbPos.top
+          },
+          duration
+        );
+      } else if (
+        self.opts.axis === "x" &&
+        (thumbPos.left < $grid.scrollLeft() || thumbPos.left > $grid.scrollLeft() + ($grid.width() - thumb.outerWidth()))
+      ) {
+        $list
+          .parent()
+          .stop()
+          .animate(
+            {
+              scrollLeft: thumbPos.left
+            },
+            duration
+          );
+      }
+    },
 
-				$(this).css({
-					width         : Math.floor(width),
-					height        : Math.floor(height),
-					'margin-top'  : height > thumbHeight ? ( Math.floor(thumbHeight * 0.3 - height * 0.3 ) ) : Math.floor(thumbHeight * 0.5 - height * 0.5 ),
-					'margin-left' : Math.floor(thumbWidth * 0.5 - width * 0.5 )
-				}).show();
+    update: function() {
+      var that = this;
+      that.instance.$refs.container.toggleClass("fancybox-show-thumbs", this.isVisible);
 
-			})
-			.each(function() {
-				this.src = $( this ).data( 'src' );
-			});
+      if (that.isVisible) {
+        if (!that.$grid) {
+          that.create();
+        }
 
-			if ( self.opts.axis === 'x' ) {
-				self.$list.width( parseInt( self.$grid.css("padding-right") ) + ( instance.group.length * self.$list.children().eq(0).outerWidth(true) ) + 'px' );
-			}
-		},
+        that.instance.trigger("onThumbsShow");
 
-		focus : function( duration ) {
-			var self = this,
-				$list = self.$list,
-				thumb,
-				thumbPos;
+        that.focus(0);
+      } else if (that.$grid) {
+        that.instance.trigger("onThumbsHide");
+      }
 
-			if ( self.instance.current ) {
-				thumb = $list.children()
-					.removeClass( 'fancybox-thumbs-active' )
-					.filter('[data-index="' + self.instance.current.index  + '"]')
-					.addClass('fancybox-thumbs-active');
+      // Update content position
+      that.instance.update();
+    },
 
-				thumbPos = thumb.position();
+    hide: function() {
+      this.isVisible = false;
+      this.update();
+    },
 
-				// Check if need to scroll to make current thumb visible
-				if ( self.opts.axis === 'y' && ( thumbPos.top < 0 || thumbPos.top > ( $list.height() - thumb.outerHeight() ) ) ) {
-					$list.stop().animate({ 'scrollTop' : $list.scrollTop() + thumbPos.top }, duration);
+    show: function() {
+      this.isVisible = true;
+      this.update();
+    },
 
-				} else if ( self.opts.axis === 'x' && (
-						thumbPos.left < $list.parent().scrollLeft() ||
-						thumbPos.left > ( $list.parent().scrollLeft() + ( $list.parent().width() - thumb.outerWidth() ) )
-					)
-				) {
-					$list.parent().stop().animate({ 'scrollLeft' : thumbPos.left }, duration);
-				}
-			}
-		},
+    toggle: function() {
+      this.isVisible = !this.isVisible;
+      this.update();
+    }
+  });
 
-		update : function() {
-			this.instance.$refs.container.toggleClass( 'fancybox-show-thumbs', this.isVisible );
+  $(document).on({
+    "onInit.fb": function(e, instance) {
+      var Thumbs;
 
-			if ( this.isVisible ) {
-				if ( !this.$grid ) {
-					this.create();
-				}
+      if (instance && !instance.Thumbs) {
+        Thumbs = new FancyThumbs(instance);
 
-				this.instance.trigger( 'onThumbsShow' );
+        if (Thumbs.isActive && Thumbs.opts.autoStart === true) {
+          Thumbs.show();
+        }
+      }
+    },
 
-				this.focus( 0 );
+    "beforeShow.fb": function(e, instance, item, firstRun) {
+      var Thumbs = instance && instance.Thumbs;
 
-			} else if ( this.$grid ) {
-				this.instance.trigger( 'onThumbsHide' );
-			}
+      if (Thumbs && Thumbs.isVisible) {
+        Thumbs.focus(firstRun ? 0 : 250);
+      }
+    },
 
-			// Update content position
-			this.instance.update();
-		},
+    "afterKeydown.fb": function(e, instance, current, keypress, keycode) {
+      var Thumbs = instance && instance.Thumbs;
 
-		hide : function() {
-			this.isVisible = false;
-			this.update();
-		},
+      // "G"
+      if (Thumbs && Thumbs.isActive && keycode === 71) {
+        keypress.preventDefault();
 
-		show : function() {
-			this.isVisible = true;
-			this.update();
-		},
+        Thumbs.toggle();
+      }
+    },
 
-		toggle : function() {
-			this.isVisible = !this.isVisible;
-			this.update();
-		}
-	});
+    "beforeClose.fb": function(e, instance) {
+      var Thumbs = instance && instance.Thumbs;
 
-	$(document).on({
-
-		'onInit.fb' : function(e, instance) {
-			var Thumbs;
-
-			if ( instance && !instance.Thumbs ) {
-				Thumbs = new FancyThumbs( instance );
-
-				if ( Thumbs.isActive && Thumbs.opts.autoStart === true ) {
-					Thumbs.show();
-				}
-			}
-		},
-
-		'beforeShow.fb' : function(e, instance, item, firstRun) {
-			var Thumbs = instance && instance.Thumbs;
-
-			if ( Thumbs && Thumbs.isVisible ) {
-				Thumbs.focus( firstRun ? 0 : 250 );
-			}
-		},
-
-		'afterKeydown.fb' : function(e, instance, current, keypress, keycode) {
-			var Thumbs = instance && instance.Thumbs;
-
-			// "G"
-			if ( Thumbs && Thumbs.isActive && keycode === 71 ) {
-				keypress.preventDefault();
-
-				Thumbs.toggle();
-			}
-		},
-
-		'beforeClose.fb' : function( e, instance ) {
-			var Thumbs = instance && instance.Thumbs;
-
-			if ( Thumbs && Thumbs.isVisible && Thumbs.opts.hideOnClose !== false ) {
-				Thumbs.$grid.hide();
-			}
-		}
-
-	});
-
-}(document, window.jQuery));
+      if (Thumbs && Thumbs.isVisible && Thumbs.opts.hideOnClose !== false) {
+        Thumbs.$grid.hide();
+      }
+    }
+  });
+})(document, window.jQuery || jQuery);
 
 //// ==========================================================================
 //
@@ -18231,83 +18156,104 @@ return jQuery;
 // Displays simple form for sharing current url
 //
 // ==========================================================================
-;(function (document, $) {
-	'use strict';
+(function(document, $) {
+  "use strict";
 
-	$.extend(true, $.fancybox.defaults, {
-		btnTpl : {
-			share :
-				'<button data-fancybox-share class="fancybox-button fancybox-button--share" title="{{SHARE}}">' +
-					'<svg viewBox="0 0 40 40">' +
-						'<path d="M6,30 C8,18 19,16 23,16 L23,16 L23,10 L33,20 L23,29 L23,24 C19,24 8,27 6,30 Z">' +
-					'</svg>' +
-				'</button>'
-		},
-		share : {
-			tpl :
-				'<div class="fancybox-share">' +
-					'<h1>{{SHARE}}</h1>' +
-					'<p>' +
-						'<a href="https://www.facebook.com/sharer/sharer.php?u={{src}}" target="_blank" class="fancybox-share_button">' +
-							'<svg version="1.1" viewBox="0 0 32 32" fill="#3b5998"><path d="M27.6 3h-23.2c-.8 0-1.4.6-1.4 1.4v23.1c0 .9.6 1.5 1.4 1.5h12.5v-10.1h-3.4v-3.9h3.4v-2.9c0-3.4 2.1-5.2 5-5.2 1.4 0 2.7.1 3 .2v3.5h-2.1c-1.6 0-1.9.8-1.9 1.9v2.5h3.9l-.5 3.9h-3.4v10.1h6.6c.8 0 1.4-.6 1.4-1.4v-23.2c.1-.8-.5-1.4-1.3-1.4z"></path></svg>' +
-							'<span>Facebook</span>' +
-						'</a>' +
-						'<a href="https://www.pinterest.com/pin/create/button/?url={{src}}&amp;description={{descr}}" target="_blank" class="fancybox-share_button">' +
-							'<svg version="1.1" viewBox="0 0 32 32" fill="#c92228"><path d="M16 3c-7.2 0-13 5.8-13 13 0 5.5 3.4 10.2 8.3 12.1-.1-1-.2-2.6 0-3.7.2-1 1.5-6.5 1.5-6.5s-.4-.8-.4-1.9c0-1.8 1-3.2 2.4-3.2 1.1 0 1.6.8 1.6 1.8 0 1.1-.7 2.8-1.1 4.3-.3 1.3.6 2.3 1.9 2.3 2.3 0 4.1-2.4 4.1-6 0-3.1-2.2-5.3-5.4-5.3-3.7 0-5.9 2.8-5.9 5.6 0 1.1.4 2.3 1 3 .1.1.1.2.1.4-.1.4-.3 1.3-.4 1.5-.1.2-.2.3-.4.2-1.6-.8-2.6-3.1-2.6-5 0-4.1 3-7.9 8.6-7.9 4.5 0 8 3.2 8 7.5 0 4.5-2.8 8.1-6.7 8.1-1.3 0-2.6-.7-3-1.5 0 0-.7 2.5-.8 3.1-.3 1.1-1.1 2.5-1.6 3.4 1.2.4 2.5.6 3.8.6 7.2 0 13-5.8 13-13 0-7.1-5.8-12.9-13-12.9z"></path></svg>' +
-							'<span>Pinterest</span>' +
-						'</a>' +
-						'<a href="https://twitter.com/intent/tweet?url={{src}}&amp;text={{descr}}" target="_blank" class="fancybox-share_button">' +
-							'<svg version="1.1" viewBox="0 0 32 32" fill="#1da1f2"><path d="M30 7.3c-1 .5-2.1.8-3.3.9 1.2-.7 2.1-1.8 2.5-3.2-1.1.7-2.3 1.1-3.6 1.4-1-1.1-2.5-1.8-4.2-1.8-3.2 0-5.7 2.6-5.7 5.7 0 .5.1.9.1 1.3-4.8-.2-9-2.5-11.8-6-.5.9-.8 1.9-.8 3 0 2 1 3.8 2.6 4.8-.9 0-1.8-.3-2.6-.7v.1c0 2.8 2 5.1 4.6 5.6-.5.1-1 .2-1.5.2-.4 0-.7 0-1.1-.1.7 2.3 2.9 3.9 5.4 4-2 1.5-4.4 2.5-7.1 2.5-.5 0-.9 0-1.4-.1 2.5 1.6 5.6 2.6 8.8 2.6 10.6 0 16.3-8.8 16.3-16.3v-.7c1.1-1 2-2 2.8-3.2z"></path></svg>' +
-							'<span>Twitter</span>' +
-						'</a>' +
-					'</p>' +
-					'<p><input type="text" value="{{src_raw}}" onfocus="this.select()" /></p>' +
-				'</div>'
-		}
-	});
+  $.extend(true, $.fancybox.defaults, {
+    btnTpl: {
+      share:
+        '<button data-fancybox-share class="fancybox-button fancybox-button--share" title="{{SHARE}}">' +
+        '<svg viewBox="0 0 40 40">' +
+        '<path d="M6,30 C8,18 19,16 23,16 L23,16 L23,10 L33,20 L23,29 L23,24 C19,24 8,27 6,30 Z">' +
+        "</svg>" +
+        "</button>"
+    },
+    share: {
+      url: function(instance, item) {
+        return (
+          (!instance.currentHash && !(item.type === "inline" || item.type === "html") ? item.origSrc || item.src : false) || window.location
+        );
+      },
+      tpl:
+        '<div class="fancybox-share">' +
+        "<h1>{{SHARE}}</h1>" +
+        "<p>" +
+        '<a class="fancybox-share__button fancybox-share__button--fb" href="https://www.facebook.com/sharer/sharer.php?u={{url}}">' +
+        '<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="m287 456v-299c0-21 6-35 35-35h38v-63c-7-1-29-3-55-3-54 0-91 33-91 94v306m143-254h-205v72h196" /></svg>' +
+        "<span>Facebook</span>" +
+        "</a>" +
+        '<a class="fancybox-share__button fancybox-share__button--tw" href="https://twitter.com/intent/tweet?url={{url}}&text={{descr}}">' +
+        '<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="m456 133c-14 7-31 11-47 13 17-10 30-27 37-46-15 10-34 16-52 20-61-62-157-7-141 75-68-3-129-35-169-85-22 37-11 86 26 109-13 0-26-4-37-9 0 39 28 72 65 80-12 3-25 4-37 2 10 33 41 57 77 57-42 30-77 38-122 34 170 111 378-32 359-208 16-11 30-25 41-42z" /></svg>' +
+        "<span>Twitter</span>" +
+        "</a>" +
+        '<a class="fancybox-share__button fancybox-share__button--pt" href="https://www.pinterest.com/pin/create/button/?url={{url}}&description={{descr}}&media={{media}}">' +
+        '<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="m265 56c-109 0-164 78-164 144 0 39 15 74 47 87 5 2 10 0 12-5l4-19c2-6 1-8-3-13-9-11-15-25-15-45 0-58 43-110 113-110 62 0 96 38 96 88 0 67-30 122-73 122-24 0-42-19-36-44 6-29 20-60 20-81 0-19-10-35-31-35-25 0-44 26-44 60 0 21 7 36 7 36l-30 125c-8 37-1 83 0 87 0 3 4 4 5 2 2-3 32-39 42-75l16-64c8 16 31 29 56 29 74 0 124-67 124-157 0-69-58-132-146-132z" fill="#fff"/></svg>' +
+        "<span>Pinterest</span>" +
+        "</a>" +
+        "</p>" +
+        '<p><input class="fancybox-share__input" type="text" value="{{url_raw}}" /></p>' +
+        "</div>"
+    }
+  });
 
-	function escapeHtml(string) {
-		var entityMap = {
-		  '&': '&amp;',
-		  '<': '&lt;',
-		  '>': '&gt;',
-		  '"': '&quot;',
-		  "'": '&#39;',
-		  '/': '&#x2F;',
-		  '`': '&#x60;',
-		  '=': '&#x3D;'
-		};
+  function escapeHtml(string) {
+    var entityMap = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;",
+      "/": "&#x2F;",
+      "`": "&#x60;",
+      "=": "&#x3D;"
+    };
 
-		return String(string).replace(/[&<>"'`=\/]/g, function (s) {
-			return entityMap[s];
-		});
-	}
+    return String(string).replace(/[&<>"'`=\/]/g, function(s) {
+      return entityMap[s];
+    });
+  }
 
-	$(document).on('click', '[data-fancybox-share]', function() {
-		var f = $.fancybox.getInstance(),
-			url,
-			tpl;
+  $(document).on("click", "[data-fancybox-share]", function() {
+    var instance = $.fancybox.getInstance(),
+      current = instance.current || null,
+      url,
+      tpl;
 
-		if ( f ) {
-			url = f.current.opts.hash === false ? f.current.src : window.location;
-			tpl = f.current.opts.share.tpl
-					.replace( /\{\{src\}\}/g, encodeURIComponent( url ) )
-					.replace( /\{\{src_raw\}\}/g, escapeHtml( url ) )
-					.replace( /\{\{descr\}\}/g, f.$caption ? encodeURIComponent( f.$caption.text() ) : '' );
+    if (!current) {
+      return;
+    }
 
-			$.fancybox.open({
-				src  : f.translate( f, tpl ),
-				type : 'html',
-				opts : {
-					animationEffect   : "fade",
-					animationDuration : 250
-				}
-			});
-		}
+    if ($.type(current.opts.share.url) === "function") {
+      url = current.opts.share.url.apply(current, [instance, current]);
+    }
 
-	});
+    tpl = current.opts.share.tpl
+      .replace(/\{\{media\}\}/g, current.type === "image" ? encodeURIComponent(current.src) : "")
+      .replace(/\{\{url\}\}/g, encodeURIComponent(url))
+      .replace(/\{\{url_raw\}\}/g, escapeHtml(url))
+      .replace(/\{\{descr\}\}/g, instance.$caption ? encodeURIComponent(instance.$caption.text()) : "");
 
-}( document, window.jQuery || jQuery ));
+    $.fancybox.open({
+      src: instance.translate(instance, tpl),
+      type: "html",
+      opts: {
+        animationEffect: false,
+        afterLoad: function(shareInstance, shareCurrent) {
+          // Close self if parent instance is closing
+          instance.$refs.container.one("beforeClose.fb", function() {
+            shareInstance.close(null, 0);
+          });
+
+          // Opening links in a popup window
+          shareCurrent.$content.find(".fancybox-share__links a").click(function() {
+            window.open(this.href, "Share", "width=550, height=450");
+            return false;
+          });
+        }
+      }
+    });
+  });
+})(document, window.jQuery || jQuery);
 
 // ==========================================================================
 //
@@ -18315,218 +18261,258 @@ return jQuery;
 // Enables linking to each modal
 //
 // ==========================================================================
-;(function (document, window, $) {
-	'use strict';
+(function(document, window, $) {
+  "use strict";
 
-	// Simple $.escapeSelector polyfill (for jQuery prior v3)
-	if ( !$.escapeSelector ) {
-		$.escapeSelector = function( sel ) {
-			var rcssescape = /([\0-\x1f\x7f]|^-?\d)|^-$|[^\x80-\uFFFF\w-]/g;
-			var fcssescape = function( ch, asCodePoint ) {
-				if ( asCodePoint ) {
-					// U+0000 NULL becomes U+FFFD REPLACEMENT CHARACTER
-					if ( ch === "\0" ) {
-						return "\uFFFD";
-					}
+  // Simple $.escapeSelector polyfill (for jQuery prior v3)
+  if (!$.escapeSelector) {
+    $.escapeSelector = function(sel) {
+      var rcssescape = /([\0-\x1f\x7f]|^-?\d)|^-$|[^\x80-\uFFFF\w-]/g;
+      var fcssescape = function(ch, asCodePoint) {
+        if (asCodePoint) {
+          // U+0000 NULL becomes U+FFFD REPLACEMENT CHARACTER
+          if (ch === "\0") {
+            return "\uFFFD";
+          }
 
-					// Control characters and (dependent upon position) numbers get escaped as code points
-					return ch.slice( 0, -1 ) + "\\" + ch.charCodeAt( ch.length - 1 ).toString( 16 ) + " ";
-				}
+          // Control characters and (dependent upon position) numbers get escaped as code points
+          return ch.slice(0, -1) + "\\" + ch.charCodeAt(ch.length - 1).toString(16) + " ";
+        }
 
-				// Other potentially-special ASCII characters get backslash-escaped
-				return "\\" + ch;
-			};
+        // Other potentially-special ASCII characters get backslash-escaped
+        return "\\" + ch;
+      };
 
-			return ( sel + "" ).replace( rcssescape, fcssescape );
-		};
-	}
+      return (sel + "").replace(rcssescape, fcssescape);
+    };
+  }
 
-	// Create new history entry only once
-	var shouldCreateHistory = true;
+  // Get info about gallery name and current index from url
+  function parseUrl() {
+    var hash = window.location.hash.substr(1),
+      rez = hash.split("-"),
+      index = rez.length > 1 && /^\+?\d+$/.test(rez[rez.length - 1]) ? parseInt(rez.pop(-1), 10) || 1 : 1,
+      gallery = rez.join("-");
 
-	// Variable containing last hash value set by fancyBox
-	// It will be used to determine if fancyBox needs to close after hash change is detected
-    var currentHash = null;
+    return {
+      hash: hash,
+      /* Index is starting from 1 */
+      index: index < 1 ? 1 : index,
+      gallery: gallery
+    };
+  }
 
-	// Throttling the history change
-	var timerID = null;
+  // Trigger click evnt on links to open new fancyBox instance
+  function triggerFromUrl(url) {
+    var $el;
 
-	// Get info about gallery name and current index from url
-    function parseUrl() {
-        var hash    = window.location.hash.substr( 1 );
-        var rez     = hash.split( '-' );
-        var index   = rez.length > 1 && /^\+?\d+$/.test( rez[ rez.length - 1 ] ) ? parseInt( rez.pop( -1 ), 10 ) || 1 : 1;
-        var gallery = rez.join( '-' );
+    if (url.gallery !== "") {
+      // If we can find element matching 'data-fancybox' atribute, then trigger click event for that.
+      // It should start fancyBox
+      $el = $("[data-fancybox='" + $.escapeSelector(url.gallery) + "']")
+        .eq(url.index - 1)
+        .trigger("click.fb-start");
+    }
+  }
 
-		// Index is starting from 1
-		if ( index < 1 ) {
-			index = 1;
-		}
+  // Get gallery name from current instance
+  function getGalleryID(instance) {
+    var opts, ret;
 
-        return {
-            hash    : hash,
-            index   : index,
-            gallery : gallery
-        };
+    if (!instance) {
+      return false;
     }
 
-	// Trigger click evnt on links to open new fancyBox instance
-	function triggerFromUrl( url ) {
-		var $el;
+    opts = instance.current ? instance.current.opts : instance.opts;
+    ret = opts.hash || (opts.$orig ? opts.$orig.data("fancybox") : "");
 
-        if ( url.gallery !== '' ) {
+    return ret === "" ? false : ret;
+  }
 
-			// If we can find element matching 'data-fancybox' atribute, then trigger click event for that ..
-			$el = $( "[data-fancybox='" + $.escapeSelector( url.gallery ) + "']" ).eq( url.index - 1 );
+  // Start when DOM becomes ready
+  $(function() {
+    // Check if user has disabled this module
+    if ($.fancybox.defaults.hash === false) {
+      return;
+    }
 
-            if ( !$el.length ) {
-				// .. if not, try finding element by ID
-				$el = $( "#" + $.escapeSelector( url.gallery ) + "" );
-			}
+    // Update hash when opening/closing fancyBox
+    $(document).on({
+      "onInit.fb": function(e, instance) {
+        var url, gallery;
 
-			if ( $el.length ) {
-				shouldCreateHistory = false;
-
-				$el.trigger( 'click' );
-			}
-
+        if (instance.group[instance.currIndex].opts.hash === false) {
+          return;
         }
-	}
 
-	// Get gallery name from current instance
-	function getGalleryID( instance ) {
-		var opts;
+        url = parseUrl();
+        gallery = getGalleryID(instance);
 
-		if ( !instance ) {
-			return false;
-		}
+        // Make sure gallery start index matches index from hash
+        if (gallery && url.gallery && gallery == url.gallery) {
+          instance.currIndex = url.index - 1;
+        }
+      },
 
-		opts = instance.current ? instance.current.opts : instance.opts;
+      "beforeShow.fb": function(e, instance, current, firstRun) {
+        var gallery;
 
-		return opts.hash || ( opts.$orig ? opts.$orig.data( 'fancybox' ) : ''  );
-	}
+        if (!current || current.opts.hash === false) {
+          return;
+        }
 
-	// Start when DOM becomes ready
-    $(function() {
+        // Check if need to update window hash
+        gallery = getGalleryID(instance);
 
-		// Check if user has disabled this module
-		if ( $.fancybox.defaults.hash === false ) {
-			return;
-		}
+        if (!gallery) {
+          return;
+        }
 
-		// Update hash when opening/closing fancyBox
-	    $(document).on({
-			'onInit.fb' : function( e, instance ) {
-				var url, gallery;
+        // Variable containing last hash value set by fancyBox
+        // It will be used to determine if fancyBox needs to close after hash change is detected
+        instance.currentHash = gallery + (instance.group.length > 1 ? "-" + (current.index + 1) : "");
 
-				if ( instance.group[ instance.currIndex ].opts.hash === false ) {
-					return;
-				}
+        // If current hash is the same (this instance most likely is opened by hashchange), then do nothing
+        if (window.location.hash === "#" + instance.currentHash) {
+          return;
+        }
 
-				url     = parseUrl();
-				gallery = getGalleryID( instance );
+        if (!instance.origHash) {
+          instance.origHash = window.location.hash;
+        }
 
-				// Make sure gallery start index matches index from hash
-				if ( gallery && url.gallery && gallery == url.gallery ) {
-					instance.currIndex = url.index - 1;
-				}
-			},
+        if (instance.hashTimer) {
+          clearTimeout(instance.hashTimer);
+        }
 
-			'beforeShow.fb' : function( e, instance, current ) {
-				var gallery;
+        // Update hash
+        instance.hashTimer = setTimeout(function() {
+          if ("replaceState" in window.history) {
+            window.history[firstRun ? "pushState" : "replaceState"](
+              {},
+              document.title,
+              window.location.pathname + window.location.search + "#" + instance.currentHash
+            );
 
-				if ( !current || current.opts.hash === false ) {
-					return;
-				}
+            if (firstRun) {
+              instance.hasCreatedHistory = true;
+            }
+          } else {
+            window.location.hash = instance.currentHash;
+          }
 
-	            gallery = getGalleryID( instance );
+          instance.hashTimer = null;
+        }, 300);
+      },
 
-	            // Update window hash
-	            if ( gallery && gallery !== '' ) {
+      "beforeClose.fb": function(e, instance, current) {
+        var gallery;
 
-					if ( window.location.hash.indexOf( gallery ) < 0 ) {
-		                instance.opts.origHash = window.location.hash;
-		            }
+        if (current.opts.hash === false) {
+          return;
+        }
 
-					currentHash = gallery + ( instance.group.length > 1 ? '-' + ( current.index + 1 ) : '' );
+        gallery = getGalleryID(instance);
 
-					if ( 'replaceState' in window.history ) {
-						if ( timerID ) {
-							clearTimeout( timerID );
-						}
+        // Goto previous history entry
+        if (instance.currentHash && instance.hasCreatedHistory) {
+          window.history.back();
+        } else if (instance.currentHash) {
+          if ("replaceState" in window.history) {
+            window.history.replaceState({}, document.title, window.location.pathname + window.location.search + (instance.origHash || ""));
+          } else {
+            window.location.hash = instance.origHash;
+          }
+        }
 
-						timerID = setTimeout(function() {
-							window.history[ shouldCreateHistory ? 'pushState' : 'replaceState' ]( {} , document.title, window.location.pathname + window.location.search + '#' +  currentHash );
+        instance.currentHash = null;
 
-							timerID = null;
-
-							shouldCreateHistory = false;
-
-						}, 300);
-
-					} else {
-						window.location.hash = currentHash;
-					}
-
-	            }
-
-	        },
-
-			'beforeClose.fb' : function( e, instance, current ) {
-				var gallery, origHash;
-
-				if ( timerID ) {
-					clearTimeout( timerID );
-				}
-
-				if ( current.opts.hash === false ) {
-					return;
-				}
-
-				gallery  = getGalleryID( instance );
-				origHash = instance && instance.opts.origHash ? instance.opts.origHash : '';
-
-	            // Remove hash from location bar
-	            if ( gallery && gallery !== '' ) {
-
-	                if ( 'replaceState' in history ) {
-						window.history.replaceState( {} , document.title, window.location.pathname + window.location.search + origHash );
-
-	                } else {
-						window.location.hash = origHash;
-
-						// Keep original scroll position
-						$( window ).scrollTop( instance.scrollTop ).scrollLeft( instance.scrollLeft );
-	                }
-	            }
-
-				currentHash = null;
-	        }
-	    });
-
-		// Check if need to close after url has changed
-		$(window).on('hashchange.fb', function() {
-			var url = parseUrl();
-
-			if ( $.fancybox.getInstance() ) {
-				if ( currentHash && currentHash !== url.gallery + '-' + url.index && !( url.index === 1 && currentHash == url.gallery ) ) {
-					currentHash = null;
-
-					$.fancybox.close();
-				}
-
-			} else if ( url.gallery !== '' ) {
-				triggerFromUrl( url );
-			}
-		});
-
-		// Check current hash and trigger click event on matching element to start fancyBox, if needed
-		setTimeout(function() {
-			triggerFromUrl( parseUrl() );
-		}, 50);
+        clearTimeout(instance.hashTimer);
+      }
     });
 
-}( document, window, window.jQuery || jQuery ));
+    // Check if need to start/close after url has changed
+    $(window).on("hashchange.fb", function() {
+      var url = parseUrl(),
+        fb;
+
+      // Find last fancyBox instance that has "hash"
+      $.each(
+        $(".fancybox-container")
+          .get()
+          .reverse(),
+        function(index, value) {
+          var tmp = $(value).data("FancyBox");
+          //isClosing
+          if (tmp.currentHash) {
+            fb = tmp;
+            return false;
+          }
+        }
+      );
+
+      if (fb) {
+        // Now, compare hash values
+        if (fb.currentHash && fb.currentHash !== url.gallery + "-" + url.index && !(url.index === 1 && fb.currentHash == url.gallery)) {
+          fb.currentHash = null;
+
+          fb.close();
+        }
+      } else if (url.gallery !== "") {
+        triggerFromUrl(url);
+      }
+    });
+
+    // Check current hash and trigger click event on matching element to start fancyBox, if needed
+    setTimeout(function() {
+      if (!$.fancybox.getInstance()) {
+        triggerFromUrl(parseUrl());
+      }
+    }, 50);
+  });
+})(document, window, window.jQuery || jQuery);
+
+// ==========================================================================
+//
+// Wheel
+// Basic mouse weheel support for gallery navigation
+//
+// ==========================================================================
+(function(document, $) {
+  "use strict";
+
+  var prevTime = new Date().getTime();
+
+  $(document).on({
+    "onInit.fb": function(e, instance, current) {
+      instance.$refs.stage.on("mousewheel DOMMouseScroll wheel MozMousePixelScroll", function(e) {
+        var current = instance.current,
+          currTime = new Date().getTime();
+
+        if (instance.group.length < 2 || current.opts.wheel === false || (current.opts.wheel === "auto" && current.type !== "image")) {
+          return;
+        }
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (current.$slide.hasClass("fancybox-animated")) {
+          return;
+        }
+
+        e = e.originalEvent || e;
+
+        if (currTime - prevTime < 250) {
+          return;
+        }
+
+        prevTime = currTime;
+
+        instance[(-e.deltaY || -e.deltaX || e.wheelDelta || -e.detail) < 0 ? "next" : "previous"]();
+      });
+    }
+  });
+})(document, window.jQuery || jQuery);
 
 (function() {
   var $, AbstractChosen, Chosen, SelectParser,
@@ -26934,2062 +26920,6 @@ $.fn.extend({
 });
 }));
 
-/* flatpickr v4.4.3, @license MIT */
-(function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-    typeof define === 'function' && define.amd ? define(factory) :
-    (global.flatpickr = factory());
-}(this, (function () { 'use strict';
-
-    var pad = function pad(number) {
-      return ("0" + number).slice(-2);
-    };
-    var int = function int(bool) {
-      return bool === true ? 1 : 0;
-    };
-    function debounce(func, wait, immediate) {
-      if (immediate === void 0) {
-        immediate = false;
-      }
-
-      var timeout;
-      return function () {
-        var context = this,
-            args = arguments;
-        timeout !== null && clearTimeout(timeout);
-        timeout = window.setTimeout(function () {
-          timeout = null;
-          if (!immediate) func.apply(context, args);
-        }, wait);
-        if (immediate && !timeout) func.apply(context, args);
-      };
-    }
-    var arrayify = function arrayify(obj) {
-      return obj instanceof Array ? obj : [obj];
-    };
-
-    var do_nothing = function do_nothing() {
-      return undefined;
-    };
-
-    var monthToStr = function monthToStr(monthNumber, shorthand, locale) {
-      return locale.months[shorthand ? "shorthand" : "longhand"][monthNumber];
-    };
-    var revFormat = {
-      D: do_nothing,
-      F: function F(dateObj, monthName, locale) {
-        dateObj.setMonth(locale.months.longhand.indexOf(monthName));
-      },
-      G: function G(dateObj, hour) {
-        dateObj.setHours(parseFloat(hour));
-      },
-      H: function H(dateObj, hour) {
-        dateObj.setHours(parseFloat(hour));
-      },
-      J: function J(dateObj, day) {
-        dateObj.setDate(parseFloat(day));
-      },
-      K: function K(dateObj, amPM, locale) {
-        dateObj.setHours(dateObj.getHours() % 12 + 12 * int(new RegExp(locale.amPM[1], "i").test(amPM)));
-      },
-      M: function M(dateObj, shortMonth, locale) {
-        dateObj.setMonth(locale.months.shorthand.indexOf(shortMonth));
-      },
-      S: function S(dateObj, seconds) {
-        dateObj.setSeconds(parseFloat(seconds));
-      },
-      U: function U(_, unixSeconds) {
-        return new Date(parseFloat(unixSeconds) * 1000);
-      },
-      W: function W(dateObj, weekNum) {
-        var weekNumber = parseInt(weekNum);
-        return new Date(dateObj.getFullYear(), 0, 2 + (weekNumber - 1) * 7, 0, 0, 0, 0);
-      },
-      Y: function Y(dateObj, year) {
-        dateObj.setFullYear(parseFloat(year));
-      },
-      Z: function Z(_, ISODate) {
-        return new Date(ISODate);
-      },
-      d: function d(dateObj, day) {
-        dateObj.setDate(parseFloat(day));
-      },
-      h: function h(dateObj, hour) {
-        dateObj.setHours(parseFloat(hour));
-      },
-      i: function i(dateObj, minutes) {
-        dateObj.setMinutes(parseFloat(minutes));
-      },
-      j: function j(dateObj, day) {
-        dateObj.setDate(parseFloat(day));
-      },
-      l: do_nothing,
-      m: function m(dateObj, month) {
-        dateObj.setMonth(parseFloat(month) - 1);
-      },
-      n: function n(dateObj, month) {
-        dateObj.setMonth(parseFloat(month) - 1);
-      },
-      s: function s(dateObj, seconds) {
-        dateObj.setSeconds(parseFloat(seconds));
-      },
-      w: do_nothing,
-      y: function y(dateObj, year) {
-        dateObj.setFullYear(2000 + parseFloat(year));
-      }
-    };
-    var tokenRegex = {
-      D: "(\\w+)",
-      F: "(\\w+)",
-      G: "(\\d\\d|\\d)",
-      H: "(\\d\\d|\\d)",
-      J: "(\\d\\d|\\d)\\w+",
-      K: "",
-      M: "(\\w+)",
-      S: "(\\d\\d|\\d)",
-      U: "(.+)",
-      W: "(\\d\\d|\\d)",
-      Y: "(\\d{4})",
-      Z: "(.+)",
-      d: "(\\d\\d|\\d)",
-      h: "(\\d\\d|\\d)",
-      i: "(\\d\\d|\\d)",
-      j: "(\\d\\d|\\d)",
-      l: "(\\w+)",
-      m: "(\\d\\d|\\d)",
-      n: "(\\d\\d|\\d)",
-      s: "(\\d\\d|\\d)",
-      w: "(\\d\\d|\\d)",
-      y: "(\\d{2})"
-    };
-    var formats = {
-      Z: function Z(date) {
-        return date.toISOString();
-      },
-      D: function D(date, locale, options) {
-        return locale.weekdays.shorthand[formats.w(date, locale, options)];
-      },
-      F: function F(date, locale, options) {
-        return monthToStr(formats.n(date, locale, options) - 1, false, locale);
-      },
-      G: function G(date, locale, options) {
-        return pad(formats.h(date, locale, options));
-      },
-      H: function H(date) {
-        return pad(date.getHours());
-      },
-      J: function J(date, locale) {
-        return locale.ordinal !== undefined ? date.getDate() + locale.ordinal(date.getDate()) : date.getDate();
-      },
-      K: function K(date, locale) {
-        return locale.amPM[int(date.getHours() > 11)];
-      },
-      M: function M(date, locale) {
-        return monthToStr(date.getMonth(), true, locale);
-      },
-      S: function S(date) {
-        return pad(date.getSeconds());
-      },
-      U: function U(date) {
-        return date.getTime() / 1000;
-      },
-      W: function W(date, _, options) {
-        return options.getWeek(date);
-      },
-      Y: function Y(date) {
-        return date.getFullYear();
-      },
-      d: function d(date) {
-        return pad(date.getDate());
-      },
-      h: function h(date) {
-        return date.getHours() % 12 ? date.getHours() % 12 : 12;
-      },
-      i: function i(date) {
-        return pad(date.getMinutes());
-      },
-      j: function j(date) {
-        return date.getDate();
-      },
-      l: function l(date, locale) {
-        return locale.weekdays.longhand[date.getDay()];
-      },
-      m: function m(date) {
-        return pad(date.getMonth() + 1);
-      },
-      n: function n(date) {
-        return date.getMonth() + 1;
-      },
-      s: function s(date) {
-        return date.getSeconds();
-      },
-      w: function w(date) {
-        return date.getDay();
-      },
-      y: function y(date) {
-        return String(date.getFullYear()).substring(2);
-      }
-    };
-
-    var english = {
-      weekdays: {
-        shorthand: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-        longhand: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-      },
-      months: {
-        shorthand: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-        longhand: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-      },
-      daysInMonth: [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
-      firstDayOfWeek: 0,
-      ordinal: function ordinal(nth) {
-        var s = nth % 100;
-        if (s > 3 && s < 21) return "th";
-
-        switch (s % 10) {
-          case 1:
-            return "st";
-
-          case 2:
-            return "nd";
-
-          case 3:
-            return "rd";
-
-          default:
-            return "th";
-        }
-      },
-      rangeSeparator: " to ",
-      weekAbbreviation: "Wk",
-      scrollTitle: "Scroll to increment",
-      toggleTitle: "Click to toggle",
-      amPM: ["AM", "PM"],
-      yearAriaLabel: "Year"
-    };
-
-    var createDateFormatter = function createDateFormatter(_ref) {
-      var _ref$config = _ref.config,
-          config = _ref$config === void 0 ? defaults : _ref$config,
-          _ref$l10n = _ref.l10n,
-          l10n = _ref$l10n === void 0 ? english : _ref$l10n;
-      return function (dateObj, frmt, overrideLocale) {
-        if (config.formatDate !== undefined) return config.formatDate(dateObj, frmt);
-        var locale = overrideLocale || l10n;
-        return frmt.split("").map(function (c, i, arr) {
-          return formats[c] && arr[i - 1] !== "\\" ? formats[c](dateObj, locale, config) : c !== "\\" ? c : "";
-        }).join("");
-      };
-    };
-    var createDateParser = function createDateParser(_ref2) {
-      var _ref2$config = _ref2.config,
-          config = _ref2$config === void 0 ? defaults : _ref2$config,
-          _ref2$l10n = _ref2.l10n,
-          l10n = _ref2$l10n === void 0 ? english : _ref2$l10n;
-      return function (date, givenFormat, timeless) {
-        if (date !== 0 && !date) return undefined;
-        var parsedDate;
-        var date_orig = date;
-        if (date instanceof Date) parsedDate = new Date(date.getTime());else if (typeof date !== "string" && date.toFixed !== undefined) parsedDate = new Date(date);else if (typeof date === "string") {
-          var format = givenFormat || (config || defaults).dateFormat;
-          var datestr = String(date).trim();
-
-          if (datestr === "today") {
-            parsedDate = new Date();
-            timeless = true;
-          } else if (/Z$/.test(datestr) || /GMT$/.test(datestr)) parsedDate = new Date(date);else if (config && config.parseDate) parsedDate = config.parseDate(date, format);else {
-            parsedDate = !config || !config.noCalendar ? new Date(new Date().getFullYear(), 0, 1, 0, 0, 0, 0) : new Date(new Date().setHours(0, 0, 0, 0));
-            var matched,
-                ops = [];
-
-            for (var i = 0, matchIndex = 0, regexStr = ""; i < format.length; i++) {
-              var token = format[i];
-              var isBackSlash = token === "\\";
-              var escaped = format[i - 1] === "\\" || isBackSlash;
-
-              if (tokenRegex[token] && !escaped) {
-                regexStr += tokenRegex[token];
-                var match = new RegExp(regexStr).exec(date);
-
-                if (match && (matched = true)) {
-                  ops[token !== "Y" ? "push" : "unshift"]({
-                    fn: revFormat[token],
-                    val: match[++matchIndex]
-                  });
-                }
-              } else if (!isBackSlash) regexStr += ".";
-
-              ops.forEach(function (_ref3) {
-                var fn = _ref3.fn,
-                    val = _ref3.val;
-                return parsedDate = fn(parsedDate, val, l10n) || parsedDate;
-              });
-            }
-
-            parsedDate = matched ? parsedDate : undefined;
-          }
-        }
-
-        if (!(parsedDate instanceof Date)) {
-          config.errorHandler(new Error("Invalid date provided: " + date_orig));
-          return undefined;
-        }
-
-        if (timeless === true) parsedDate.setHours(0, 0, 0, 0);
-        return parsedDate;
-      };
-    };
-    function compareDates(date1, date2, timeless) {
-      if (timeless === void 0) {
-        timeless = true;
-      }
-
-      if (timeless !== false) {
-        return new Date(date1.getTime()).setHours(0, 0, 0, 0) - new Date(date2.getTime()).setHours(0, 0, 0, 0);
-      }
-
-      return date1.getTime() - date2.getTime();
-    }
-    var getWeek = function getWeek(givenDate) {
-      var date = new Date(givenDate.getTime());
-      date.setHours(0, 0, 0, 0);
-      date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
-      var week1 = new Date(date.getFullYear(), 0, 4);
-      return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
-    };
-    var isBetween = function isBetween(ts, ts1, ts2) {
-      return ts > Math.min(ts1, ts2) && ts < Math.max(ts1, ts2);
-    };
-    var duration = {
-      DAY: 86400000
-    };
-
-    var defaults = {
-      _disable: [],
-      _enable: [],
-      allowInput: false,
-      altFormat: "F j, Y",
-      altInput: false,
-      altInputClass: "form-control input",
-      animate: typeof window === "object" && window.navigator.userAgent.indexOf("MSIE") === -1,
-      ariaDateFormat: "F j, Y",
-      clickOpens: true,
-      closeOnSelect: true,
-      conjunction: ", ",
-      dateFormat: "Y-m-d",
-      defaultHour: 12,
-      defaultMinute: 0,
-      defaultSeconds: 0,
-      disable: [],
-      disableMobile: false,
-      enable: [],
-      enableSeconds: false,
-      enableTime: false,
-      errorHandler: console.warn,
-      getWeek: getWeek,
-      hourIncrement: 1,
-      ignoredFocusElements: [],
-      inline: false,
-      locale: "default",
-      minuteIncrement: 5,
-      mode: "single",
-      nextArrow: "<svg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 17 17'><g></g><path d='M13.207 8.472l-7.854 7.854-0.707-0.707 7.146-7.146-7.146-7.148 0.707-0.707 7.854 7.854z' /></svg>",
-      noCalendar: false,
-      now: new Date(),
-      onChange: [],
-      onClose: [],
-      onDayCreate: [],
-      onDestroy: [],
-      onKeyDown: [],
-      onMonthChange: [],
-      onOpen: [],
-      onParseConfig: [],
-      onReady: [],
-      onValueUpdate: [],
-      onYearChange: [],
-      onPreCalendarPosition: [],
-      plugins: [],
-      position: "auto",
-      positionElement: undefined,
-      prevArrow: "<svg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 17 17'><g></g><path d='M5.207 8.471l7.146 7.147-0.707 0.707-7.853-7.854 7.854-7.853 0.707 0.707-7.147 7.146z' /></svg>",
-      shorthandCurrentMonth: false,
-      showMonths: 1,
-      static: false,
-      time_24hr: false,
-      weekNumbers: false,
-      wrap: false
-    };
-
-    function toggleClass(elem, className, bool) {
-      if (bool === true) return elem.classList.add(className);
-      elem.classList.remove(className);
-    }
-    function createElement(tag, className, content) {
-      var e = window.document.createElement(tag);
-      className = className || "";
-      content = content || "";
-      e.className = className;
-      if (content !== undefined) e.textContent = content;
-      return e;
-    }
-    function clearNode(node) {
-      while (node.firstChild) {
-        node.removeChild(node.firstChild);
-      }
-    }
-    function findParent(node, condition) {
-      if (condition(node)) return node;else if (node.parentNode) return findParent(node.parentNode, condition);
-      return undefined;
-    }
-    function createNumberInput(inputClassName, opts) {
-      var wrapper = createElement("div", "numInputWrapper"),
-          numInput = createElement("input", "numInput " + inputClassName),
-          arrowUp = createElement("span", "arrowUp"),
-          arrowDown = createElement("span", "arrowDown");
-      numInput.type = "text";
-      numInput.pattern = "\\d*";
-      if (opts !== undefined) for (var key in opts) {
-        numInput.setAttribute(key, opts[key]);
-      }
-      wrapper.appendChild(numInput);
-      wrapper.appendChild(arrowUp);
-      wrapper.appendChild(arrowDown);
-      return wrapper;
-    }
-
-    if (typeof Object.assign !== "function") {
-      Object.assign = function (target) {
-        if (!target) {
-          throw TypeError("Cannot convert undefined or null to object");
-        }
-
-        for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-          args[_key - 1] = arguments[_key];
-        }
-
-        var _loop = function _loop(source) {
-          if (source) {
-            Object.keys(source).forEach(function (key) {
-              return target[key] = source[key];
-            });
-          }
-        };
-
-        for (var _i = 0; _i < args.length; _i++) {
-          var source = args[_i];
-
-          _loop(source);
-        }
-
-        return target;
-      };
-    }
-
-    var DEBOUNCED_CHANGE_MS = 300;
-
-    function FlatpickrInstance(element, instanceConfig) {
-      var self = {
-        config: Object.assign({}, flatpickr.defaultConfig),
-        l10n: english
-      };
-      self.parseDate = createDateParser({
-        config: self.config,
-        l10n: self.l10n
-      });
-      self._handlers = [];
-      self._bind = bind;
-      self._setHoursFromDate = setHoursFromDate;
-      self.changeMonth = changeMonth;
-      self.changeYear = changeYear;
-      self.clear = clear;
-      self.close = close;
-      self._createElement = createElement;
-      self.destroy = destroy;
-      self.isEnabled = isEnabled;
-      self.jumpToDate = jumpToDate;
-      self.open = open;
-      self.redraw = redraw;
-      self.set = set;
-      self.setDate = setDate;
-      self.toggle = toggle;
-
-      function setupHelperFunctions() {
-        self.utils = {
-          getDaysInMonth: function getDaysInMonth(month, yr) {
-            if (month === void 0) {
-              month = self.currentMonth;
-            }
-
-            if (yr === void 0) {
-              yr = self.currentYear;
-            }
-
-            if (month === 1 && (yr % 4 === 0 && yr % 100 !== 0 || yr % 400 === 0)) return 29;
-            return self.l10n.daysInMonth[month];
-          }
-        };
-      }
-
-      function init() {
-        self.element = self.input = element;
-        self.isOpen = false;
-        parseConfig();
-        setupLocale();
-        setupInputs();
-        setupDates();
-        setupHelperFunctions();
-        if (!self.isMobile) build();
-        bindEvents();
-
-        if (self.selectedDates.length || self.config.noCalendar) {
-          if (self.config.enableTime) {
-            setHoursFromDate(self.config.noCalendar ? self.latestSelectedDateObj || self.config.minDate : undefined);
-          }
-
-          updateValue(false);
-        }
-
-        self.showTimeInput = self.selectedDates.length > 0 || self.config.noCalendar;
-
-        if (self.daysContainer !== undefined) {
-          self.calendarContainer.style.visibility = "hidden";
-          self.calendarContainer.style.display = "block";
-          var daysWidth = (self.daysContainer.offsetWidth + 1) * self.config.showMonths;
-          self.daysContainer.style.width = daysWidth + "px";
-          self.calendarContainer.style.width = daysWidth + "px";
-
-          if (self.weekWrapper !== undefined) {
-            self.calendarContainer.style.width = daysWidth + self.weekWrapper.offsetWidth + "px";
-          }
-
-          self.calendarContainer.style.visibility = "visible";
-          self.calendarContainer.style.display = null;
-        }
-
-        var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-
-        if (!self.isMobile && isSafari) {
-          positionCalendar();
-        }
-
-        triggerEvent("onReady");
-      }
-
-      function bindToInstance(fn) {
-        return fn.bind(self);
-      }
-
-      function updateTime(e) {
-        if (self.selectedDates.length === 0) return;
-        timeWrapper(e);
-
-        if (e.type !== "input") {
-          setHoursFromInputs();
-          updateValue();
-        } else {
-          setTimeout(function () {
-            setHoursFromInputs();
-            updateValue();
-          }, DEBOUNCED_CHANGE_MS);
-        }
-      }
-
-      function ampm2military(hour, amPM) {
-        return hour % 12 + 12 * int(amPM === self.l10n.amPM[1]);
-      }
-
-      function military2ampm(hour) {
-        switch (hour % 24) {
-          case 0:
-          case 12:
-            return 12;
-
-          default:
-            return hour % 12;
-        }
-      }
-
-      function setHoursFromInputs() {
-        if (self.hourElement === undefined || self.minuteElement === undefined) return;
-        var hours = (parseInt(self.hourElement.value.slice(-2), 10) || 0) % 24,
-            minutes = (parseInt(self.minuteElement.value, 10) || 0) % 60,
-            seconds = self.secondElement !== undefined ? (parseInt(self.secondElement.value, 10) || 0) % 60 : 0;
-        if (self.amPM !== undefined) hours = ampm2military(hours, self.amPM.textContent);
-        var limitMinHours = self.config.minTime !== undefined || self.config.minDate && self.minDateHasTime && self.latestSelectedDateObj && compareDates(self.latestSelectedDateObj, self.config.minDate, true) === 0;
-        var limitMaxHours = self.config.maxTime !== undefined || self.config.maxDate && self.maxDateHasTime && self.latestSelectedDateObj && compareDates(self.latestSelectedDateObj, self.config.maxDate, true) === 0;
-
-        if (limitMaxHours) {
-          var maxTime = self.config.maxTime !== undefined ? self.config.maxTime : self.config.maxDate;
-          hours = Math.min(hours, maxTime.getHours());
-          if (hours === maxTime.getHours()) minutes = Math.min(minutes, maxTime.getMinutes());
-          if (minutes === maxTime.getMinutes()) seconds = Math.min(seconds, maxTime.getSeconds());
-        }
-
-        if (limitMinHours) {
-          var minTime = self.config.minTime !== undefined ? self.config.minTime : self.config.minDate;
-          hours = Math.max(hours, minTime.getHours());
-          if (hours === minTime.getHours()) minutes = Math.max(minutes, minTime.getMinutes());
-          if (minutes === minTime.getMinutes()) seconds = Math.max(seconds, minTime.getSeconds());
-        }
-
-        setHours(hours, minutes, seconds);
-      }
-
-      function setHoursFromDate(dateObj) {
-        var date = dateObj || self.latestSelectedDateObj;
-        if (date) setHours(date.getHours(), date.getMinutes(), date.getSeconds());
-      }
-
-      function setHours(hours, minutes, seconds) {
-        if (self.latestSelectedDateObj !== undefined) {
-          self.latestSelectedDateObj.setHours(hours % 24, minutes, seconds || 0, 0);
-        }
-
-        if (!self.hourElement || !self.minuteElement || self.isMobile) return;
-        self.hourElement.value = pad(!self.config.time_24hr ? (12 + hours) % 12 + 12 * int(hours % 12 === 0) : hours);
-        self.minuteElement.value = pad(minutes);
-        if (self.amPM !== undefined) self.amPM.textContent = self.l10n.amPM[int(hours >= 12)];
-        if (self.secondElement !== undefined) self.secondElement.value = pad(seconds);
-      }
-
-      function onYearInput(event) {
-        var year = parseInt(event.target.value) + (event.delta || 0);
-
-        if (year.toString().length === 4 || event.key === "Enter") {
-          event.target.blur();
-          if (!/[^\d]/.test(year.toString())) changeYear(year);
-        }
-      }
-
-      function bind(element, event, handler, options) {
-        if (event instanceof Array) return event.forEach(function (ev) {
-          return bind(element, ev, handler, options);
-        });
-        if (element instanceof Array) return element.forEach(function (el) {
-          return bind(el, event, handler, options);
-        });
-        element.addEventListener(event, handler, options);
-
-        self._handlers.push({
-          element: element,
-          event: event,
-          handler: handler
-        });
-      }
-
-      function onClick(handler) {
-        return function (evt) {
-          evt.which === 1 && handler(evt);
-        };
-      }
-
-      function triggerChange() {
-        triggerEvent("onChange");
-      }
-
-      function bindEvents() {
-        if (self.config.wrap) {
-          ["open", "close", "toggle", "clear"].forEach(function (evt) {
-            Array.prototype.forEach.call(self.element.querySelectorAll("[data-" + evt + "]"), function (el) {
-              return bind(el, "click", self[evt]);
-            });
-          });
-        }
-
-        if (self.isMobile) {
-          setupMobile();
-          return;
-        }
-
-        var debouncedResize = debounce(onResize, 50);
-        self._debouncedChange = debounce(triggerChange, DEBOUNCED_CHANGE_MS);
-        if (self.daysContainer && !/iPhone|iPad|iPod/i.test(navigator.userAgent)) bind(self.daysContainer, "mouseover", function (e) {
-          if (self.config.mode === "range") onMouseOver(e.target);
-        });
-        bind(window.document.body, "keydown", onKeyDown);
-        if (!self.config.static) bind(self._input, "keydown", onKeyDown);
-        if (!self.config.inline && !self.config.static) bind(window, "resize", debouncedResize);
-        if (window.ontouchstart !== undefined) bind(window.document, "touchstart", documentClick);
-        bind(window.document, "mousedown", onClick(documentClick));
-        bind(window.document, "focus", documentClick, {
-          capture: true
-        });
-
-        if (self.config.clickOpens === true) {
-          bind(self._input, "focus", self.open);
-          bind(self._input, "mousedown", onClick(self.open));
-        }
-
-        if (self.daysContainer !== undefined) {
-          bind(self.monthNav, "mousedown", onClick(onMonthNavClick));
-          bind(self.monthNav, ["keyup", "increment"], onYearInput);
-          bind(self.daysContainer, "mousedown", onClick(selectDate));
-        }
-
-        if (self.timeContainer !== undefined && self.minuteElement !== undefined && self.hourElement !== undefined) {
-          var selText = function selText(e) {
-            return e.target.select();
-          };
-
-          bind(self.timeContainer, ["input", "increment"], updateTime);
-          bind(self.timeContainer, "mousedown", onClick(timeIncrement));
-          bind(self.timeContainer, ["input", "increment"], self._debouncedChange, {
-            passive: true
-          });
-          bind([self.hourElement, self.minuteElement], ["focus", "click"], selText);
-          if (self.secondElement !== undefined) bind(self.secondElement, "focus", function () {
-            return self.secondElement && self.secondElement.select();
-          });
-
-          if (self.amPM !== undefined) {
-            bind(self.amPM, "mousedown", onClick(function (e) {
-              updateTime(e);
-              triggerChange();
-            }));
-          }
-        }
-      }
-
-      function jumpToDate(jumpDate) {
-        var jumpTo = jumpDate !== undefined ? self.parseDate(jumpDate) : self.latestSelectedDateObj || (self.config.minDate && self.config.minDate > self.now ? self.config.minDate : self.config.maxDate && self.config.maxDate < self.now ? self.config.maxDate : self.now);
-
-        try {
-          if (jumpTo !== undefined) {
-            self.currentYear = jumpTo.getFullYear();
-            self.currentMonth = jumpTo.getMonth();
-          }
-        } catch (e) {
-          e.message = "Invalid date supplied: " + jumpTo;
-          self.config.errorHandler(e);
-        }
-
-        self.redraw();
-      }
-
-      function timeIncrement(e) {
-        if (~e.target.className.indexOf("arrow")) incrementNumInput(e, e.target.classList.contains("arrowUp") ? 1 : -1);
-      }
-
-      function incrementNumInput(e, delta, inputElem) {
-        var target = e && e.target;
-        var input = inputElem || target && target.parentNode && target.parentNode.firstChild;
-        var event = createEvent("increment");
-        event.delta = delta;
-        input && input.dispatchEvent(event);
-      }
-
-      function build() {
-        var fragment = window.document.createDocumentFragment();
-        self.calendarContainer = createElement("div", "flatpickr-calendar");
-        self.calendarContainer.tabIndex = -1;
-
-        if (!self.config.noCalendar) {
-          fragment.appendChild(buildMonthNav());
-          self.innerContainer = createElement("div", "flatpickr-innerContainer");
-
-          if (self.config.weekNumbers) {
-            var _buildWeeks = buildWeeks(),
-                weekWrapper = _buildWeeks.weekWrapper,
-                weekNumbers = _buildWeeks.weekNumbers;
-
-            self.innerContainer.appendChild(weekWrapper);
-            self.weekNumbers = weekNumbers;
-            self.weekWrapper = weekWrapper;
-          }
-
-          self.rContainer = createElement("div", "flatpickr-rContainer");
-          self.rContainer.appendChild(buildWeekdays());
-
-          if (!self.daysContainer) {
-            self.daysContainer = createElement("div", "flatpickr-days");
-            self.daysContainer.tabIndex = -1;
-          }
-
-          buildDays();
-          self.rContainer.appendChild(self.daysContainer);
-          self.innerContainer.appendChild(self.rContainer);
-          fragment.appendChild(self.innerContainer);
-        }
-
-        if (self.config.enableTime) {
-          fragment.appendChild(buildTime());
-        }
-
-        toggleClass(self.calendarContainer, "rangeMode", self.config.mode === "range");
-        toggleClass(self.calendarContainer, "animate", self.config.animate === true);
-        toggleClass(self.calendarContainer, "multiMonth", self.config.showMonths > 1);
-        self.calendarContainer.appendChild(fragment);
-        var customAppend = self.config.appendTo !== undefined && self.config.appendTo.nodeType !== undefined;
-
-        if (self.config.inline || self.config.static) {
-          self.calendarContainer.classList.add(self.config.inline ? "inline" : "static");
-
-          if (self.config.inline) {
-            if (!customAppend && self.element.parentNode) self.element.parentNode.insertBefore(self.calendarContainer, self._input.nextSibling);else if (self.config.appendTo !== undefined) self.config.appendTo.appendChild(self.calendarContainer);
-          }
-
-          if (self.config.static) {
-            var wrapper = createElement("div", "flatpickr-wrapper");
-            if (self.element.parentNode) self.element.parentNode.insertBefore(wrapper, self.element);
-            wrapper.appendChild(self.element);
-            if (self.altInput) wrapper.appendChild(self.altInput);
-            wrapper.appendChild(self.calendarContainer);
-          }
-        }
-
-        if (!self.config.static && !self.config.inline) (self.config.appendTo !== undefined ? self.config.appendTo : window.document.body).appendChild(self.calendarContainer);
-      }
-
-      function createDay(className, date, dayNumber, i) {
-        var dateIsEnabled = isEnabled(date, true),
-            dayElement = createElement("span", "flatpickr-day " + className, date.getDate().toString());
-        dayElement.dateObj = date;
-        dayElement.$i = i;
-        dayElement.setAttribute("aria-label", self.formatDate(date, self.config.ariaDateFormat));
-
-        if (compareDates(date, self.now) === 0) {
-          self.todayDateElem = dayElement;
-          dayElement.classList.add("today");
-        }
-
-        if (dateIsEnabled) {
-          dayElement.tabIndex = -1;
-
-          if (isDateSelected(date)) {
-            dayElement.classList.add("selected");
-            self.selectedDateElem = dayElement;
-
-            if (self.config.mode === "range") {
-              toggleClass(dayElement, "startRange", self.selectedDates[0] && compareDates(date, self.selectedDates[0], true) === 0);
-              toggleClass(dayElement, "endRange", self.selectedDates[1] && compareDates(date, self.selectedDates[1], true) === 0);
-              if (className === "nextMonthDay") dayElement.classList.add("inRange");
-            }
-          }
-        } else {
-          dayElement.classList.add("disabled");
-        }
-
-        if (self.config.mode === "range") {
-          if (isDateInRange(date) && !isDateSelected(date)) dayElement.classList.add("inRange");
-        }
-
-        if (self.weekNumbers && self.config.showMonths === 1 && className !== "prevMonthDay" && dayNumber % 7 === 1) {
-          self.weekNumbers.insertAdjacentHTML("beforeend", "<span class='flatpickr-day'>" + self.config.getWeek(date) + "</span>");
-        }
-
-        triggerEvent("onDayCreate", dayElement);
-        return dayElement;
-      }
-
-      function focusOnDay(currentInd, offset) {
-        var currentIndex = currentInd !== undefined ? currentInd : document.activeElement.$i;
-        var newIndex = (currentIndex || 0) + offset || 0,
-            targetNode = Array.prototype.find.call(self.days.children, function (c, i) {
-          return i >= newIndex && c.className.indexOf("MonthDay") === -1 && isEnabled(c.dateObj);
-        });
-
-        if (targetNode !== undefined) {
-          targetNode.focus();
-          if (self.config.mode === "range") onMouseOver(targetNode);
-        }
-      }
-
-      function buildMonthDays(year, month) {
-        var firstOfMonth = (new Date(year, month, 1).getDay() - self.l10n.firstDayOfWeek + 7) % 7;
-        var prevMonthDays = self.utils.getDaysInMonth((month - 1 + 12) % 12);
-        var daysInMonth = self.utils.getDaysInMonth(month),
-            days = window.document.createDocumentFragment();
-        var dayNumber = prevMonthDays + 1 - firstOfMonth,
-            dayIndex = 0;
-
-        for (; dayNumber <= prevMonthDays; dayNumber++, dayIndex++) {
-          days.appendChild(createDay("prevMonthDay", new Date(year, month - 1, dayNumber), dayNumber, dayIndex));
-        }
-
-        for (dayNumber = 1; dayNumber <= daysInMonth; dayNumber++, dayIndex++) {
-          days.appendChild(createDay("", new Date(year, month, dayNumber), dayNumber, dayIndex));
-        }
-
-        for (var dayNum = daysInMonth + 1; dayNum <= 42 - firstOfMonth && (self.config.showMonths === 1 || dayIndex % 7 !== 0); dayNum++, dayIndex++) {
-          days.appendChild(createDay("nextMonthDay", new Date(year, month + 1, dayNum % daysInMonth), dayNum, dayIndex));
-        }
-
-        var dayContainer = createElement("div", "dayContainer");
-        dayContainer.appendChild(days);
-        return dayContainer;
-      }
-
-      function buildDays() {
-        if (self.daysContainer === undefined) {
-          return;
-        }
-
-        clearNode(self.daysContainer);
-        if (self.weekNumbers) clearNode(self.weekNumbers);
-        var frag = document.createDocumentFragment();
-
-        for (var i = 0; i < self.config.showMonths; i++) {
-          var d = new Date(self.currentYear, self.currentMonth, 1);
-          d.setMonth(self.currentMonth + i);
-          frag.appendChild(buildMonthDays(d.getFullYear(), d.getMonth()));
-        }
-
-        self.daysContainer.appendChild(frag);
-        self.days = self.daysContainer.firstChild;
-      }
-
-      function buildMonth() {
-        var container = createElement("div", "flatpickr-month");
-        var monthNavFragment = window.document.createDocumentFragment();
-        var monthElement = createElement("span", "cur-month");
-        monthElement.title = self.l10n.scrollTitle;
-        var yearInput = createNumberInput("cur-year", {
-          tabindex: "-1"
-        });
-        var yearElement = yearInput.childNodes[0];
-        yearElement.title = self.l10n.scrollTitle;
-        yearElement.setAttribute("aria-label", self.l10n.yearAriaLabel);
-        if (self.config.minDate) yearElement.setAttribute("data-min", self.config.minDate.getFullYear().toString());
-
-        if (self.config.maxDate) {
-          yearElement.setAttribute("data-max", self.config.maxDate.getFullYear().toString());
-          yearElement.disabled = !!self.config.minDate && self.config.minDate.getFullYear() === self.config.maxDate.getFullYear();
-        }
-
-        var currentMonth = createElement("div", "flatpickr-current-month");
-        currentMonth.appendChild(monthElement);
-        currentMonth.appendChild(yearInput);
-        monthNavFragment.appendChild(currentMonth);
-        container.appendChild(monthNavFragment);
-        return {
-          container: container,
-          yearElement: yearElement,
-          monthElement: monthElement
-        };
-      }
-
-      function buildMonthNav() {
-        self.monthNav = createElement("div", "flatpickr-months");
-        self.yearElements = [];
-        self.monthElements = [];
-        self.prevMonthNav = createElement("span", "flatpickr-prev-month");
-        self.prevMonthNav.innerHTML = self.config.prevArrow;
-        self.nextMonthNav = createElement("span", "flatpickr-next-month");
-        self.nextMonthNav.innerHTML = self.config.nextArrow;
-        self.monthNav.appendChild(self.prevMonthNav);
-
-        for (var m = self.config.showMonths; m--;) {
-          var month = buildMonth();
-          self.yearElements.push(month.yearElement);
-          self.monthElements.push(month.monthElement);
-          self.monthNav.appendChild(month.container);
-        }
-
-        self.monthNav.appendChild(self.nextMonthNav);
-        Object.defineProperty(self, "_hidePrevMonthArrow", {
-          get: function get() {
-            return self.__hidePrevMonthArrow;
-          },
-          set: function set(bool) {
-            if (self.__hidePrevMonthArrow !== bool) {
-              toggleClass(self.prevMonthNav, "disabled", bool);
-              self.__hidePrevMonthArrow = bool;
-            }
-          }
-        });
-        Object.defineProperty(self, "_hideNextMonthArrow", {
-          get: function get() {
-            return self.__hideNextMonthArrow;
-          },
-          set: function set(bool) {
-            if (self.__hideNextMonthArrow !== bool) {
-              toggleClass(self.nextMonthNav, "disabled", bool);
-              self.__hideNextMonthArrow = bool;
-            }
-          }
-        });
-        self.currentYearElement = self.yearElements[0];
-        updateNavigationCurrentMonth();
-        return self.monthNav;
-      }
-
-      function buildTime() {
-        self.calendarContainer.classList.add("hasTime");
-        if (self.config.noCalendar) self.calendarContainer.classList.add("noCalendar");
-        self.timeContainer = createElement("div", "flatpickr-time");
-        self.timeContainer.tabIndex = -1;
-        var separator = createElement("span", "flatpickr-time-separator", ":");
-        var hourInput = createNumberInput("flatpickr-hour");
-        self.hourElement = hourInput.childNodes[0];
-        var minuteInput = createNumberInput("flatpickr-minute");
-        self.minuteElement = minuteInput.childNodes[0];
-        self.hourElement.tabIndex = self.minuteElement.tabIndex = -1;
-        self.hourElement.value = pad(self.latestSelectedDateObj ? self.latestSelectedDateObj.getHours() : self.config.time_24hr ? self.config.defaultHour : military2ampm(self.config.defaultHour));
-        self.minuteElement.value = pad(self.latestSelectedDateObj ? self.latestSelectedDateObj.getMinutes() : self.config.defaultMinute);
-        self.hourElement.setAttribute("data-step", self.config.hourIncrement.toString());
-        self.minuteElement.setAttribute("data-step", self.config.minuteIncrement.toString());
-        self.hourElement.setAttribute("data-min", self.config.time_24hr ? "0" : "1");
-        self.hourElement.setAttribute("data-max", self.config.time_24hr ? "23" : "12");
-        self.minuteElement.setAttribute("data-min", "0");
-        self.minuteElement.setAttribute("data-max", "59");
-        self.timeContainer.appendChild(hourInput);
-        self.timeContainer.appendChild(separator);
-        self.timeContainer.appendChild(minuteInput);
-        if (self.config.time_24hr) self.timeContainer.classList.add("time24hr");
-
-        if (self.config.enableSeconds) {
-          self.timeContainer.classList.add("hasSeconds");
-          var secondInput = createNumberInput("flatpickr-second");
-          self.secondElement = secondInput.childNodes[0];
-          self.secondElement.value = pad(self.latestSelectedDateObj ? self.latestSelectedDateObj.getSeconds() : self.config.defaultSeconds);
-          self.secondElement.setAttribute("data-step", self.minuteElement.getAttribute("data-step"));
-          self.secondElement.setAttribute("data-min", self.minuteElement.getAttribute("data-min"));
-          self.secondElement.setAttribute("data-max", self.minuteElement.getAttribute("data-max"));
-          self.timeContainer.appendChild(createElement("span", "flatpickr-time-separator", ":"));
-          self.timeContainer.appendChild(secondInput);
-        }
-
-        if (!self.config.time_24hr) {
-          self.amPM = createElement("span", "flatpickr-am-pm", self.l10n.amPM[int((self.latestSelectedDateObj ? self.hourElement.value : self.config.defaultHour) > 11)]);
-          self.amPM.title = self.l10n.toggleTitle;
-          self.amPM.tabIndex = -1;
-          self.timeContainer.appendChild(self.amPM);
-        }
-
-        return self.timeContainer;
-      }
-
-      function buildWeekdays() {
-        if (!self.weekdayContainer) self.weekdayContainer = createElement("div", "flatpickr-weekdays");
-
-        for (var i = self.config.showMonths; i--;) {
-          var container = createElement("div", "flatpickr-weekdaycontainer");
-          self.weekdayContainer.appendChild(container);
-        }
-
-        updateWeekdays();
-        return self.weekdayContainer;
-      }
-
-      function updateWeekdays() {
-        var firstDayOfWeek = self.l10n.firstDayOfWeek;
-        var weekdays = self.l10n.weekdays.shorthand.concat();
-
-        if (firstDayOfWeek > 0 && firstDayOfWeek < weekdays.length) {
-          weekdays = weekdays.splice(firstDayOfWeek, weekdays.length).concat(weekdays.splice(0, firstDayOfWeek));
-        }
-
-        for (var i = self.config.showMonths; i--;) {
-          self.weekdayContainer.children[i].innerHTML = "\n      <span class=flatpickr-weekday>\n        " + weekdays.join("</span><span class=flatpickr-weekday>") + "\n      </span>\n      ";
-        }
-      }
-
-      function buildWeeks() {
-        self.calendarContainer.classList.add("hasWeeks");
-        var weekWrapper = createElement("div", "flatpickr-weekwrapper");
-        weekWrapper.appendChild(createElement("span", "flatpickr-weekday", self.l10n.weekAbbreviation));
-        var weekNumbers = createElement("div", "flatpickr-weeks");
-        weekWrapper.appendChild(weekNumbers);
-        return {
-          weekWrapper: weekWrapper,
-          weekNumbers: weekNumbers
-        };
-      }
-
-      function changeMonth(value, is_offset, from_keyboard) {
-        if (is_offset === void 0) {
-          is_offset = true;
-        }
-
-        if (from_keyboard === void 0) {
-          from_keyboard = false;
-        }
-
-        var delta = is_offset ? value : value - self.currentMonth;
-        if (delta < 0 && self._hidePrevMonthArrow === true || delta > 0 && self._hideNextMonthArrow === true) return;
-        self.currentMonth += delta;
-
-        if (self.currentMonth < 0 || self.currentMonth > 11) {
-          self.currentYear += self.currentMonth > 11 ? 1 : -1;
-          self.currentMonth = (self.currentMonth + 12) % 12;
-          triggerEvent("onYearChange");
-        }
-
-        buildDays();
-        triggerEvent("onMonthChange");
-        updateNavigationCurrentMonth();
-
-        if (from_keyboard === true) {
-          focusOnDay(undefined, 0);
-        }
-      }
-
-      function clear(triggerChangeEvent) {
-        if (triggerChangeEvent === void 0) {
-          triggerChangeEvent = true;
-        }
-
-        self.input.value = "";
-        if (self.altInput !== undefined) self.altInput.value = "";
-        if (self.mobileInput !== undefined) self.mobileInput.value = "";
-        self.selectedDates = [];
-        self.latestSelectedDateObj = undefined;
-        self.showTimeInput = false;
-
-        if (self.config.enableTime === true) {
-          if (self.config.minDate !== undefined) setHoursFromDate(self.config.minDate);else setHours(self.config.defaultHour, self.config.defaultMinute, self.config.defaultSeconds);
-        }
-
-        self.redraw();
-        if (triggerChangeEvent) triggerEvent("onChange");
-      }
-
-      function close() {
-        self.isOpen = false;
-
-        if (!self.isMobile) {
-          self.calendarContainer.classList.remove("open");
-
-          self._input.classList.remove("active");
-        }
-
-        triggerEvent("onClose");
-      }
-
-      function destroy() {
-        if (self.config !== undefined) triggerEvent("onDestroy");
-
-        for (var i = self._handlers.length; i--;) {
-          var h = self._handlers[i];
-          h.element.removeEventListener(h.event, h.handler);
-        }
-
-        self._handlers = [];
-
-        if (self.mobileInput) {
-          if (self.mobileInput.parentNode) self.mobileInput.parentNode.removeChild(self.mobileInput);
-          self.mobileInput = undefined;
-        } else if (self.calendarContainer && self.calendarContainer.parentNode) self.calendarContainer.parentNode.removeChild(self.calendarContainer);
-
-        if (self.altInput) {
-          self.input.type = "text";
-          if (self.altInput.parentNode) self.altInput.parentNode.removeChild(self.altInput);
-          delete self.altInput;
-        }
-
-        if (self.input) {
-          self.input.type = self.input._type;
-          self.input.classList.remove("flatpickr-input");
-          self.input.removeAttribute("readonly");
-          self.input.value = "";
-        }
-
-        ["_showTimeInput", "latestSelectedDateObj", "_hideNextMonthArrow", "_hidePrevMonthArrow", "__hideNextMonthArrow", "__hidePrevMonthArrow", "isMobile", "isOpen", "selectedDateElem", "minDateHasTime", "maxDateHasTime", "days", "daysContainer", "_input", "_positionElement", "innerContainer", "rContainer", "monthNav", "todayDateElem", "calendarContainer", "weekdayContainer", "prevMonthNav", "nextMonthNav", "currentMonthElement", "currentYearElement", "navigationCurrentMonth", "selectedDateElem", "config"].forEach(function (k) {
-          try {
-            delete self[k];
-          } catch (_) {}
-        });
-      }
-
-      function isCalendarElem(elem) {
-        if (self.config.appendTo && self.config.appendTo.contains(elem)) return true;
-        return self.calendarContainer.contains(elem);
-      }
-
-      function documentClick(e) {
-        if (self.isOpen && !self.config.inline) {
-          var isCalendarElement = isCalendarElem(e.target);
-          var isInput = e.target === self.input || e.target === self.altInput || self.element.contains(e.target) || e.path && e.path.indexOf && (~e.path.indexOf(self.input) || ~e.path.indexOf(self.altInput));
-          var lostFocus = e.type === "blur" ? isInput && e.relatedTarget && !isCalendarElem(e.relatedTarget) : !isInput && !isCalendarElement;
-          var isIgnored = !self.config.ignoredFocusElements.some(function (elem) {
-            return elem.contains(e.target);
-          });
-
-          if (lostFocus && isIgnored) {
-            self.close();
-
-            if (self.config.mode === "range" && self.selectedDates.length === 1) {
-              self.clear(false);
-              self.redraw();
-            }
-          }
-        }
-      }
-
-      function changeYear(newYear) {
-        if (!newYear || self.config.minDate && newYear < self.config.minDate.getFullYear() || self.config.maxDate && newYear > self.config.maxDate.getFullYear()) return;
-        var newYearNum = newYear,
-            isNewYear = self.currentYear !== newYearNum;
-        self.currentYear = newYearNum || self.currentYear;
-
-        if (self.config.maxDate && self.currentYear === self.config.maxDate.getFullYear()) {
-          self.currentMonth = Math.min(self.config.maxDate.getMonth(), self.currentMonth);
-        } else if (self.config.minDate && self.currentYear === self.config.minDate.getFullYear()) {
-          self.currentMonth = Math.max(self.config.minDate.getMonth(), self.currentMonth);
-        }
-
-        if (isNewYear) {
-          self.redraw();
-          triggerEvent("onYearChange");
-        }
-      }
-
-      function isEnabled(date, timeless) {
-        if (timeless === void 0) {
-          timeless = true;
-        }
-
-        var dateToCheck = self.parseDate(date, undefined, timeless);
-        if (self.config.minDate && dateToCheck && compareDates(dateToCheck, self.config.minDate, timeless !== undefined ? timeless : !self.minDateHasTime) < 0 || self.config.maxDate && dateToCheck && compareDates(dateToCheck, self.config.maxDate, timeless !== undefined ? timeless : !self.maxDateHasTime) > 0) return false;
-        if (self.config.enable.length === 0 && self.config.disable.length === 0) return true;
-        if (dateToCheck === undefined) return false;
-        var bool = self.config.enable.length > 0,
-            array = bool ? self.config.enable : self.config.disable;
-
-        for (var i = 0, d; i < array.length; i++) {
-          d = array[i];
-          if (typeof d === "function" && d(dateToCheck)) return bool;else if (d instanceof Date && dateToCheck !== undefined && d.getTime() === dateToCheck.getTime()) return bool;else if (typeof d === "string" && dateToCheck !== undefined) {
-            var parsed = self.parseDate(d, undefined, true);
-            return parsed && parsed.getTime() === dateToCheck.getTime() ? bool : !bool;
-          } else if (typeof d === "object" && dateToCheck !== undefined && d.from && d.to && dateToCheck.getTime() >= d.from.getTime() && dateToCheck.getTime() <= d.to.getTime()) return bool;
-        }
-
-        return !bool;
-      }
-
-      function onKeyDown(e) {
-        var isInput = e.target === self._input;
-        var calendarElem = isCalendarElem(e.target);
-        var allowInput = self.config.allowInput;
-        var allowKeydown = self.isOpen && (!allowInput || !isInput);
-        var allowInlineKeydown = self.config.inline && isInput && !allowInput;
-
-        if (e.keyCode === 13 && isInput) {
-          if (allowInput) {
-            self.setDate(self._input.value, true, e.target === self.altInput ? self.config.altFormat : self.config.dateFormat);
-            return e.target.blur();
-          } else self.open();
-        } else if (calendarElem || allowKeydown || allowInlineKeydown) {
-          var isTimeObj = !!self.timeContainer && self.timeContainer.contains(e.target);
-
-          switch (e.keyCode) {
-            case 13:
-              if (isTimeObj) updateValue();else selectDate(e);
-              break;
-
-            case 27:
-              e.preventDefault();
-              focusAndClose();
-              break;
-
-            case 8:
-            case 46:
-              if (isInput && !self.config.allowInput) {
-                e.preventDefault();
-                self.clear();
-              }
-
-              break;
-
-            case 37:
-            case 39:
-              if (!isTimeObj) {
-                e.preventDefault();
-
-                if (self.daysContainer) {
-                  var _delta = isInput ? 0 : e.keyCode === 39 ? 1 : -1;
-
-                  if (!e.ctrlKey) focusOnDay(undefined, _delta);else changeMonth(_delta, true, true);
-                }
-              } else if (self.hourElement) self.hourElement.focus();
-
-              break;
-
-            case 38:
-            case 40:
-              e.preventDefault();
-              var delta = e.keyCode === 40 ? 1 : -1;
-
-              if (self.daysContainer && e.target.$i !== undefined) {
-                if (e.ctrlKey) {
-                  changeYear(self.currentYear - delta);
-                  focusOnDay(e.target.$i, 0);
-                } else if (!isTimeObj) focusOnDay(e.target.$i, delta * 7);
-              } else if (self.config.enableTime) {
-                if (!isTimeObj && self.hourElement) self.hourElement.focus();
-                updateTime(e);
-
-                self._debouncedChange();
-              }
-
-              break;
-
-            case 9:
-              if (e.target === self.hourElement) {
-                e.preventDefault();
-                self.minuteElement.select();
-              } else if (e.target === self.minuteElement && (self.secondElement || self.amPM)) {
-                e.preventDefault();
-                if (self.secondElement !== undefined) self.secondElement.focus();else if (self.amPM !== undefined) self.amPM.focus();
-              } else if (e.target === self.secondElement && self.amPM) {
-                e.preventDefault();
-                self.amPM.focus();
-              }
-
-              break;
-
-            default:
-              break;
-          }
-
-          switch (e.key) {
-            case self.l10n.amPM[0].charAt(0):
-            case self.l10n.amPM[0].charAt(0).toLowerCase():
-              if (self.amPM !== undefined && e.target === self.amPM) {
-                self.amPM.textContent = self.l10n.amPM[0];
-                setHoursFromInputs();
-                updateValue();
-              }
-
-              break;
-
-            case self.l10n.amPM[1].charAt(0):
-            case self.l10n.amPM[1].charAt(0).toLowerCase():
-              if (self.amPM !== undefined && e.target === self.amPM) {
-                self.amPM.textContent = self.l10n.amPM[1];
-                setHoursFromInputs();
-                updateValue();
-              }
-
-              break;
-
-            default:
-              break;
-          }
-
-          triggerEvent("onKeyDown", e);
-        }
-      }
-
-      function onMouseOver(elem) {
-        if (self.selectedDates.length !== 1 || !elem.classList.contains("flatpickr-day") || elem.classList.contains("disabled")) return;
-        var hoverDate = elem.dateObj.getTime(),
-            initialDate = self.parseDate(self.selectedDates[0], undefined, true).getTime(),
-            rangeStartDate = Math.min(hoverDate, self.selectedDates[0].getTime()),
-            rangeEndDate = Math.max(hoverDate, self.selectedDates[0].getTime());
-        var months = self.daysContainer.children,
-            firstDay = months[0].children[0].dateObj.getTime(),
-            lastDay = months[months.length - 1].lastChild.dateObj.getTime();
-        var containsDisabled = false;
-        var minRange = 0,
-            maxRange = 0;
-
-        for (var t = firstDay; t < lastDay; t += duration.DAY) {
-          if (!isEnabled(new Date(t), true)) {
-            containsDisabled = containsDisabled || t > rangeStartDate && t < rangeEndDate;
-            if (t < initialDate && (!minRange || t > minRange)) minRange = t;else if (t > initialDate && (!maxRange || t < maxRange)) maxRange = t;
-          }
-        }
-
-        for (var m = 0; m < self.config.showMonths; m++) {
-          var month = self.daysContainer.children[m];
-          var prevMonth = self.daysContainer.children[m - 1];
-
-          var _loop = function _loop(i, l) {
-            var dayElem = month.children[i],
-                date = dayElem.dateObj;
-            var timestamp = date.getTime();
-            var outOfRange = minRange > 0 && timestamp < minRange || maxRange > 0 && timestamp > maxRange;
-
-            if (outOfRange) {
-              dayElem.classList.add("notAllowed");
-              ["inRange", "startRange", "endRange"].forEach(function (c) {
-                dayElem.classList.remove(c);
-              });
-              return "continue";
-            } else if (containsDisabled && !outOfRange) return "continue";
-
-            ["startRange", "inRange", "endRange", "notAllowed"].forEach(function (c) {
-              dayElem.classList.remove(c);
-            });
-            elem.classList.add(hoverDate < self.selectedDates[0].getTime() ? "startRange" : "endRange");
-
-            if (month.contains(elem) || !(m > 0 && prevMonth && prevMonth.lastChild.dateObj.getTime() >= timestamp)) {
-              if (initialDate < hoverDate && timestamp === initialDate) dayElem.classList.add("startRange");else if (initialDate > hoverDate && timestamp === initialDate) dayElem.classList.add("endRange");
-              if (timestamp >= minRange && (maxRange === 0 || timestamp <= maxRange) && isBetween(timestamp, initialDate, hoverDate)) dayElem.classList.add("inRange");
-            }
-          };
-
-          for (var i = 0, l = month.children.length; i < l; i++) {
-            var _ret = _loop(i, l);
-
-            if (_ret === "continue") continue;
-          }
-        }
-      }
-
-      function onResize() {
-        if (self.isOpen && !self.config.static && !self.config.inline) positionCalendar();
-      }
-
-      function open(e, positionElement) {
-        if (positionElement === void 0) {
-          positionElement = self._input;
-        }
-
-        if (self.isMobile === true) {
-          if (e) {
-            e.preventDefault();
-            e.target && e.target.blur();
-          }
-
-          setTimeout(function () {
-            self.mobileInput !== undefined && self.mobileInput.click();
-          }, 0);
-          triggerEvent("onOpen");
-          return;
-        }
-
-        if (self._input.disabled || self.config.inline) return;
-        var wasOpen = self.isOpen;
-        self.isOpen = true;
-
-        if (!wasOpen) {
-          self.calendarContainer.classList.add("open");
-
-          self._input.classList.add("active");
-
-          triggerEvent("onOpen");
-          positionCalendar(positionElement);
-        }
-
-        if (self.config.enableTime === true && self.config.noCalendar === true) {
-          if (self.selectedDates.length === 0) {
-            self.setDate(self.config.minDate !== undefined ? new Date(self.config.minDate.getTime()) : new Date().setHours(self.config.defaultHour, self.config.defaultMinute, self.config.defaultSeconds, 0), false);
-            setHoursFromInputs();
-            updateValue();
-          }
-
-          setTimeout(function () {
-            return self.hourElement.select();
-          }, 50);
-        }
-      }
-
-      function minMaxDateSetter(type) {
-        return function (date) {
-          var dateObj = self.config["_" + type + "Date"] = self.parseDate(date, self.config.dateFormat);
-          var inverseDateObj = self.config["_" + (type === "min" ? "max" : "min") + "Date"];
-
-          if (dateObj !== undefined) {
-            self[type === "min" ? "minDateHasTime" : "maxDateHasTime"] = dateObj.getHours() > 0 || dateObj.getMinutes() > 0 || dateObj.getSeconds() > 0;
-          }
-
-          if (self.selectedDates) {
-            self.selectedDates = self.selectedDates.filter(function (d) {
-              return isEnabled(d);
-            });
-            if (!self.selectedDates.length && type === "min") setHoursFromDate(dateObj);
-            updateValue();
-          }
-
-          if (self.daysContainer) {
-            redraw();
-            if (dateObj !== undefined) self.currentYearElement[type] = dateObj.getFullYear().toString();else self.currentYearElement.removeAttribute(type);
-            self.currentYearElement.disabled = !!inverseDateObj && dateObj !== undefined && inverseDateObj.getFullYear() === dateObj.getFullYear();
-          }
-        };
-      }
-
-      function parseConfig() {
-        var boolOpts = ["wrap", "weekNumbers", "allowInput", "clickOpens", "time_24hr", "enableTime", "noCalendar", "altInput", "shorthandCurrentMonth", "inline", "static", "enableSeconds", "disableMobile"];
-        var hooks = ["onChange", "onClose", "onDayCreate", "onDestroy", "onKeyDown", "onMonthChange", "onOpen", "onParseConfig", "onReady", "onValueUpdate", "onYearChange", "onPreCalendarPosition"];
-        var userConfig = Object.assign({}, instanceConfig, JSON.parse(JSON.stringify(element.dataset || {})));
-        var formats$$1 = {};
-        self.config.parseDate = userConfig.parseDate;
-        self.config.formatDate = userConfig.formatDate;
-        Object.defineProperty(self.config, "enable", {
-          get: function get() {
-            return self.config._enable;
-          },
-          set: function set(dates) {
-            self.config._enable = parseDateRules(dates);
-          }
-        });
-        Object.defineProperty(self.config, "disable", {
-          get: function get() {
-            return self.config._disable;
-          },
-          set: function set(dates) {
-            self.config._disable = parseDateRules(dates);
-          }
-        });
-
-        if (!userConfig.dateFormat && userConfig.enableTime) {
-          formats$$1.dateFormat = userConfig.noCalendar ? "H:i" + (userConfig.enableSeconds ? ":S" : "") : flatpickr.defaultConfig.dateFormat + " H:i" + (userConfig.enableSeconds ? ":S" : "");
-        }
-
-        if (userConfig.altInput && userConfig.enableTime && !userConfig.altFormat) {
-          formats$$1.altFormat = userConfig.noCalendar ? "h:i" + (userConfig.enableSeconds ? ":S K" : " K") : flatpickr.defaultConfig.altFormat + (" h:i" + (userConfig.enableSeconds ? ":S" : "") + " K");
-        }
-
-        Object.defineProperty(self.config, "minDate", {
-          get: function get() {
-            return self.config._minDate;
-          },
-          set: minMaxDateSetter("min")
-        });
-        Object.defineProperty(self.config, "maxDate", {
-          get: function get() {
-            return self.config._maxDate;
-          },
-          set: minMaxDateSetter("max")
-        });
-
-        var minMaxTimeSetter = function minMaxTimeSetter(type) {
-          return function (val) {
-            self.config[type === "min" ? "_minTime" : "_maxTime"] = self.parseDate(val, "H:i");
-          };
-        };
-
-        Object.defineProperty(self.config, "minTime", {
-          get: function get() {
-            return self.config._minTime;
-          },
-          set: minMaxTimeSetter("min")
-        });
-        Object.defineProperty(self.config, "maxTime", {
-          get: function get() {
-            return self.config._maxTime;
-          },
-          set: minMaxTimeSetter("max")
-        });
-        Object.assign(self.config, formats$$1, userConfig);
-
-        for (var i = 0; i < boolOpts.length; i++) {
-          self.config[boolOpts[i]] = self.config[boolOpts[i]] === true || self.config[boolOpts[i]] === "true";
-        }
-
-        for (var _i = hooks.length; _i--;) {
-          if (self.config[hooks[_i]] !== undefined) {
-            self.config[hooks[_i]] = arrayify(self.config[hooks[_i]] || []).map(bindToInstance);
-          }
-        }
-
-        if (self.config.mode === "time") {
-          self.config.noCalendar = true;
-          self.config.enableTime = true;
-        }
-
-        for (var _i2 = 0; _i2 < self.config.plugins.length; _i2++) {
-          var pluginConf = self.config.plugins[_i2](self) || {};
-
-          for (var key in pluginConf) {
-            if (~hooks.indexOf(key)) {
-              self.config[key] = arrayify(pluginConf[key]).map(bindToInstance).concat(self.config[key]);
-            } else if (typeof userConfig[key] === "undefined") self.config[key] = pluginConf[key];
-          }
-        }
-
-        self.isMobile = !self.config.disableMobile && !self.config.inline && self.config.mode === "single" && !self.config.disable.length && !self.config.enable.length && !self.config.weekNumbers && /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        triggerEvent("onParseConfig");
-      }
-
-      function setupLocale() {
-        if (typeof self.config.locale !== "object" && typeof flatpickr.l10ns[self.config.locale] === "undefined") self.config.errorHandler(new Error("flatpickr: invalid locale " + self.config.locale));
-        self.l10n = Object.assign({}, flatpickr.l10ns.default, typeof self.config.locale === "object" ? self.config.locale : self.config.locale !== "default" ? flatpickr.l10ns[self.config.locale] : undefined);
-        tokenRegex.K = "(" + self.l10n.amPM[0] + "|" + self.l10n.amPM[1] + "|" + self.l10n.amPM[0].toLowerCase() + "|" + self.l10n.amPM[1].toLowerCase() + ")";
-        self.formatDate = createDateFormatter(self);
-      }
-
-      function positionCalendar(customPositionElement) {
-        if (self.calendarContainer === undefined) return;
-        triggerEvent("onPreCalendarPosition");
-        var positionElement = customPositionElement || self._positionElement;
-        var calendarHeight = Array.prototype.reduce.call(self.calendarContainer.children, function (acc, child) {
-          return acc + child.offsetHeight;
-        }, 0),
-            calendarWidth = self.calendarContainer.offsetWidth,
-            configPos = self.config.position,
-            inputBounds = positionElement.getBoundingClientRect(),
-            distanceFromBottom = window.innerHeight - inputBounds.bottom,
-            showOnTop = configPos === "above" || configPos !== "below" && distanceFromBottom < calendarHeight && inputBounds.top > calendarHeight;
-        var top = window.pageYOffset + inputBounds.top + (!showOnTop ? positionElement.offsetHeight + 2 : -calendarHeight - 2);
-        toggleClass(self.calendarContainer, "arrowTop", !showOnTop);
-        toggleClass(self.calendarContainer, "arrowBottom", showOnTop);
-        if (self.config.inline) return;
-        var left = window.pageXOffset + inputBounds.left;
-        var right = window.document.body.offsetWidth - inputBounds.right;
-        var rightMost = left + calendarWidth > window.document.body.offsetWidth;
-        toggleClass(self.calendarContainer, "rightMost", rightMost);
-        if (self.config.static) return;
-        self.calendarContainer.style.top = top + "px";
-
-        if (!rightMost) {
-          self.calendarContainer.style.left = left + "px";
-          self.calendarContainer.style.right = "auto";
-        } else {
-          self.calendarContainer.style.left = "auto";
-          self.calendarContainer.style.right = right + "px";
-        }
-      }
-
-      function redraw() {
-        if (self.config.noCalendar || self.isMobile) return;
-        updateWeekdays();
-        updateNavigationCurrentMonth();
-        buildDays();
-      }
-
-      function focusAndClose() {
-        self._input.focus();
-
-        if (window.navigator.userAgent.indexOf("MSIE") !== -1 || navigator.msMaxTouchPoints !== undefined) {
-          setTimeout(self.close, 0);
-        } else {
-          self.close();
-        }
-      }
-
-      function selectDate(e) {
-        e.preventDefault();
-        e.stopPropagation();
-
-        var isSelectable = function isSelectable(day) {
-          return day.classList && day.classList.contains("flatpickr-day") && !day.classList.contains("disabled") && !day.classList.contains("notAllowed");
-        };
-
-        var t = findParent(e.target, isSelectable);
-        if (t === undefined) return;
-        var target = t;
-        var selectedDate = self.latestSelectedDateObj = new Date(target.dateObj.getTime());
-        var shouldChangeMonth = (selectedDate.getMonth() < self.currentMonth || selectedDate.getMonth() > self.currentMonth + self.config.showMonths - 1) && self.config.mode !== "range";
-        self.selectedDateElem = target;
-        if (self.config.mode === "single") self.selectedDates = [selectedDate];else if (self.config.mode === "multiple") {
-          var selectedIndex = isDateSelected(selectedDate);
-          if (selectedIndex) self.selectedDates.splice(parseInt(selectedIndex), 1);else self.selectedDates.push(selectedDate);
-        } else if (self.config.mode === "range") {
-          if (self.selectedDates.length === 2) self.clear(false);
-          self.selectedDates.push(selectedDate);
-          if (compareDates(selectedDate, self.selectedDates[0], true) !== 0) self.selectedDates.sort(function (a, b) {
-            return a.getTime() - b.getTime();
-          });
-        }
-        setHoursFromInputs();
-
-        if (shouldChangeMonth) {
-          var isNewYear = self.currentYear !== selectedDate.getFullYear();
-          self.currentYear = selectedDate.getFullYear();
-          self.currentMonth = selectedDate.getMonth();
-          if (isNewYear) triggerEvent("onYearChange");
-          triggerEvent("onMonthChange");
-        }
-
-        updateNavigationCurrentMonth();
-        buildDays();
-        if (self.config.minDate && self.minDateHasTime && self.config.enableTime && compareDates(selectedDate, self.config.minDate) === 0) setHoursFromDate(self.config.minDate);
-        updateValue();
-        if (self.config.enableTime) setTimeout(function () {
-          return self.showTimeInput = true;
-        }, 50);
-
-        if (self.config.mode === "range") {
-          if (self.selectedDates.length === 1) {
-            onMouseOver(target);
-          } else updateNavigationCurrentMonth();
-        }
-
-        if (!shouldChangeMonth && self.config.mode !== "range" && self.config.showMonths === 1) focusOnDay(target.$i, 0);else self.selectedDateElem && self.selectedDateElem.focus();
-        if (self.hourElement !== undefined) setTimeout(function () {
-          return self.hourElement !== undefined && self.hourElement.select();
-        }, 451);
-
-        if (self.config.closeOnSelect) {
-          var single = self.config.mode === "single" && !self.config.enableTime;
-          var range = self.config.mode === "range" && self.selectedDates.length === 2 && !self.config.enableTime;
-
-          if (single || range) {
-            focusAndClose();
-          }
-        }
-
-        triggerChange();
-      }
-
-      var CALLBACKS = {
-        locale: [setupLocale]
-      };
-
-      function set(option, value) {
-        if (option !== null && typeof option === "object") Object.assign(self.config, option);else {
-          self.config[option] = value;
-          if (CALLBACKS[option] !== undefined) CALLBACKS[option].forEach(function (x) {
-            return x();
-          });
-        }
-        self.redraw();
-        jumpToDate();
-      }
-
-      function setSelectedDate(inputDate, format) {
-        var dates = [];
-        if (inputDate instanceof Array) dates = inputDate.map(function (d) {
-          return self.parseDate(d, format);
-        });else if (inputDate instanceof Date || typeof inputDate === "number") dates = [self.parseDate(inputDate, format)];else if (typeof inputDate === "string") {
-          switch (self.config.mode) {
-            case "single":
-              dates = [self.parseDate(inputDate, format)];
-              break;
-
-            case "multiple":
-              dates = inputDate.split(self.config.conjunction).map(function (date) {
-                return self.parseDate(date, format);
-              });
-              break;
-
-            case "range":
-              dates = inputDate.split(self.l10n.rangeSeparator).map(function (date) {
-                return self.parseDate(date, format);
-              });
-              break;
-
-            default:
-              break;
-          }
-        } else self.config.errorHandler(new Error("Invalid date supplied: " + JSON.stringify(inputDate)));
-        self.selectedDates = dates.filter(function (d) {
-          return d instanceof Date && isEnabled(d, false);
-        });
-        if (self.config.mode === "range") self.selectedDates.sort(function (a, b) {
-          return a.getTime() - b.getTime();
-        });
-      }
-
-      function setDate(date, triggerChange, format) {
-        if (triggerChange === void 0) {
-          triggerChange = false;
-        }
-
-        if (format === void 0) {
-          format = self.config.dateFormat;
-        }
-
-        if (date !== 0 && !date) return self.clear(triggerChange);
-        setSelectedDate(date, format);
-        self.showTimeInput = self.selectedDates.length > 0;
-        self.latestSelectedDateObj = self.selectedDates[0];
-        self.redraw();
-        jumpToDate();
-        setHoursFromDate();
-        updateValue(triggerChange);
-        if (triggerChange) triggerEvent("onChange");
-      }
-
-      function parseDateRules(arr) {
-        return arr.map(function (rule) {
-          if (typeof rule === "string" || typeof rule === "number" || rule instanceof Date) {
-            return self.parseDate(rule, undefined, true);
-          } else if (rule && typeof rule === "object" && rule.from && rule.to) return {
-            from: self.parseDate(rule.from, undefined),
-            to: self.parseDate(rule.to, undefined)
-          };
-
-          return rule;
-        }).filter(function (x) {
-          return x;
-        });
-      }
-
-      function setupDates() {
-        self.selectedDates = [];
-        self.now = self.parseDate(self.config.now) || new Date();
-        var preloadedDate = self.config.defaultDate || self.input.value;
-        if (preloadedDate) setSelectedDate(preloadedDate, self.config.dateFormat);
-        var initialDate = self.selectedDates.length > 0 ? self.selectedDates[0] : self.config.minDate && self.config.minDate.getTime() > self.now.getTime() ? self.config.minDate : self.config.maxDate && self.config.maxDate.getTime() < self.now.getTime() ? self.config.maxDate : self.now;
-        self.currentYear = initialDate.getFullYear();
-        self.currentMonth = initialDate.getMonth();
-        if (self.selectedDates.length > 0) self.latestSelectedDateObj = self.selectedDates[0];
-        if (self.config.minTime !== undefined) self.config.minTime = self.parseDate(self.config.minTime, "H:i");
-        if (self.config.maxTime !== undefined) self.config.maxTime = self.parseDate(self.config.maxTime, "H:i");
-        self.minDateHasTime = !!self.config.minDate && (self.config.minDate.getHours() > 0 || self.config.minDate.getMinutes() > 0 || self.config.minDate.getSeconds() > 0);
-        self.maxDateHasTime = !!self.config.maxDate && (self.config.maxDate.getHours() > 0 || self.config.maxDate.getMinutes() > 0 || self.config.maxDate.getSeconds() > 0);
-        Object.defineProperty(self, "showTimeInput", {
-          get: function get() {
-            return self._showTimeInput;
-          },
-          set: function set(bool) {
-            self._showTimeInput = bool;
-            if (self.calendarContainer) toggleClass(self.calendarContainer, "showTimeInput", bool);
-            self.isOpen && positionCalendar();
-          }
-        });
-      }
-
-      function setupInputs() {
-        self.input = self.config.wrap ? element.querySelector("[data-input]") : element;
-
-        if (!self.input) {
-          self.config.errorHandler(new Error("Invalid input element specified"));
-          return;
-        }
-
-        self.input._type = self.input.type;
-        self.input.type = "text";
-        self.input.classList.add("flatpickr-input");
-        self._input = self.input;
-
-        if (self.config.altInput) {
-          self.altInput = createElement(self.input.nodeName, self.input.className + " " + self.config.altInputClass);
-          self._input = self.altInput;
-          self.altInput.placeholder = self.input.placeholder;
-          self.altInput.disabled = self.input.disabled;
-          self.altInput.required = self.input.required;
-          self.altInput.tabIndex = self.input.tabIndex;
-          self.altInput.type = "text";
-          self.input.type = "hidden";
-          if (!self.config.static && self.input.parentNode) self.input.parentNode.insertBefore(self.altInput, self.input.nextSibling);
-        }
-
-        if (!self.config.allowInput) self._input.setAttribute("readonly", "readonly");
-        self._positionElement = self.config.positionElement || self._input;
-      }
-
-      function setupMobile() {
-        var inputType = self.config.enableTime ? self.config.noCalendar ? "time" : "datetime-local" : "date";
-        self.mobileInput = createElement("input", self.input.className + " flatpickr-mobile");
-        self.mobileInput.step = self.input.getAttribute("step") || "any";
-        self.mobileInput.tabIndex = 1;
-        self.mobileInput.type = inputType;
-        self.mobileInput.disabled = self.input.disabled;
-        self.mobileInput.required = self.input.required;
-        self.mobileInput.placeholder = self.input.placeholder;
-        self.mobileFormatStr = inputType === "datetime-local" ? "Y-m-d\\TH:i:S" : inputType === "date" ? "Y-m-d" : "H:i:S";
-
-        if (self.selectedDates.length > 0) {
-          self.mobileInput.defaultValue = self.mobileInput.value = self.formatDate(self.selectedDates[0], self.mobileFormatStr);
-        }
-
-        if (self.config.minDate) self.mobileInput.min = self.formatDate(self.config.minDate, "Y-m-d");
-        if (self.config.maxDate) self.mobileInput.max = self.formatDate(self.config.maxDate, "Y-m-d");
-        self.input.type = "hidden";
-        if (self.altInput !== undefined) self.altInput.type = "hidden";
-
-        try {
-          if (self.input.parentNode) self.input.parentNode.insertBefore(self.mobileInput, self.input.nextSibling);
-        } catch (_a) {}
-
-        bind(self.mobileInput, "change", function (e) {
-          self.setDate(e.target.value, false, self.mobileFormatStr);
-          triggerEvent("onChange");
-          triggerEvent("onClose");
-        });
-      }
-
-      function toggle() {
-        if (self.isOpen) return self.close();
-        self.open();
-      }
-
-      function triggerEvent(event, data) {
-        var hooks = self.config[event];
-
-        if (hooks !== undefined && hooks.length > 0) {
-          for (var i = 0; hooks[i] && i < hooks.length; i++) {
-            hooks[i](self.selectedDates, self.input.value, self, data);
-          }
-        }
-
-        if (event === "onChange") {
-          self.input.dispatchEvent(createEvent("change"));
-          self.input.dispatchEvent(createEvent("input"));
-        }
-      }
-
-      function createEvent(name) {
-        var e = document.createEvent("Event");
-        e.initEvent(name, true, true);
-        return e;
-      }
-
-      function isDateSelected(date) {
-        for (var i = 0; i < self.selectedDates.length; i++) {
-          if (compareDates(self.selectedDates[i], date) === 0) return "" + i;
-        }
-
-        return false;
-      }
-
-      function isDateInRange(date) {
-        if (self.config.mode !== "range" || self.selectedDates.length < 2) return false;
-        return compareDates(date, self.selectedDates[0]) >= 0 && compareDates(date, self.selectedDates[1]) <= 0;
-      }
-
-      function updateNavigationCurrentMonth() {
-        if (self.config.noCalendar || self.isMobile || !self.monthNav) return;
-        self.yearElements.forEach(function (yearElement, i) {
-          var d = new Date(self.currentYear, self.currentMonth, 1);
-          d.setMonth(self.currentMonth + i);
-          self.monthElements[i].textContent = monthToStr(d.getMonth(), self.config.shorthandCurrentMonth, self.l10n) + " ";
-          yearElement.value = d.getFullYear().toString();
-        });
-        self._hidePrevMonthArrow = self.config.minDate !== undefined && (self.currentYear === self.config.minDate.getFullYear() ? self.currentMonth <= self.config.minDate.getMonth() : self.currentYear < self.config.minDate.getFullYear());
-        self._hideNextMonthArrow = self.config.maxDate !== undefined && (self.currentYear === self.config.maxDate.getFullYear() ? self.currentMonth + 1 > self.config.maxDate.getMonth() : self.currentYear > self.config.maxDate.getFullYear());
-      }
-
-      function updateValue(triggerChange) {
-        if (triggerChange === void 0) {
-          triggerChange = true;
-        }
-
-        if (self.selectedDates.length === 0) return self.clear(triggerChange);
-
-        if (self.mobileInput !== undefined && self.mobileFormatStr) {
-          self.mobileInput.value = self.latestSelectedDateObj !== undefined ? self.formatDate(self.latestSelectedDateObj, self.mobileFormatStr) : "";
-        }
-
-        var joinChar = self.config.mode !== "range" ? self.config.conjunction : self.l10n.rangeSeparator;
-        self.input.value = self.selectedDates.map(function (dObj) {
-          return self.formatDate(dObj, self.config.dateFormat);
-        }).join(joinChar);
-
-        if (self.altInput !== undefined) {
-          self.altInput.value = self.selectedDates.map(function (dObj) {
-            return self.formatDate(dObj, self.config.altFormat);
-          }).join(joinChar);
-        }
-
-        if (triggerChange !== false) triggerEvent("onValueUpdate");
-      }
-
-      function onMonthNavClick(e) {
-        var isPrevMonth = self.prevMonthNav.contains(e.target);
-        var isNextMonth = self.nextMonthNav.contains(e.target);
-
-        if (isPrevMonth || isNextMonth) {
-          changeMonth(isPrevMonth ? -1 : 1);
-        } else if (self.yearElements.indexOf(e.target) >= 0) {
-          e.preventDefault();
-          e.target.select();
-        } else if (e.target.classList.contains("arrowUp")) {
-          self.changeYear(self.currentYear + 1);
-        } else if (e.target.classList.contains("arrowDown")) {
-          self.changeYear(self.currentYear - 1);
-        }
-      }
-
-      function timeWrapper(e) {
-        e.preventDefault();
-        var isKeyDown = e.type === "keydown",
-            input = e.target;
-
-        if (self.amPM !== undefined && e.target === self.amPM) {
-          self.amPM.textContent = self.l10n.amPM[int(self.amPM.textContent === self.l10n.amPM[0])];
-        }
-
-        var min = parseFloat(input.getAttribute("data-min")),
-            max = parseFloat(input.getAttribute("data-max")),
-            step = parseFloat(input.getAttribute("data-step")),
-            curValue = parseInt(input.value, 10),
-            delta = e.delta || (isKeyDown ? e.which === 38 ? 1 : -1 : 0);
-        var newValue = curValue + step * delta;
-
-        if (typeof input.value !== "undefined" && input.value.length === 2) {
-          var isHourElem = input === self.hourElement,
-              isMinuteElem = input === self.minuteElement;
-
-          if (newValue < min) {
-            newValue = max + newValue + int(!isHourElem) + (int(isHourElem) && int(!self.amPM));
-            if (isMinuteElem) incrementNumInput(undefined, -1, self.hourElement);
-          } else if (newValue > max) {
-            newValue = input === self.hourElement ? newValue - max - int(!self.amPM) : min;
-            if (isMinuteElem) incrementNumInput(undefined, 1, self.hourElement);
-          }
-
-          if (self.amPM && isHourElem && (step === 1 ? newValue + curValue === 23 : Math.abs(newValue - curValue) > step)) {
-            self.amPM.textContent = self.l10n.amPM[int(self.amPM.textContent === self.l10n.amPM[0])];
-          }
-
-          input.value = pad(newValue);
-        }
-      }
-
-      init();
-      return self;
-    }
-
-    function _flatpickr(nodeList, config) {
-      var nodes = Array.prototype.slice.call(nodeList);
-      var instances = [];
-
-      for (var i = 0; i < nodes.length; i++) {
-        var node = nodes[i];
-
-        try {
-          if (node.getAttribute("data-fp-omit") !== null) continue;
-
-          if (node._flatpickr !== undefined) {
-            node._flatpickr.destroy();
-
-            node._flatpickr = undefined;
-          }
-
-          node._flatpickr = FlatpickrInstance(node, config || {});
-          instances.push(node._flatpickr);
-        } catch (e) {
-          console.error(e);
-        }
-      }
-
-      return instances.length === 1 ? instances[0] : instances;
-    }
-
-    if (typeof HTMLElement !== "undefined") {
-      HTMLCollection.prototype.flatpickr = NodeList.prototype.flatpickr = function (config) {
-        return _flatpickr(this, config);
-      };
-
-      HTMLElement.prototype.flatpickr = function (config) {
-        return _flatpickr([this], config);
-      };
-    }
-
-    var flatpickr = function flatpickr(selector, config) {
-      if (selector instanceof NodeList) return _flatpickr(selector, config);else if (typeof selector === "string") return _flatpickr(window.document.querySelectorAll(selector), config);
-      return _flatpickr([selector], config);
-    };
-
-    flatpickr.defaultConfig = defaults;
-    flatpickr.l10ns = {
-      en: Object.assign({}, english),
-      default: Object.assign({}, english)
-    };
-
-    flatpickr.localize = function (l10n) {
-      flatpickr.l10ns.default = Object.assign({}, flatpickr.l10ns.default, l10n);
-    };
-
-    flatpickr.setDefaults = function (config) {
-      flatpickr.defaultConfig = Object.assign({}, flatpickr.defaultConfig, config);
-    };
-
-    flatpickr.parseDate = createDateParser({});
-    flatpickr.formatDate = createDateFormatter({});
-    flatpickr.compareDates = compareDates;
-
-    if (typeof jQuery !== "undefined") {
-      jQuery.fn.flatpickr = function (config) {
-        return _flatpickr(this, config);
-      };
-    }
-
-    Date.prototype.fp_incr = function (days) {
-      return new Date(this.getFullYear(), this.getMonth(), this.getDate() + (typeof days === "string" ? parseInt(days, 10) : days));
-    };
-
-    return flatpickr;
-
-})));
-
 /*!
  * Font Awesome Free 5.0.6 by @fontawesome - http://fontawesome.com
  * License - http://fontawesome.com/license (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
@@ -32071,2708 +30001,3 @@ Object.defineProperty(api, 'config', {
 bunker(bootstrap);
 
 }());
-
-/*! nouislider - 11.1.0 - 2018-04-02 11:18:13 */
-
-(function (factory) {
-
-    if ( typeof define === 'function' && define.amd ) {
-
-        // AMD. Register as an anonymous module.
-        define([], factory);
-
-    } else if ( typeof exports === 'object' ) {
-
-        // Node/CommonJS
-        module.exports = factory();
-
-    } else {
-
-        // Browser globals
-        window.noUiSlider = factory();
-    }
-
-}(function( ){
-
-	'use strict';
-
-	var VERSION = '11.1.0';
-
-
-	function isValidFormatter ( entry ) {
-		return typeof entry === 'object' && typeof entry.to === 'function' && typeof entry.from === 'function';
-	}
-
-	function removeElement ( el ) {
-		el.parentElement.removeChild(el);
-	}
-
-	function isSet ( value ) {
-		return value !== null && value !== undefined;
-	}
-
-	// Bindable version
-	function preventDefault ( e ) {
-		e.preventDefault();
-	}
-
-	// Removes duplicates from an array.
-	function unique ( array ) {
-		return array.filter(function(a){
-			return !this[a] ? this[a] = true : false;
-		}, {});
-	}
-
-	// Round a value to the closest 'to'.
-	function closest ( value, to ) {
-		return Math.round(value / to) * to;
-	}
-
-	// Current position of an element relative to the document.
-	function offset ( elem, orientation ) {
-
-		var rect = elem.getBoundingClientRect();
-		var doc = elem.ownerDocument;
-		var docElem = doc.documentElement;
-		var pageOffset = getPageOffset(doc);
-
-		// getBoundingClientRect contains left scroll in Chrome on Android.
-		// I haven't found a feature detection that proves this. Worst case
-		// scenario on mis-match: the 'tap' feature on horizontal sliders breaks.
-		if ( /webkit.*Chrome.*Mobile/i.test(navigator.userAgent) ) {
-			pageOffset.x = 0;
-		}
-
-		return orientation ? (rect.top + pageOffset.y - docElem.clientTop) : (rect.left + pageOffset.x - docElem.clientLeft);
-	}
-
-	// Checks whether a value is numerical.
-	function isNumeric ( a ) {
-		return typeof a === 'number' && !isNaN( a ) && isFinite( a );
-	}
-
-	// Sets a class and removes it after [duration] ms.
-	function addClassFor ( element, className, duration ) {
-		if (duration > 0) {
-		addClass(element, className);
-			setTimeout(function(){
-				removeClass(element, className);
-			}, duration);
-		}
-	}
-
-	// Limits a value to 0 - 100
-	function limit ( a ) {
-		return Math.max(Math.min(a, 100), 0);
-	}
-
-	// Wraps a variable as an array, if it isn't one yet.
-	// Note that an input array is returned by reference!
-	function asArray ( a ) {
-		return Array.isArray(a) ? a : [a];
-	}
-
-	// Counts decimals
-	function countDecimals ( numStr ) {
-		numStr = String(numStr);
-		var pieces = numStr.split(".");
-		return pieces.length > 1 ? pieces[1].length : 0;
-	}
-
-	// http://youmightnotneedjquery.com/#add_class
-	function addClass ( el, className ) {
-		if ( el.classList ) {
-			el.classList.add(className);
-		} else {
-			el.className += ' ' + className;
-		}
-	}
-
-	// http://youmightnotneedjquery.com/#remove_class
-	function removeClass ( el, className ) {
-		if ( el.classList ) {
-			el.classList.remove(className);
-		} else {
-			el.className = el.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
-		}
-	}
-
-	// https://plainjs.com/javascript/attributes/adding-removing-and-testing-for-classes-9/
-	function hasClass ( el, className ) {
-		return el.classList ? el.classList.contains(className) : new RegExp('\\b' + className + '\\b').test(el.className);
-	}
-
-	// https://developer.mozilla.org/en-US/docs/Web/API/Window/scrollY#Notes
-	function getPageOffset ( doc ) {
-
-		var supportPageOffset = window.pageXOffset !== undefined;
-		var isCSS1Compat = ((doc.compatMode || "") === "CSS1Compat");
-		var x = supportPageOffset ? window.pageXOffset : isCSS1Compat ? doc.documentElement.scrollLeft : doc.body.scrollLeft;
-		var y = supportPageOffset ? window.pageYOffset : isCSS1Compat ? doc.documentElement.scrollTop : doc.body.scrollTop;
-
-		return {
-			x: x,
-			y: y
-		};
-	}
-
-	// we provide a function to compute constants instead
-	// of accessing window.* as soon as the module needs it
-	// so that we do not compute anything if not needed
-	function getActions ( ) {
-
-		// Determine the events to bind. IE11 implements pointerEvents without
-		// a prefix, which breaks compatibility with the IE10 implementation.
-		return window.navigator.pointerEnabled ? {
-			start: 'pointerdown',
-			move: 'pointermove',
-			end: 'pointerup'
-		} : window.navigator.msPointerEnabled ? {
-			start: 'MSPointerDown',
-			move: 'MSPointerMove',
-			end: 'MSPointerUp'
-		} : {
-			start: 'mousedown touchstart',
-			move: 'mousemove touchmove',
-			end: 'mouseup touchend'
-		};
-	}
-
-	// https://github.com/WICG/EventListenerOptions/blob/gh-pages/explainer.md
-	// Issue #785
-	function getSupportsPassive ( ) {
-
-		var supportsPassive = false;
-
-		try {
-
-			var opts = Object.defineProperty({}, 'passive', {
-				get: function() {
-					supportsPassive = true;
-				}
-			});
-
-			window.addEventListener('test', null, opts);
-
-		} catch (e) {}
-
-		return supportsPassive;
-	}
-
-	function getSupportsTouchActionNone ( ) {
-		return window.CSS && CSS.supports && CSS.supports('touch-action', 'none');
-	}
-
-
-// Value calculation
-
-	// Determine the size of a sub-range in relation to a full range.
-	function subRangeRatio ( pa, pb ) {
-		return (100 / (pb - pa));
-	}
-
-	// (percentage) How many percent is this value of this range?
-	function fromPercentage ( range, value ) {
-		return (value * 100) / ( range[1] - range[0] );
-	}
-
-	// (percentage) Where is this value on this range?
-	function toPercentage ( range, value ) {
-		return fromPercentage( range, range[0] < 0 ?
-			value + Math.abs(range[0]) :
-				value - range[0] );
-	}
-
-	// (value) How much is this percentage on this range?
-	function isPercentage ( range, value ) {
-		return ((value * ( range[1] - range[0] )) / 100) + range[0];
-	}
-
-
-// Range conversion
-
-	function getJ ( value, arr ) {
-
-		var j = 1;
-
-		while ( value >= arr[j] ){
-			j += 1;
-		}
-
-		return j;
-	}
-
-	// (percentage) Input a value, find where, on a scale of 0-100, it applies.
-	function toStepping ( xVal, xPct, value ) {
-
-		if ( value >= xVal.slice(-1)[0] ){
-			return 100;
-		}
-
-		var j = getJ( value, xVal );
-		var va = xVal[j-1];
-		var vb = xVal[j];
-		var pa = xPct[j-1];
-		var pb = xPct[j];
-
-		return pa + (toPercentage([va, vb], value) / subRangeRatio (pa, pb));
-	}
-
-	// (value) Input a percentage, find where it is on the specified range.
-	function fromStepping ( xVal, xPct, value ) {
-
-		// There is no range group that fits 100
-		if ( value >= 100 ){
-			return xVal.slice(-1)[0];
-		}
-
-		var j = getJ( value, xPct );
-		var va = xVal[j-1];
-		var vb = xVal[j];
-		var pa = xPct[j-1];
-		var pb = xPct[j];
-
-		return isPercentage([va, vb], (value - pa) * subRangeRatio (pa, pb));
-	}
-
-	// (percentage) Get the step that applies at a certain value.
-	function getStep ( xPct, xSteps, snap, value ) {
-
-		if ( value === 100 ) {
-			return value;
-		}
-
-		var j = getJ( value, xPct );
-		var a = xPct[j-1];
-		var b = xPct[j];
-
-		// If 'snap' is set, steps are used as fixed points on the slider.
-		if ( snap ) {
-
-			// Find the closest position, a or b.
-			if ((value - a) > ((b-a)/2)){
-				return b;
-			}
-
-			return a;
-		}
-
-		if ( !xSteps[j-1] ){
-			return value;
-		}
-
-		return xPct[j-1] + closest(
-			value - xPct[j-1],
-			xSteps[j-1]
-		);
-	}
-
-
-// Entry parsing
-
-	function handleEntryPoint ( index, value, that ) {
-
-		var percentage;
-
-		// Wrap numerical input in an array.
-		if ( typeof value === "number" ) {
-			value = [value];
-		}
-
-		// Reject any invalid input, by testing whether value is an array.
-		if ( !Array.isArray(value) ){
-			throw new Error("noUiSlider (" + VERSION + "): 'range' contains invalid value.");
-		}
-
-		// Covert min/max syntax to 0 and 100.
-		if ( index === 'min' ) {
-			percentage = 0;
-		} else if ( index === 'max' ) {
-			percentage = 100;
-		} else {
-			percentage = parseFloat( index );
-		}
-
-		// Check for correct input.
-		if ( !isNumeric( percentage ) || !isNumeric( value[0] ) ) {
-			throw new Error("noUiSlider (" + VERSION + "): 'range' value isn't numeric.");
-		}
-
-		// Store values.
-		that.xPct.push( percentage );
-		that.xVal.push( value[0] );
-
-		// NaN will evaluate to false too, but to keep
-		// logging clear, set step explicitly. Make sure
-		// not to override the 'step' setting with false.
-		if ( !percentage ) {
-			if ( !isNaN( value[1] ) ) {
-				that.xSteps[0] = value[1];
-			}
-		} else {
-			that.xSteps.push( isNaN(value[1]) ? false : value[1] );
-		}
-
-		that.xHighestCompleteStep.push(0);
-	}
-
-	function handleStepPoint ( i, n, that ) {
-
-		// Ignore 'false' stepping.
-		if ( !n ) {
-			return true;
-		}
-
-		// Factor to range ratio
-		that.xSteps[i] = fromPercentage([that.xVal[i], that.xVal[i+1]], n) / subRangeRatio(that.xPct[i], that.xPct[i+1]);
-
-		var totalSteps = (that.xVal[i+1] - that.xVal[i]) / that.xNumSteps[i];
-		var highestStep = Math.ceil(Number(totalSteps.toFixed(3)) - 1);
-		var step = that.xVal[i] + (that.xNumSteps[i] * highestStep);
-
-		that.xHighestCompleteStep[i] = step;
-	}
-
-
-// Interface
-
-	function Spectrum ( entry, snap, singleStep ) {
-
-		this.xPct = [];
-		this.xVal = [];
-		this.xSteps = [ singleStep || false ];
-		this.xNumSteps = [ false ];
-		this.xHighestCompleteStep = [];
-
-		this.snap = snap;
-
-		var index;
-		var ordered = []; // [0, 'min'], [1, '50%'], [2, 'max']
-
-		// Map the object keys to an array.
-		for ( index in entry ) {
-			if ( entry.hasOwnProperty(index) ) {
-				ordered.push([entry[index], index]);
-			}
-		}
-
-		// Sort all entries by value (numeric sort).
-		if ( ordered.length && typeof ordered[0][0] === "object" ) {
-			ordered.sort(function(a, b) { return a[0][0] - b[0][0]; });
-		} else {
-			ordered.sort(function(a, b) { return a[0] - b[0]; });
-		}
-
-
-		// Convert all entries to subranges.
-		for ( index = 0; index < ordered.length; index++ ) {
-			handleEntryPoint(ordered[index][1], ordered[index][0], this);
-		}
-
-		// Store the actual step values.
-		// xSteps is sorted in the same order as xPct and xVal.
-		this.xNumSteps = this.xSteps.slice(0);
-
-		// Convert all numeric steps to the percentage of the subrange they represent.
-		for ( index = 0; index < this.xNumSteps.length; index++ ) {
-			handleStepPoint(index, this.xNumSteps[index], this);
-		}
-	}
-
-	Spectrum.prototype.getMargin = function ( value ) {
-
-		var step = this.xNumSteps[0];
-
-		if ( step && ((value / step) % 1) !== 0 ) {
-			throw new Error("noUiSlider (" + VERSION + "): 'limit', 'margin' and 'padding' must be divisible by step.");
-		}
-
-		return this.xPct.length === 2 ? fromPercentage(this.xVal, value) : false;
-	};
-
-	Spectrum.prototype.toStepping = function ( value ) {
-
-		value = toStepping( this.xVal, this.xPct, value );
-
-		return value;
-	};
-
-	Spectrum.prototype.fromStepping = function ( value ) {
-
-		return fromStepping( this.xVal, this.xPct, value );
-	};
-
-	Spectrum.prototype.getStep = function ( value ) {
-
-		value = getStep(this.xPct, this.xSteps, this.snap, value );
-
-		return value;
-	};
-
-	Spectrum.prototype.getNearbySteps = function ( value ) {
-
-		var j = getJ(value, this.xPct);
-
-		return {
-			stepBefore: { startValue: this.xVal[j-2], step: this.xNumSteps[j-2], highestStep: this.xHighestCompleteStep[j-2] },
-			thisStep: { startValue: this.xVal[j-1], step: this.xNumSteps[j-1], highestStep: this.xHighestCompleteStep[j-1] },
-			stepAfter: { startValue: this.xVal[j-0], step: this.xNumSteps[j-0], highestStep: this.xHighestCompleteStep[j-0] }
-		};
-	};
-
-	Spectrum.prototype.countStepDecimals = function () {
-		var stepDecimals = this.xNumSteps.map(countDecimals);
-		return Math.max.apply(null, stepDecimals);
-	};
-
-	// Outside testing
-	Spectrum.prototype.convert = function ( value ) {
-		return this.getStep(this.toStepping(value));
-	};
-
-/*	Every input option is tested and parsed. This'll prevent
-	endless validation in internal methods. These tests are
-	structured with an item for every option available. An
-	option can be marked as required by setting the 'r' flag.
-	The testing function is provided with three arguments:
-		- The provided value for the option;
-		- A reference to the options object;
-		- The name for the option;
-
-	The testing function returns false when an error is detected,
-	or true when everything is OK. It can also modify the option
-	object, to make sure all values can be correctly looped elsewhere. */
-
-	var defaultFormatter = { 'to': function( value ){
-		return value !== undefined && value.toFixed(2);
-	}, 'from': Number };
-
-	function validateFormat ( entry ) {
-
-		// Any object with a to and from method is supported.
-		if ( isValidFormatter(entry) ) {
-			return true;
-		}
-
-		throw new Error("noUiSlider (" + VERSION + "): 'format' requires 'to' and 'from' methods.");
-	}
-
-	function testStep ( parsed, entry ) {
-
-		if ( !isNumeric( entry ) ) {
-			throw new Error("noUiSlider (" + VERSION + "): 'step' is not numeric.");
-		}
-
-		// The step option can still be used to set stepping
-		// for linear sliders. Overwritten if set in 'range'.
-		parsed.singleStep = entry;
-	}
-
-	function testRange ( parsed, entry ) {
-
-		// Filter incorrect input.
-		if ( typeof entry !== 'object' || Array.isArray(entry) ) {
-			throw new Error("noUiSlider (" + VERSION + "): 'range' is not an object.");
-		}
-
-		// Catch missing start or end.
-		if ( entry.min === undefined || entry.max === undefined ) {
-			throw new Error("noUiSlider (" + VERSION + "): Missing 'min' or 'max' in 'range'.");
-		}
-
-		// Catch equal start or end.
-		if ( entry.min === entry.max ) {
-			throw new Error("noUiSlider (" + VERSION + "): 'range' 'min' and 'max' cannot be equal.");
-		}
-
-		parsed.spectrum = new Spectrum(entry, parsed.snap, parsed.singleStep);
-	}
-
-	function testStart ( parsed, entry ) {
-
-		entry = asArray(entry);
-
-		// Validate input. Values aren't tested, as the public .val method
-		// will always provide a valid location.
-		if ( !Array.isArray( entry ) || !entry.length ) {
-			throw new Error("noUiSlider (" + VERSION + "): 'start' option is incorrect.");
-		}
-
-		// Store the number of handles.
-		parsed.handles = entry.length;
-
-		// When the slider is initialized, the .val method will
-		// be called with the start options.
-		parsed.start = entry;
-	}
-
-	function testSnap ( parsed, entry ) {
-
-		// Enforce 100% stepping within subranges.
-		parsed.snap = entry;
-
-		if ( typeof entry !== 'boolean' ){
-			throw new Error("noUiSlider (" + VERSION + "): 'snap' option must be a boolean.");
-		}
-	}
-
-	function testAnimate ( parsed, entry ) {
-
-		// Enforce 100% stepping within subranges.
-		parsed.animate = entry;
-
-		if ( typeof entry !== 'boolean' ){
-			throw new Error("noUiSlider (" + VERSION + "): 'animate' option must be a boolean.");
-		}
-	}
-
-	function testAnimationDuration ( parsed, entry ) {
-
-		parsed.animationDuration = entry;
-
-		if ( typeof entry !== 'number' ){
-			throw new Error("noUiSlider (" + VERSION + "): 'animationDuration' option must be a number.");
-		}
-	}
-
-	function testConnect ( parsed, entry ) {
-
-		var connect = [false];
-		var i;
-
-		// Map legacy options
-		if ( entry === 'lower' ) {
-			entry = [true, false];
-		}
-
-		else if ( entry === 'upper' ) {
-			entry = [false, true];
-		}
-
-		// Handle boolean options
-		if ( entry === true || entry === false ) {
-
-			for ( i = 1; i < parsed.handles; i++ ) {
-				connect.push(entry);
-			}
-
-			connect.push(false);
-		}
-
-		// Reject invalid input
-		else if ( !Array.isArray( entry ) || !entry.length || entry.length !== parsed.handles + 1 ) {
-			throw new Error("noUiSlider (" + VERSION + "): 'connect' option doesn't match handle count.");
-		}
-
-		else {
-			connect = entry;
-		}
-
-		parsed.connect = connect;
-	}
-
-	function testOrientation ( parsed, entry ) {
-
-		// Set orientation to an a numerical value for easy
-		// array selection.
-		switch ( entry ){
-			case 'horizontal':
-				parsed.ort = 0;
-				break;
-			case 'vertical':
-				parsed.ort = 1;
-				break;
-			default:
-				throw new Error("noUiSlider (" + VERSION + "): 'orientation' option is invalid.");
-		}
-	}
-
-	function testMargin ( parsed, entry ) {
-
-		if ( !isNumeric(entry) ){
-			throw new Error("noUiSlider (" + VERSION + "): 'margin' option must be numeric.");
-		}
-
-		// Issue #582
-		if ( entry === 0 ) {
-			return;
-		}
-
-		parsed.margin = parsed.spectrum.getMargin(entry);
-
-		if ( !parsed.margin ) {
-			throw new Error("noUiSlider (" + VERSION + "): 'margin' option is only supported on linear sliders.");
-		}
-	}
-
-	function testLimit ( parsed, entry ) {
-
-		if ( !isNumeric(entry) ){
-			throw new Error("noUiSlider (" + VERSION + "): 'limit' option must be numeric.");
-		}
-
-		parsed.limit = parsed.spectrum.getMargin(entry);
-
-		if ( !parsed.limit || parsed.handles < 2 ) {
-			throw new Error("noUiSlider (" + VERSION + "): 'limit' option is only supported on linear sliders with 2 or more handles.");
-		}
-	}
-
-	function testPadding ( parsed, entry ) {
-
-		if ( !isNumeric(entry) && !Array.isArray(entry) ){
-			throw new Error("noUiSlider (" + VERSION + "): 'padding' option must be numeric or array of exactly 2 numbers.");
-		}
-
-		if ( Array.isArray(entry) && !(entry.length === 2 || isNumeric(entry[0]) || isNumeric(entry[1])) ) {
-			throw new Error("noUiSlider (" + VERSION + "): 'padding' option must be numeric or array of exactly 2 numbers.");
-		}
-
-		if ( entry === 0 ) {
-			return;
-		}
-
-		if ( !Array.isArray(entry) ) {
-			entry = [entry, entry];
-		}
-
-		// 'getMargin' returns false for invalid values.
-		parsed.padding = [parsed.spectrum.getMargin(entry[0]), parsed.spectrum.getMargin(entry[1])];
-
-		if ( parsed.padding[0] === false || parsed.padding[1] === false ) {
-			throw new Error("noUiSlider (" + VERSION + "): 'padding' option is only supported on linear sliders.");
-		}
-
-		if ( parsed.padding[0] < 0 || parsed.padding[1] < 0 ) {
-			throw new Error("noUiSlider (" + VERSION + "): 'padding' option must be a positive number(s).");
-		}
-
-		if ( parsed.padding[0] + parsed.padding[1] >= 100 ) {
-			throw new Error("noUiSlider (" + VERSION + "): 'padding' option must not exceed 100% of the range.");
-		}
-	}
-
-	function testDirection ( parsed, entry ) {
-
-		// Set direction as a numerical value for easy parsing.
-		// Invert connection for RTL sliders, so that the proper
-		// handles get the connect/background classes.
-		switch ( entry ) {
-			case 'ltr':
-				parsed.dir = 0;
-				break;
-			case 'rtl':
-				parsed.dir = 1;
-				break;
-			default:
-				throw new Error("noUiSlider (" + VERSION + "): 'direction' option was not recognized.");
-		}
-	}
-
-	function testBehaviour ( parsed, entry ) {
-
-		// Make sure the input is a string.
-		if ( typeof entry !== 'string' ) {
-			throw new Error("noUiSlider (" + VERSION + "): 'behaviour' must be a string containing options.");
-		}
-
-		// Check if the string contains any keywords.
-		// None are required.
-		var tap = entry.indexOf('tap') >= 0;
-		var drag = entry.indexOf('drag') >= 0;
-		var fixed = entry.indexOf('fixed') >= 0;
-		var snap = entry.indexOf('snap') >= 0;
-		var hover = entry.indexOf('hover') >= 0;
-
-		if ( fixed ) {
-
-			if ( parsed.handles !== 2 ) {
-				throw new Error("noUiSlider (" + VERSION + "): 'fixed' behaviour must be used with 2 handles");
-			}
-
-			// Use margin to enforce fixed state
-			testMargin(parsed, parsed.start[1] - parsed.start[0]);
-		}
-
-		parsed.events = {
-			tap: tap || snap,
-			drag: drag,
-			fixed: fixed,
-			snap: snap,
-			hover: hover
-		};
-	}
-
-	function testTooltips ( parsed, entry ) {
-
-		if ( entry === false ) {
-			return;
-		}
-
-		else if ( entry === true ) {
-
-			parsed.tooltips = [];
-
-			for ( var i = 0; i < parsed.handles; i++ ) {
-				parsed.tooltips.push(true);
-			}
-		}
-
-		else {
-
-			parsed.tooltips = asArray(entry);
-
-			if ( parsed.tooltips.length !== parsed.handles ) {
-				throw new Error("noUiSlider (" + VERSION + "): must pass a formatter for all handles.");
-			}
-
-			parsed.tooltips.forEach(function(formatter){
-				if ( typeof formatter !== 'boolean' && (typeof formatter !== 'object' || typeof formatter.to !== 'function') ) {
-					throw new Error("noUiSlider (" + VERSION + "): 'tooltips' must be passed a formatter or 'false'.");
-				}
-			});
-		}
-	}
-
-	function testAriaFormat ( parsed, entry ) {
-		parsed.ariaFormat = entry;
-		validateFormat(entry);
-	}
-
-	function testFormat ( parsed, entry ) {
-		parsed.format = entry;
-		validateFormat(entry);
-	}
-
-	function testCssPrefix ( parsed, entry ) {
-
-		if ( typeof entry !== 'string' && entry !== false ) {
-			throw new Error("noUiSlider (" + VERSION + "): 'cssPrefix' must be a string or `false`.");
-		}
-
-		parsed.cssPrefix = entry;
-	}
-
-	function testCssClasses ( parsed, entry ) {
-
-		if ( typeof entry !== 'object' ) {
-			throw new Error("noUiSlider (" + VERSION + "): 'cssClasses' must be an object.");
-		}
-
-		if ( typeof parsed.cssPrefix === 'string' ) {
-			parsed.cssClasses = {};
-
-			for ( var key in entry ) {
-				if ( !entry.hasOwnProperty(key) ) { continue; }
-
-				parsed.cssClasses[key] = parsed.cssPrefix + entry[key];
-			}
-		} else {
-			parsed.cssClasses = entry;
-		}
-	}
-
-	// Test all developer settings and parse to assumption-safe values.
-	function testOptions ( options ) {
-
-		// To prove a fix for #537, freeze options here.
-		// If the object is modified, an error will be thrown.
-		// Object.freeze(options);
-
-		var parsed = {
-			margin: 0,
-			limit: 0,
-			padding: 0,
-			animate: true,
-			animationDuration: 300,
-			ariaFormat: defaultFormatter,
-			format: defaultFormatter
-		};
-
-		// Tests are executed in the order they are presented here.
-		var tests = {
-			'step': { r: false, t: testStep },
-			'start': { r: true, t: testStart },
-			'connect': { r: true, t: testConnect },
-			'direction': { r: true, t: testDirection },
-			'snap': { r: false, t: testSnap },
-			'animate': { r: false, t: testAnimate },
-			'animationDuration': { r: false, t: testAnimationDuration },
-			'range': { r: true, t: testRange },
-			'orientation': { r: false, t: testOrientation },
-			'margin': { r: false, t: testMargin },
-			'limit': { r: false, t: testLimit },
-			'padding': { r: false, t: testPadding },
-			'behaviour': { r: true, t: testBehaviour },
-			'ariaFormat': { r: false, t: testAriaFormat },
-			'format': { r: false, t: testFormat },
-			'tooltips': { r: false, t: testTooltips },
-			'cssPrefix': { r: true, t: testCssPrefix },
-			'cssClasses': { r: true, t: testCssClasses }
-		};
-
-		var defaults = {
-			'connect': false,
-			'direction': 'ltr',
-			'behaviour': 'tap',
-			'orientation': 'horizontal',
-			'cssPrefix' : 'noUi-',
-			'cssClasses': {
-				target: 'target',
-				base: 'base',
-				origin: 'origin',
-				handle: 'handle',
-				handleLower: 'handle-lower',
-				handleUpper: 'handle-upper',
-				horizontal: 'horizontal',
-				vertical: 'vertical',
-				background: 'background',
-				connect: 'connect',
-				connects: 'connects',
-				ltr: 'ltr',
-				rtl: 'rtl',
-				draggable: 'draggable',
-				drag: 'state-drag',
-				tap: 'state-tap',
-				active: 'active',
-				tooltip: 'tooltip',
-				pips: 'pips',
-				pipsHorizontal: 'pips-horizontal',
-				pipsVertical: 'pips-vertical',
-				marker: 'marker',
-				markerHorizontal: 'marker-horizontal',
-				markerVertical: 'marker-vertical',
-				markerNormal: 'marker-normal',
-				markerLarge: 'marker-large',
-				markerSub: 'marker-sub',
-				value: 'value',
-				valueHorizontal: 'value-horizontal',
-				valueVertical: 'value-vertical',
-				valueNormal: 'value-normal',
-				valueLarge: 'value-large',
-				valueSub: 'value-sub'
-			}
-		};
-
-		// AriaFormat defaults to regular format, if any.
-		if ( options.format && !options.ariaFormat ) {
-			options.ariaFormat = options.format;
-		}
-
-		// Run all options through a testing mechanism to ensure correct
-		// input. It should be noted that options might get modified to
-		// be handled properly. E.g. wrapping integers in arrays.
-		Object.keys(tests).forEach(function( name ){
-
-			// If the option isn't set, but it is required, throw an error.
-			if ( !isSet(options[name]) && defaults[name] === undefined ) {
-
-				if ( tests[name].r ) {
-					throw new Error("noUiSlider (" + VERSION + "): '" + name + "' is required.");
-				}
-
-				return true;
-			}
-
-			tests[name].t( parsed, !isSet(options[name]) ? defaults[name] : options[name] );
-		});
-
-		// Forward pips options
-		parsed.pips = options.pips;
-
-		// All recent browsers accept unprefixed transform.
-		// We need -ms- for IE9 and -webkit- for older Android;
-		// Assume use of -webkit- if unprefixed and -ms- are not supported.
-		// https://caniuse.com/#feat=transforms2d
-		var d = document.createElement("div");
-		var msPrefix = d.style.msTransform !== undefined;
-		var noPrefix = d.style.transform !== undefined;
-
-		parsed.transformRule = noPrefix ? 'transform' : (msPrefix ? 'msTransform' : 'webkitTransform');
-
-		// Pips don't move, so we can place them using left/top.
-		var styles = [['left', 'top'], ['right', 'bottom']];
-
-		parsed.style = styles[parsed.dir][parsed.ort];
-
-		return parsed;
-	}
-
-
-function scope ( target, options, originalOptions ){
-
-	var actions = getActions();
-	var supportsTouchActionNone = getSupportsTouchActionNone();
-	var supportsPassive = supportsTouchActionNone && getSupportsPassive();
-
-	// All variables local to 'scope' are prefixed with 'scope_'
-	var scope_Target = target;
-	var scope_Locations = [];
-	var scope_Base;
-	var scope_Handles;
-	var scope_HandleNumbers = [];
-	var scope_ActiveHandlesCount = 0;
-	var scope_Connects;
-	var scope_Spectrum = options.spectrum;
-	var scope_Values = [];
-	var scope_Events = {};
-	var scope_Self;
-	var scope_Pips;
-	var scope_Document = target.ownerDocument;
-	var scope_DocumentElement = scope_Document.documentElement;
-	var scope_Body = scope_Document.body;
-
-
-	// For horizontal sliders in standard ltr documents,
-	// make .noUi-origin overflow to the left so the document doesn't scroll.
-	var scope_DirOffset = (scope_Document.dir === 'rtl') || (options.ort === 1) ? 0 : 100;
-
-/*! In this file: Construction of DOM elements; */
-
-	// Creates a node, adds it to target, returns the new node.
-	function addNodeTo ( addTarget, className ) {
-
-		var div = scope_Document.createElement('div');
-
-		if ( className ) {
-			addClass(div, className);
-		}
-
-		addTarget.appendChild(div);
-
-		return div;
-	}
-
-	// Append a origin to the base
-	function addOrigin ( base, handleNumber ) {
-
-		var origin = addNodeTo(base, options.cssClasses.origin);
-		var handle = addNodeTo(origin, options.cssClasses.handle);
-
-		handle.setAttribute('data-handle', handleNumber);
-
-		// https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex
-		// 0 = focusable and reachable
-		handle.setAttribute('tabindex', '0');
-		handle.setAttribute('role', 'slider');
-		handle.setAttribute('aria-orientation', options.ort ? 'vertical' : 'horizontal');
-
-		if ( handleNumber === 0 ) {
-			addClass(handle, options.cssClasses.handleLower);
-		}
-
-		else if ( handleNumber === options.handles - 1 ) {
-			addClass(handle, options.cssClasses.handleUpper);
-		}
-
-		return origin;
-	}
-
-	// Insert nodes for connect elements
-	function addConnect ( base, add ) {
-
-		if ( !add ) {
-			return false;
-		}
-
-		return addNodeTo(base, options.cssClasses.connect);
-	}
-
-	// Add handles to the slider base.
-	function addElements ( connectOptions, base ) {
-
-		var connectBase = addNodeTo(base, options.cssClasses.connects);
-
-		scope_Handles = [];
-		scope_Connects = [];
-
-		scope_Connects.push(addConnect(connectBase, connectOptions[0]));
-
-		// [::::O====O====O====]
-		// connectOptions = [0, 1, 1, 1]
-
-		for ( var i = 0; i < options.handles; i++ ) {
-			// Keep a list of all added handles.
-			scope_Handles.push(addOrigin(base, i));
-			scope_HandleNumbers[i] = i;
-			scope_Connects.push(addConnect(connectBase, connectOptions[i + 1]));
-		}
-	}
-
-	// Initialize a single slider.
-	function addSlider ( addTarget ) {
-
-		// Apply classes and data to the target.
-		addClass(addTarget, options.cssClasses.target);
-
-		if ( options.dir === 0 ) {
-			addClass(addTarget, options.cssClasses.ltr);
-		} else {
-			addClass(addTarget, options.cssClasses.rtl);
-		}
-
-		if ( options.ort === 0 ) {
-			addClass(addTarget, options.cssClasses.horizontal);
-		} else {
-			addClass(addTarget, options.cssClasses.vertical);
-		}
-
-		scope_Base = addNodeTo(addTarget, options.cssClasses.base);
-	}
-
-
-	function addTooltip ( handle, handleNumber ) {
-
-		if ( !options.tooltips[handleNumber] ) {
-			return false;
-		}
-
-		return addNodeTo(handle.firstChild, options.cssClasses.tooltip);
-	}
-
-	// The tooltips option is a shorthand for using the 'update' event.
-	function tooltips ( ) {
-
-		// Tooltips are added with options.tooltips in original order.
-		var tips = scope_Handles.map(addTooltip);
-
-		bindEvent('update', function(values, handleNumber, unencoded) {
-
-			if ( !tips[handleNumber] ) {
-				return;
-			}
-
-			var formattedValue = values[handleNumber];
-
-			if ( options.tooltips[handleNumber] !== true ) {
-				formattedValue = options.tooltips[handleNumber].to(unencoded[handleNumber]);
-			}
-
-			tips[handleNumber].innerHTML = formattedValue;
-		});
-	}
-
-
-	function aria ( ) {
-
-		bindEvent('update', function ( values, handleNumber, unencoded, tap, positions ) {
-
-			// Update Aria Values for all handles, as a change in one changes min and max values for the next.
-			scope_HandleNumbers.forEach(function( index ){
-
-				var handle = scope_Handles[index];
-
-				var min = checkHandlePosition(scope_Locations, index, 0, true, true, true);
-				var max = checkHandlePosition(scope_Locations, index, 100, true, true, true);
-
-				var now = positions[index];
-				var text = options.ariaFormat.to(unencoded[index]);
-
-				handle.children[0].setAttribute('aria-valuemin', min.toFixed(1));
-				handle.children[0].setAttribute('aria-valuemax', max.toFixed(1));
-				handle.children[0].setAttribute('aria-valuenow', now.toFixed(1));
-				handle.children[0].setAttribute('aria-valuetext', text);
-			});
-		});
-	}
-
-
-	function getGroup ( mode, values, stepped ) {
-
-		// Use the range.
-		if ( mode === 'range' || mode === 'steps' ) {
-			return scope_Spectrum.xVal;
-		}
-
-		if ( mode === 'count' ) {
-
-			if ( values < 2 ) {
-				throw new Error("noUiSlider (" + VERSION + "): 'values' (>= 2) required for mode 'count'.");
-			}
-
-			// Divide 0 - 100 in 'count' parts.
-			var interval = values - 1;
-			var spread = ( 100 / interval );
-
-			values = [];
-
-			// List these parts and have them handled as 'positions'.
-			while ( interval-- ) {
-				values[ interval ] = ( interval * spread );
-			}
-
-			values.push(100);
-
-			mode = 'positions';
-		}
-
-		if ( mode === 'positions' ) {
-
-			// Map all percentages to on-range values.
-			return values.map(function( value ){
-				return scope_Spectrum.fromStepping( stepped ? scope_Spectrum.getStep( value ) : value );
-			});
-		}
-
-		if ( mode === 'values' ) {
-
-			// If the value must be stepped, it needs to be converted to a percentage first.
-			if ( stepped ) {
-
-				return values.map(function( value ){
-
-					// Convert to percentage, apply step, return to value.
-					return scope_Spectrum.fromStepping( scope_Spectrum.getStep( scope_Spectrum.toStepping( value ) ) );
-				});
-
-			}
-
-			// Otherwise, we can simply use the values.
-			return values;
-		}
-	}
-
-	function generateSpread ( density, mode, group ) {
-
-		function safeIncrement(value, increment) {
-			// Avoid floating point variance by dropping the smallest decimal places.
-			return (value + increment).toFixed(7) / 1;
-		}
-
-		var indexes = {};
-		var firstInRange = scope_Spectrum.xVal[0];
-		var lastInRange = scope_Spectrum.xVal[scope_Spectrum.xVal.length-1];
-		var ignoreFirst = false;
-		var ignoreLast = false;
-		var prevPct = 0;
-
-		// Create a copy of the group, sort it and filter away all duplicates.
-		group = unique(group.slice().sort(function(a, b){ return a - b; }));
-
-		// Make sure the range starts with the first element.
-		if ( group[0] !== firstInRange ) {
-			group.unshift(firstInRange);
-			ignoreFirst = true;
-		}
-
-		// Likewise for the last one.
-		if ( group[group.length - 1] !== lastInRange ) {
-			group.push(lastInRange);
-			ignoreLast = true;
-		}
-
-		group.forEach(function ( current, index ) {
-
-			// Get the current step and the lower + upper positions.
-			var step;
-			var i;
-			var q;
-			var low = current;
-			var high = group[index+1];
-			var newPct;
-			var pctDifference;
-			var pctPos;
-			var type;
-			var steps;
-			var realSteps;
-			var stepsize;
-
-			// When using 'steps' mode, use the provided steps.
-			// Otherwise, we'll step on to the next subrange.
-			if ( mode === 'steps' ) {
-				step = scope_Spectrum.xNumSteps[ index ];
-			}
-
-			// Default to a 'full' step.
-			if ( !step ) {
-				step = high-low;
-			}
-
-			// Low can be 0, so test for false. If high is undefined,
-			// we are at the last subrange. Index 0 is already handled.
-			if ( low === false || high === undefined ) {
-				return;
-			}
-
-			// Make sure step isn't 0, which would cause an infinite loop (#654)
-			step = Math.max(step, 0.0000001);
-
-			// Find all steps in the subrange.
-			for ( i = low; i <= high; i = safeIncrement(i, step) ) {
-
-				// Get the percentage value for the current step,
-				// calculate the size for the subrange.
-				newPct = scope_Spectrum.toStepping( i );
-				pctDifference = newPct - prevPct;
-
-				steps = pctDifference / density;
-				realSteps = Math.round(steps);
-
-				// This ratio represents the amount of percentage-space a point indicates.
-				// For a density 1 the points/percentage = 1. For density 2, that percentage needs to be re-devided.
-				// Round the percentage offset to an even number, then divide by two
-				// to spread the offset on both sides of the range.
-				stepsize = pctDifference/realSteps;
-
-				// Divide all points evenly, adding the correct number to this subrange.
-				// Run up to <= so that 100% gets a point, event if ignoreLast is set.
-				for ( q = 1; q <= realSteps; q += 1 ) {
-
-					// The ratio between the rounded value and the actual size might be ~1% off.
-					// Correct the percentage offset by the number of points
-					// per subrange. density = 1 will result in 100 points on the
-					// full range, 2 for 50, 4 for 25, etc.
-					pctPos = prevPct + ( q * stepsize );
-					indexes[pctPos.toFixed(5)] = ['x', 0];
-				}
-
-				// Determine the point type.
-				type = (group.indexOf(i) > -1) ? 1 : ( mode === 'steps' ? 2 : 0 );
-
-				// Enforce the 'ignoreFirst' option by overwriting the type for 0.
-				if ( !index && ignoreFirst ) {
-					type = 0;
-				}
-
-				if ( !(i === high && ignoreLast)) {
-					// Mark the 'type' of this point. 0 = plain, 1 = real value, 2 = step value.
-					indexes[newPct.toFixed(5)] = [i, type];
-				}
-
-				// Update the percentage count.
-				prevPct = newPct;
-			}
-		});
-
-		return indexes;
-	}
-
-	function addMarking ( spread, filterFunc, formatter ) {
-
-		var element = scope_Document.createElement('div');
-
-		var valueSizeClasses = [
-			options.cssClasses.valueNormal,
-			options.cssClasses.valueLarge,
-			options.cssClasses.valueSub
-		];
-		var markerSizeClasses = [
-			options.cssClasses.markerNormal,
-			options.cssClasses.markerLarge,
-			options.cssClasses.markerSub
-		];
-		var valueOrientationClasses = [
-			options.cssClasses.valueHorizontal,
-			options.cssClasses.valueVertical
-		];
-		var markerOrientationClasses = [
-			options.cssClasses.markerHorizontal,
-			options.cssClasses.markerVertical
-		];
-
-		addClass(element, options.cssClasses.pips);
-		addClass(element, options.ort === 0 ? options.cssClasses.pipsHorizontal : options.cssClasses.pipsVertical);
-
-		function getClasses( type, source ){
-			var a = source === options.cssClasses.value;
-			var orientationClasses = a ? valueOrientationClasses : markerOrientationClasses;
-			var sizeClasses = a ? valueSizeClasses : markerSizeClasses;
-
-			return source + ' ' + orientationClasses[options.ort] + ' ' + sizeClasses[type];
-		}
-
-		function addSpread ( offset, values ){
-
-			// Apply the filter function, if it is set.
-			values[1] = (values[1] && filterFunc) ? filterFunc(values[0], values[1]) : values[1];
-
-			// Add a marker for every point
-			var node = addNodeTo(element, false);
-				node.className = getClasses(values[1], options.cssClasses.marker);
-				node.style[options.style] = offset + '%';
-
-			// Values are only appended for points marked '1' or '2'.
-			if ( values[1] ) {
-				node = addNodeTo(element, false);
-				node.className = getClasses(values[1], options.cssClasses.value);
-				node.setAttribute('data-value', values[0]);
-				node.style[options.style] = offset + '%';
-				node.innerText = formatter.to(values[0]);
-			}
-		}
-
-		// Append all points.
-		Object.keys(spread).forEach(function(a){
-			addSpread(a, spread[a]);
-		});
-
-		return element;
-	}
-
-	function removePips ( ) {
-		if ( scope_Pips ) {
-			removeElement(scope_Pips);
-			scope_Pips = null;
-		}
-	}
-
-	function pips ( grid ) {
-
-		// Fix #669
-		removePips();
-
-		var mode = grid.mode;
-		var density = grid.density || 1;
-		var filter = grid.filter || false;
-		var values = grid.values || false;
-		var stepped = grid.stepped || false;
-		var group = getGroup( mode, values, stepped );
-		var spread = generateSpread( density, mode, group );
-		var format = grid.format || {
-			to: Math.round
-		};
-
-		scope_Pips = scope_Target.appendChild(addMarking(
-			spread,
-			filter,
-			format
-		));
-
-		return scope_Pips;
-	}
-
-/*! In this file: Browser events (not slider events like slide, change); */
-
-	// Shorthand for base dimensions.
-	function baseSize ( ) {
-		var rect = scope_Base.getBoundingClientRect();
-		var alt = 'offset' + ['Width', 'Height'][options.ort];
-		return options.ort === 0 ? (rect.width||scope_Base[alt]) : (rect.height||scope_Base[alt]);
-	}
-
-	// Handler for attaching events trough a proxy.
-	function attachEvent ( events, element, callback, data ) {
-
-		// This function can be used to 'filter' events to the slider.
-		// element is a node, not a nodeList
-
-		var method = function ( e ){
-
-			e = fixEvent(e, data.pageOffset, data.target || element);
-
-			// fixEvent returns false if this event has a different target
-			// when handling (multi-) touch events;
-			if ( !e ) {
-				return false;
-			}
-
-			// doNotReject is passed by all end events to make sure released touches
-			// are not rejected, leaving the slider "stuck" to the cursor;
-			if ( scope_Target.hasAttribute('disabled') && !data.doNotReject ) {
-				return false;
-			}
-
-			// Stop if an active 'tap' transition is taking place.
-			if ( hasClass(scope_Target, options.cssClasses.tap) && !data.doNotReject ) {
-				return false;
-			}
-
-			// Ignore right or middle clicks on start #454
-			if ( events === actions.start && e.buttons !== undefined && e.buttons > 1 ) {
-				return false;
-			}
-
-			// Ignore right or middle clicks on start #454
-			if ( data.hover && e.buttons ) {
-				return false;
-			}
-
-			// 'supportsPassive' is only true if a browser also supports touch-action: none in CSS.
-			// iOS safari does not, so it doesn't get to benefit from passive scrolling. iOS does support
-			// touch-action: manipulation, but that allows panning, which breaks
-			// sliders after zooming/on non-responsive pages.
-			// See: https://bugs.webkit.org/show_bug.cgi?id=133112
-			if ( !supportsPassive ) {
-				e.preventDefault();
-			}
-
-			e.calcPoint = e.points[ options.ort ];
-
-			// Call the event handler with the event [ and additional data ].
-			callback ( e, data );
-		};
-
-		var methods = [];
-
-		// Bind a closure on the target for every event type.
-		events.split(' ').forEach(function( eventName ){
-			element.addEventListener(eventName, method, supportsPassive ? { passive: true } : false);
-			methods.push([eventName, method]);
-		});
-
-		return methods;
-	}
-
-	// Provide a clean event with standardized offset values.
-	function fixEvent ( e, pageOffset, eventTarget ) {
-
-		// Filter the event to register the type, which can be
-		// touch, mouse or pointer. Offset changes need to be
-		// made on an event specific basis.
-		var touch = e.type.indexOf('touch') === 0;
-		var mouse = e.type.indexOf('mouse') === 0;
-		var pointer = e.type.indexOf('pointer') === 0;
-
-		var x;
-		var y;
-
-		// IE10 implemented pointer events with a prefix;
-		if ( e.type.indexOf('MSPointer') === 0 ) {
-			pointer = true;
-		}
-
-		// In the event that multitouch is activated, the only thing one handle should be concerned
-		// about is the touches that originated on top of it.
-		if ( touch ) {
-
-			// Returns true if a touch originated on the target.
-			var isTouchOnTarget = function (checkTouch) {
-				return checkTouch.target === eventTarget || eventTarget.contains(checkTouch.target);
-			};
-
-			// In the case of touchstart events, we need to make sure there is still no more than one
-			// touch on the target so we look amongst all touches.
-			if (e.type === 'touchstart') {
-
-				var targetTouches = Array.prototype.filter.call(e.touches, isTouchOnTarget);
-
-				// Do not support more than one touch per handle.
-				if ( targetTouches.length > 1 ) {
-					return false;
-				}
-
-				x = targetTouches[0].pageX;
-				y = targetTouches[0].pageY;
-
-			} else {
-
-				// In the other cases, find on changedTouches is enough.
-				var targetTouch = Array.prototype.find.call(e.changedTouches, isTouchOnTarget);
-
-				// Cancel if the target touch has not moved.
-				if ( !targetTouch ) {
-					return false;
-				}
-
-				x = targetTouch.pageX;
-				y = targetTouch.pageY;
-			}
-		}
-
-		pageOffset = pageOffset || getPageOffset(scope_Document);
-
-		if ( mouse || pointer ) {
-			x = e.clientX + pageOffset.x;
-			y = e.clientY + pageOffset.y;
-		}
-
-		e.pageOffset = pageOffset;
-		e.points = [x, y];
-		e.cursor = mouse || pointer; // Fix #435
-
-		return e;
-	}
-
-	// Translate a coordinate in the document to a percentage on the slider
-	function calcPointToPercentage ( calcPoint ) {
-		var location = calcPoint - offset(scope_Base, options.ort);
-		var proposal = ( location * 100 ) / baseSize();
-
-		// Clamp proposal between 0% and 100%
-		// Out-of-bound coordinates may occur when .noUi-base pseudo-elements
-		// are used (e.g. contained handles feature)
-		proposal = limit(proposal);
-
-		return options.dir ? 100 - proposal : proposal;
-	}
-
-	// Find handle closest to a certain percentage on the slider
-	function getClosestHandle ( proposal ) {
-
-		var closest = 100;
-		var handleNumber = false;
-
-		scope_Handles.forEach(function(handle, index){
-
-			// Disabled handles are ignored
-			if ( handle.hasAttribute('disabled') ) {
-				return;
-			}
-
-			var pos = Math.abs(scope_Locations[index] - proposal);
-
-			if ( pos < closest || (pos === 100 && closest === 100) ) {
-				handleNumber = index;
-				closest = pos;
-			}
-		});
-
-		return handleNumber;
-	}
-
-	// Fire 'end' when a mouse or pen leaves the document.
-	function documentLeave ( event, data ) {
-		if ( event.type === "mouseout" && event.target.nodeName === "HTML" && event.relatedTarget === null ){
-			eventEnd (event, data);
-		}
-	}
-
-	// Handle movement on document for handle and range drag.
-	function eventMove ( event, data ) {
-
-		// Fix #498
-		// Check value of .buttons in 'start' to work around a bug in IE10 mobile (data.buttonsProperty).
-		// https://connect.microsoft.com/IE/feedback/details/927005/mobile-ie10-windows-phone-buttons-property-of-pointermove-event-always-zero
-		// IE9 has .buttons and .which zero on mousemove.
-		// Firefox breaks the spec MDN defines.
-		if ( navigator.appVersion.indexOf("MSIE 9") === -1 && event.buttons === 0 && data.buttonsProperty !== 0 ) {
-			return eventEnd(event, data);
-		}
-
-		// Check if we are moving up or down
-		var movement = (options.dir ? -1 : 1) * (event.calcPoint - data.startCalcPoint);
-
-		// Convert the movement into a percentage of the slider width/height
-		var proposal = (movement * 100) / data.baseSize;
-
-		moveHandles(movement > 0, proposal, data.locations, data.handleNumbers);
-	}
-
-	// Unbind move events on document, call callbacks.
-	function eventEnd ( event, data ) {
-
-		// The handle is no longer active, so remove the class.
-		if ( data.handle ) {
-			removeClass(data.handle, options.cssClasses.active);
-			scope_ActiveHandlesCount -= 1;
-		}
-
-		// Unbind the move and end events, which are added on 'start'.
-		data.listeners.forEach(function( c ) {
-			scope_DocumentElement.removeEventListener(c[0], c[1]);
-		});
-
-		if ( scope_ActiveHandlesCount === 0 ) {
-			// Remove dragging class.
-			removeClass(scope_Target, options.cssClasses.drag);
-			setZindex();
-
-			// Remove cursor styles and text-selection events bound to the body.
-			if ( event.cursor ) {
-				scope_Body.style.cursor = '';
-				scope_Body.removeEventListener('selectstart', preventDefault);
-			}
-		}
-
-		data.handleNumbers.forEach(function(handleNumber){
-			fireEvent('change', handleNumber);
-			fireEvent('set', handleNumber);
-			fireEvent('end', handleNumber);
-		});
-	}
-
-	// Bind move events on document.
-	function eventStart ( event, data ) {
-
-		var handle;
-		if ( data.handleNumbers.length === 1 ) {
-
-			var handleOrigin = scope_Handles[data.handleNumbers[0]];
-
-			// Ignore 'disabled' handles
-			if ( handleOrigin.hasAttribute('disabled') ) {
-				return false;
-			}
-
-			handle = handleOrigin.children[0];
-			scope_ActiveHandlesCount += 1;
-
-			// Mark the handle as 'active' so it can be styled.
-			addClass(handle, options.cssClasses.active);
-		}
-
-		// A drag should never propagate up to the 'tap' event.
-		event.stopPropagation();
-
-		// Record the event listeners.
-		var listeners = [];
-
-		// Attach the move and end events.
-		var moveEvent = attachEvent(actions.move, scope_DocumentElement, eventMove, {
-			// The event target has changed so we need to propagate the original one so that we keep
-			// relying on it to extract target touches.
-			target: event.target,
-			handle: handle,
-			listeners: listeners,
-			startCalcPoint: event.calcPoint,
-			baseSize: baseSize(),
-			pageOffset: event.pageOffset,
-			handleNumbers: data.handleNumbers,
-			buttonsProperty: event.buttons,
-			locations: scope_Locations.slice()
-		});
-
-		var endEvent = attachEvent(actions.end, scope_DocumentElement, eventEnd, {
-			target: event.target,
-			handle: handle,
-			listeners: listeners,
-			doNotReject: true,
-			handleNumbers: data.handleNumbers
-		});
-
-		var outEvent = attachEvent("mouseout", scope_DocumentElement, documentLeave, {
-			target: event.target,
-			handle: handle,
-			listeners: listeners,
-			doNotReject: true,
-			handleNumbers: data.handleNumbers
-		});
-
-		// We want to make sure we pushed the listeners in the listener list rather than creating
-		// a new one as it has already been passed to the event handlers.
-		listeners.push.apply(listeners, moveEvent.concat(endEvent, outEvent));
-
-		// Text selection isn't an issue on touch devices,
-		// so adding cursor styles can be skipped.
-		if ( event.cursor ) {
-
-			// Prevent the 'I' cursor and extend the range-drag cursor.
-			scope_Body.style.cursor = getComputedStyle(event.target).cursor;
-
-			// Mark the target with a dragging state.
-			if ( scope_Handles.length > 1 ) {
-				addClass(scope_Target, options.cssClasses.drag);
-			}
-
-			// Prevent text selection when dragging the handles.
-			// In noUiSlider <= 9.2.0, this was handled by calling preventDefault on mouse/touch start/move,
-			// which is scroll blocking. The selectstart event is supported by FireFox starting from version 52,
-			// meaning the only holdout is iOS Safari. This doesn't matter: text selection isn't triggered there.
-			// The 'cursor' flag is false.
-			// See: http://caniuse.com/#search=selectstart
-			scope_Body.addEventListener('selectstart', preventDefault, false);
-		}
-
-		data.handleNumbers.forEach(function(handleNumber){
-			fireEvent('start', handleNumber);
-		});
-	}
-
-	// Move closest handle to tapped location.
-	function eventTap ( event ) {
-
-		// The tap event shouldn't propagate up
-		event.stopPropagation();
-
-		var proposal = calcPointToPercentage(event.calcPoint);
-		var handleNumber = getClosestHandle(proposal);
-
-		// Tackle the case that all handles are 'disabled'.
-		if ( handleNumber === false ) {
-			return false;
-		}
-
-		// Flag the slider as it is now in a transitional state.
-		// Transition takes a configurable amount of ms (default 300). Re-enable the slider after that.
-		if ( !options.events.snap ) {
-			addClassFor(scope_Target, options.cssClasses.tap, options.animationDuration);
-		}
-
-		setHandle(handleNumber, proposal, true, true);
-
-		setZindex();
-
-		fireEvent('slide', handleNumber, true);
-		fireEvent('update', handleNumber, true);
-		fireEvent('change', handleNumber, true);
-		fireEvent('set', handleNumber, true);
-
-		if ( options.events.snap ) {
-			eventStart(event, { handleNumbers: [handleNumber] });
-		}
-	}
-
-	// Fires a 'hover' event for a hovered mouse/pen position.
-	function eventHover ( event ) {
-
-		var proposal = calcPointToPercentage(event.calcPoint);
-
-		var to = scope_Spectrum.getStep(proposal);
-		var value = scope_Spectrum.fromStepping(to);
-
-		Object.keys(scope_Events).forEach(function( targetEvent ) {
-			if ( 'hover' === targetEvent.split('.')[0] ) {
-				scope_Events[targetEvent].forEach(function( callback ) {
-					callback.call( scope_Self, value );
-				});
-			}
-		});
-	}
-
-	// Attach events to several slider parts.
-	function bindSliderEvents ( behaviour ) {
-
-		// Attach the standard drag event to the handles.
-		if ( !behaviour.fixed ) {
-
-			scope_Handles.forEach(function( handle, index ){
-
-				// These events are only bound to the visual handle
-				// element, not the 'real' origin element.
-				attachEvent ( actions.start, handle.children[0], eventStart, {
-					handleNumbers: [index]
-				});
-			});
-		}
-
-		// Attach the tap event to the slider base.
-		if ( behaviour.tap ) {
-			attachEvent (actions.start, scope_Base, eventTap, {});
-		}
-
-		// Fire hover events
-		if ( behaviour.hover ) {
-			attachEvent (actions.move, scope_Base, eventHover, { hover: true });
-		}
-
-		// Make the range draggable.
-		if ( behaviour.drag ){
-
-			scope_Connects.forEach(function( connect, index ){
-
-				if ( connect === false || index === 0 || index === scope_Connects.length - 1 ) {
-					return;
-				}
-
-				var handleBefore = scope_Handles[index - 1];
-				var handleAfter = scope_Handles[index];
-				var eventHolders = [connect];
-
-				addClass(connect, options.cssClasses.draggable);
-
-				// When the range is fixed, the entire range can
-				// be dragged by the handles. The handle in the first
-				// origin will propagate the start event upward,
-				// but it needs to be bound manually on the other.
-				if ( behaviour.fixed ) {
-					eventHolders.push(handleBefore.children[0]);
-					eventHolders.push(handleAfter.children[0]);
-				}
-
-				eventHolders.forEach(function( eventHolder ) {
-					attachEvent ( actions.start, eventHolder, eventStart, {
-						handles: [handleBefore, handleAfter],
-						handleNumbers: [index - 1, index]
-					});
-				});
-			});
-		}
-	}
-
-/*! In this file: Slider events (not browser events); */
-
-	// Attach an event to this slider, possibly including a namespace
-	function bindEvent ( namespacedEvent, callback ) {
-		scope_Events[namespacedEvent] = scope_Events[namespacedEvent] || [];
-		scope_Events[namespacedEvent].push(callback);
-
-		// If the event bound is 'update,' fire it immediately for all handles.
-		if ( namespacedEvent.split('.')[0] === 'update' ) {
-			scope_Handles.forEach(function(a, index){
-				fireEvent('update', index);
-			});
-		}
-	}
-
-	// Undo attachment of event
-	function removeEvent ( namespacedEvent ) {
-
-		var event = namespacedEvent && namespacedEvent.split('.')[0];
-		var namespace = event && namespacedEvent.substring(event.length);
-
-		Object.keys(scope_Events).forEach(function( bind ){
-
-			var tEvent = bind.split('.')[0];
-			var tNamespace = bind.substring(tEvent.length);
-
-			if ( (!event || event === tEvent) && (!namespace || namespace === tNamespace) ) {
-				delete scope_Events[bind];
-			}
-		});
-	}
-
-	// External event handling
-	function fireEvent ( eventName, handleNumber, tap ) {
-
-		Object.keys(scope_Events).forEach(function( targetEvent ) {
-
-			var eventType = targetEvent.split('.')[0];
-
-			if ( eventName === eventType ) {
-				scope_Events[targetEvent].forEach(function( callback ) {
-
-					callback.call(
-						// Use the slider public API as the scope ('this')
-						scope_Self,
-						// Return values as array, so arg_1[arg_2] is always valid.
-						scope_Values.map(options.format.to),
-						// Handle index, 0 or 1
-						handleNumber,
-						// Unformatted slider values
-						scope_Values.slice(),
-						// Event is fired by tap, true or false
-						tap || false,
-						// Left offset of the handle, in relation to the slider
-						scope_Locations.slice()
-					);
-				});
-			}
-		});
-	}
-
-/*! In this file: Mechanics for slider operation */
-
-	function toPct ( pct ) {
-		return pct + '%';
-	}
-
-	// Split out the handle positioning logic so the Move event can use it, too
-	function checkHandlePosition ( reference, handleNumber, to, lookBackward, lookForward, getValue ) {
-
-		// For sliders with multiple handles, limit movement to the other handle.
-		// Apply the margin option by adding it to the handle positions.
-		if ( scope_Handles.length > 1 ) {
-
-			if ( lookBackward && handleNumber > 0 ) {
-				to = Math.max(to, reference[handleNumber - 1] + options.margin);
-			}
-
-			if ( lookForward && handleNumber < scope_Handles.length - 1 ) {
-				to = Math.min(to, reference[handleNumber + 1] - options.margin);
-			}
-		}
-
-		// The limit option has the opposite effect, limiting handles to a
-		// maximum distance from another. Limit must be > 0, as otherwise
-		// handles would be unmoveable.
-		if ( scope_Handles.length > 1 && options.limit ) {
-
-			if ( lookBackward && handleNumber > 0 ) {
-				to = Math.min(to, reference[handleNumber - 1] + options.limit);
-			}
-
-			if ( lookForward && handleNumber < scope_Handles.length - 1 ) {
-				to = Math.max(to, reference[handleNumber + 1] - options.limit);
-			}
-		}
-
-		// The padding option keeps the handles a certain distance from the
-		// edges of the slider. Padding must be > 0.
-		if ( options.padding ) {
-
-			if ( handleNumber === 0 ) {
-				to = Math.max(to, options.padding[0]);
-			}
-
-			if ( handleNumber === scope_Handles.length - 1 ) {
-				to = Math.min(to, 100 - options.padding[1]);
-			}
-		}
-
-		to = scope_Spectrum.getStep(to);
-
-		// Limit percentage to the 0 - 100 range
-		to = limit(to);
-
-		// Return false if handle can't move
-		if ( to === reference[handleNumber] && !getValue ) {
-			return false;
-		}
-
-		return to;
-	}
-
-	// Uses slider orientation to create CSS rules. a = base value;
-	function inRuleOrder ( v, a ) {
-		var o = options.ort;
-		return (o?a:v) + ', ' + (o?v:a);
-	}
-
-	// Moves handle(s) by a percentage
-	// (bool, % to move, [% where handle started, ...], [index in scope_Handles, ...])
-	function moveHandles ( upward, proposal, locations, handleNumbers ) {
-
-		var proposals = locations.slice();
-
-		var b = [!upward, upward];
-		var f = [upward, !upward];
-
-		// Copy handleNumbers so we don't change the dataset
-		handleNumbers = handleNumbers.slice();
-
-		// Check to see which handle is 'leading'.
-		// If that one can't move the second can't either.
-		if ( upward ) {
-			handleNumbers.reverse();
-		}
-
-		// Step 1: get the maximum percentage that any of the handles can move
-		if ( handleNumbers.length > 1 ) {
-
-			handleNumbers.forEach(function(handleNumber, o) {
-
-				var to = checkHandlePosition(proposals, handleNumber, proposals[handleNumber] + proposal, b[o], f[o], false);
-
-				// Stop if one of the handles can't move.
-				if ( to === false ) {
-					proposal = 0;
-				} else {
-					proposal = to - proposals[handleNumber];
-					proposals[handleNumber] = to;
-				}
-			});
-		}
-
-		// If using one handle, check backward AND forward
-		else {
-			b = f = [true];
-		}
-
-		var state = false;
-
-		// Step 2: Try to set the handles with the found percentage
-		handleNumbers.forEach(function(handleNumber, o) {
-			state = setHandle(handleNumber, locations[handleNumber] + proposal, b[o], f[o]) || state;
-		});
-
-		// Step 3: If a handle moved, fire events
-		if ( state ) {
-			handleNumbers.forEach(function(handleNumber){
-				fireEvent('update', handleNumber);
-				fireEvent('slide', handleNumber);
-			});
-		}
-	}
-
-	// Takes a base value and an offset. This offset is used for the connect bar size.
-	// In the initial design for this feature, the origin element was 1% wide.
-	// Unfortunately, a rounding bug in Chrome makes it impossible to implement this feature
-	// in this manner: https://bugs.chromium.org/p/chromium/issues/detail?id=798223
-	function transformDirection ( a, b ) {
-		return options.dir ? 100 - a - b : a;
-	}
-
-	// Updates scope_Locations and scope_Values, updates visual state
-	function updateHandlePosition ( handleNumber, to ) {
-
-		// Update locations.
-		scope_Locations[handleNumber] = to;
-
-		// Convert the value to the slider stepping/range.
-		scope_Values[handleNumber] = scope_Spectrum.fromStepping(to);
-
-		var rule = 'translate(' + inRuleOrder(toPct(transformDirection(to, 0) - scope_DirOffset), '0') + ')';
-		scope_Handles[handleNumber].style[options.transformRule] = rule;
-
-		updateConnect(handleNumber);
-		updateConnect(handleNumber + 1);
-	}
-
-	// Handles before the slider middle are stacked later = higher,
-	// Handles after the middle later is lower
-	// [[7] [8] .......... | .......... [5] [4]
-	function setZindex ( ) {
-
-		scope_HandleNumbers.forEach(function(handleNumber){
-			var dir = (scope_Locations[handleNumber] > 50 ? -1 : 1);
-			var zIndex = 3 + (scope_Handles.length + (dir * handleNumber));
-			scope_Handles[handleNumber].style.zIndex = zIndex;
-		});
-	}
-
-	// Test suggested values and apply margin, step.
-	function setHandle ( handleNumber, to, lookBackward, lookForward ) {
-
-		to = checkHandlePosition(scope_Locations, handleNumber, to, lookBackward, lookForward, false);
-
-		if ( to === false ) {
-			return false;
-		}
-
-		updateHandlePosition(handleNumber, to);
-
-		return true;
-	}
-
-	// Updates style attribute for connect nodes
-	function updateConnect ( index ) {
-
-		// Skip connects set to false
-		if ( !scope_Connects[index] ) {
-			return;
-		}
-
-		var l = 0;
-		var h = 100;
-
-		if ( index !== 0 ) {
-			l = scope_Locations[index - 1];
-		}
-
-		if ( index !== scope_Connects.length - 1 ) {
-			h = scope_Locations[index];
-		}
-
-		// We use two rules:
-		// 'translate' to change the left/top offset;
-		// 'scale' to change the width of the element;
-		// As the element has a width of 100%, a translation of 100% is equal to 100% of the parent (.noUi-base)
-		var connectWidth = h - l;
-		var translateRule = 'translate(' + inRuleOrder(toPct(transformDirection(l, connectWidth)), '0') + ')';
-		var scaleRule = 'scale(' + inRuleOrder(connectWidth / 100, '1') + ')';
-
-		scope_Connects[index].style[options.transformRule] = translateRule + ' ' + scaleRule;
-	}
-
-/*! In this file: All methods eventually exposed in slider.noUiSlider... */
-
-	// Parses value passed to .set method. Returns current value if not parse-able.
-	function resolveToValue ( to, handleNumber ) {
-
-		// Setting with null indicates an 'ignore'.
-		// Inputting 'false' is invalid.
-		if ( to === null || to === false || to === undefined ) {
-			return scope_Locations[handleNumber];
-		}
-
-		// If a formatted number was passed, attempt to decode it.
-		if ( typeof to === 'number' ) {
-			to = String(to);
-		}
-
-		to = options.format.from(to);
-		to = scope_Spectrum.toStepping(to);
-
-		// If parsing the number failed, use the current value.
-		if ( to === false || isNaN(to) ) {
-			return scope_Locations[handleNumber];
-		}
-
-		return to;
-	}
-
-	// Set the slider value.
-	function valueSet ( input, fireSetEvent ) {
-
-		var values = asArray(input);
-		var isInit = scope_Locations[0] === undefined;
-
-		// Event fires by default
-		fireSetEvent = (fireSetEvent === undefined ? true : !!fireSetEvent);
-
-		// Animation is optional.
-		// Make sure the initial values were set before using animated placement.
-		if ( options.animate && !isInit ) {
-			addClassFor(scope_Target, options.cssClasses.tap, options.animationDuration);
-		}
-
-		// First pass, without lookAhead but with lookBackward. Values are set from left to right.
-		scope_HandleNumbers.forEach(function(handleNumber){
-			setHandle(handleNumber, resolveToValue(values[handleNumber], handleNumber), true, false);
-		});
-
-		// Second pass. Now that all base values are set, apply constraints
-		scope_HandleNumbers.forEach(function(handleNumber){
-			setHandle(handleNumber, scope_Locations[handleNumber], true, true);
-		});
-
-		setZindex();
-
-		scope_HandleNumbers.forEach(function(handleNumber){
-
-			fireEvent('update', handleNumber);
-
-			// Fire the event only for handles that received a new value, as per #579
-			if ( values[handleNumber] !== null && fireSetEvent ) {
-				fireEvent('set', handleNumber);
-			}
-		});
-	}
-
-	// Reset slider to initial values
-	function valueReset ( fireSetEvent ) {
-		valueSet(options.start, fireSetEvent);
-	}
-
-	// Get the slider value.
-	function valueGet ( ) {
-
-		var values = scope_Values.map(options.format.to);
-
-		// If only one handle is used, return a single value.
-		if ( values.length === 1 ){
-			return values[0];
-		}
-
-		return values;
-	}
-
-	// Removes classes from the root and empties it.
-	function destroy ( ) {
-
-		for ( var key in options.cssClasses ) {
-			if ( !options.cssClasses.hasOwnProperty(key) ) { continue; }
-			removeClass(scope_Target, options.cssClasses[key]);
-		}
-
-		while (scope_Target.firstChild) {
-			scope_Target.removeChild(scope_Target.firstChild);
-		}
-
-		delete scope_Target.noUiSlider;
-	}
-
-	// Get the current step size for the slider.
-	function getCurrentStep ( ) {
-
-		// Check all locations, map them to their stepping point.
-		// Get the step point, then find it in the input list.
-		return scope_Locations.map(function( location, index ){
-
-			var nearbySteps = scope_Spectrum.getNearbySteps( location );
-			var value = scope_Values[index];
-			var increment = nearbySteps.thisStep.step;
-			var decrement = null;
-
-			// If the next value in this step moves into the next step,
-			// the increment is the start of the next step - the current value
-			if ( increment !== false ) {
-				if ( value + increment > nearbySteps.stepAfter.startValue ) {
-					increment = nearbySteps.stepAfter.startValue - value;
-				}
-			}
-
-
-			// If the value is beyond the starting point
-			if ( value > nearbySteps.thisStep.startValue ) {
-				decrement = nearbySteps.thisStep.step;
-			}
-
-			else if ( nearbySteps.stepBefore.step === false ) {
-				decrement = false;
-			}
-
-			// If a handle is at the start of a step, it always steps back into the previous step first
-			else {
-				decrement = value - nearbySteps.stepBefore.highestStep;
-			}
-
-
-			// Now, if at the slider edges, there is not in/decrement
-			if ( location === 100 ) {
-				increment = null;
-			}
-
-			else if ( location === 0 ) {
-				decrement = null;
-			}
-
-			// As per #391, the comparison for the decrement step can have some rounding issues.
-			var stepDecimals = scope_Spectrum.countStepDecimals();
-
-			// Round per #391
-			if ( increment !== null && increment !== false ) {
-				increment = Number(increment.toFixed(stepDecimals));
-			}
-
-			if ( decrement !== null && decrement !== false ) {
-				decrement = Number(decrement.toFixed(stepDecimals));
-			}
-
-			return [decrement, increment];
-		});
-	}
-
-	// Updateable: margin, limit, padding, step, range, animate, snap
-	function updateOptions ( optionsToUpdate, fireSetEvent ) {
-
-		// Spectrum is created using the range, snap, direction and step options.
-		// 'snap' and 'step' can be updated.
-		// If 'snap' and 'step' are not passed, they should remain unchanged.
-		var v = valueGet();
-
-		var updateAble = ['margin', 'limit', 'padding', 'range', 'animate', 'snap', 'step', 'format'];
-
-		// Only change options that we're actually passed to update.
-		updateAble.forEach(function(name){
-			if ( optionsToUpdate[name] !== undefined ) {
-				originalOptions[name] = optionsToUpdate[name];
-			}
-		});
-
-		var newOptions = testOptions(originalOptions);
-
-		// Load new options into the slider state
-		updateAble.forEach(function(name){
-			if ( optionsToUpdate[name] !== undefined ) {
-				options[name] = newOptions[name];
-			}
-		});
-
-		scope_Spectrum = newOptions.spectrum;
-
-		// Limit, margin and padding depend on the spectrum but are stored outside of it. (#677)
-		options.margin = newOptions.margin;
-		options.limit = newOptions.limit;
-		options.padding = newOptions.padding;
-
-		// Update pips, removes existing.
-		if ( options.pips ) {
-			pips(options.pips);
-		}
-
-		// Invalidate the current positioning so valueSet forces an update.
-		scope_Locations = [];
-		valueSet(optionsToUpdate.start || v, fireSetEvent);
-	}
-
-/*! In this file: Calls to functions. All other scope_ files define functions only; */
-
-	// Create the base element, initialize HTML and set classes.
-	// Add handles and connect elements.
-	addSlider(scope_Target);
-	addElements(options.connect, scope_Base);
-
-	// Attach user events.
-	bindSliderEvents(options.events);
-
-	// Use the public value method to set the start values.
-	valueSet(options.start);
-
-	scope_Self = {
-		destroy: destroy,
-		steps: getCurrentStep,
-		on: bindEvent,
-		off: removeEvent,
-		get: valueGet,
-		set: valueSet,
-		reset: valueReset,
-		// Exposed for unit testing, don't use this in your application.
-		__moveHandles: function(a, b, c) { moveHandles(a, b, scope_Locations, c); },
-		options: originalOptions, // Issue #600, #678
-		updateOptions: updateOptions,
-		target: scope_Target, // Issue #597
-		removePips: removePips,
-		pips: pips // Issue #594
-	};
-
-	if ( options.pips ) {
-		pips(options.pips);
-	}
-
-	if ( options.tooltips ) {
-		tooltips();
-	}
-
-	aria();
-
-	return scope_Self;
-
-}
-
-
-	// Run the standard initializer
-	function initialize ( target, originalOptions ) {
-
-		if ( !target || !target.nodeName ) {
-			throw new Error("noUiSlider (" + VERSION + "): create requires a single element, got: " + target);
-		}
-
-		// Throw an error if the slider was already initialized.
-		if ( target.noUiSlider ) {
-			throw new Error("noUiSlider (" + VERSION + "): Slider was already initialized.");
-		}
-
-		// Test the options and create the slider environment;
-		var options = testOptions( originalOptions, target );
-		var api = scope( target, options, originalOptions );
-
-		target.noUiSlider = api;
-
-		return api;
-	}
-
-	// Use an object instead of a function for future expandability;
-	return {
-		version: VERSION,
-		create: initialize
-	};
-
-}));
-(function (factory) {
-
-    if ( typeof define === 'function' && define.amd ) {
-
-        // AMD. Register as an anonymous module.
-        define([], factory);
-
-    } else if ( typeof exports === 'object' ) {
-
-        // Node/CommonJS
-        module.exports = factory();
-
-    } else {
-
-        // Browser globals
-        window.wNumb = factory();
-    }
-
-}(function(){
-
-	'use strict';
-
-var FormatOptions = [
-	'decimals',
-	'thousand',
-	'mark',
-	'prefix',
-	'suffix',
-	'encoder',
-	'decoder',
-	'negativeBefore',
-	'negative',
-	'edit',
-	'undo'
-];
-
-// General
-
-	// Reverse a string
-	function strReverse ( a ) {
-		return a.split('').reverse().join('');
-	}
-
-	// Check if a string starts with a specified prefix.
-	function strStartsWith ( input, match ) {
-		return input.substring(0, match.length) === match;
-	}
-
-	// Check is a string ends in a specified suffix.
-	function strEndsWith ( input, match ) {
-		return input.slice(-1 * match.length) === match;
-	}
-
-	// Throw an error if formatting options are incompatible.
-	function throwEqualError( F, a, b ) {
-		if ( (F[a] || F[b]) && (F[a] === F[b]) ) {
-			throw new Error(a);
-		}
-	}
-
-	// Check if a number is finite and not NaN
-	function isValidNumber ( input ) {
-		return typeof input === 'number' && isFinite( input );
-	}
-
-	// Provide rounding-accurate toFixed method.
-	// Borrowed: http://stackoverflow.com/a/21323330/775265
-	function toFixed ( value, exp ) {
-		value = value.toString().split('e');
-		value = Math.round(+(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp)));
-		value = value.toString().split('e');
-		return (+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp))).toFixed(exp);
-	}
-
-
-// Formatting
-
-	// Accept a number as input, output formatted string.
-	function formatTo ( decimals, thousand, mark, prefix, suffix, encoder, decoder, negativeBefore, negative, edit, undo, input ) {
-
-		var originalInput = input, inputIsNegative, inputPieces, inputBase, inputDecimals = '', output = '';
-
-		// Apply user encoder to the input.
-		// Expected outcome: number.
-		if ( encoder ) {
-			input = encoder(input);
-		}
-
-		// Stop if no valid number was provided, the number is infinite or NaN.
-		if ( !isValidNumber(input) ) {
-			return false;
-		}
-
-		// Rounding away decimals might cause a value of -0
-		// when using very small ranges. Remove those cases.
-		if ( decimals !== false && parseFloat(input.toFixed(decimals)) === 0 ) {
-			input = 0;
-		}
-
-		// Formatting is done on absolute numbers,
-		// decorated by an optional negative symbol.
-		if ( input < 0 ) {
-			inputIsNegative = true;
-			input = Math.abs(input);
-		}
-
-		// Reduce the number of decimals to the specified option.
-		if ( decimals !== false ) {
-			input = toFixed( input, decimals );
-		}
-
-		// Transform the number into a string, so it can be split.
-		input = input.toString();
-
-		// Break the number on the decimal separator.
-		if ( input.indexOf('.') !== -1 ) {
-			inputPieces = input.split('.');
-
-			inputBase = inputPieces[0];
-
-			if ( mark ) {
-				inputDecimals = mark + inputPieces[1];
-			}
-
-		} else {
-
-		// If it isn't split, the entire number will do.
-			inputBase = input;
-		}
-
-		// Group numbers in sets of three.
-		if ( thousand ) {
-			inputBase = strReverse(inputBase).match(/.{1,3}/g);
-			inputBase = strReverse(inputBase.join( strReverse( thousand ) ));
-		}
-
-		// If the number is negative, prefix with negation symbol.
-		if ( inputIsNegative && negativeBefore ) {
-			output += negativeBefore;
-		}
-
-		// Prefix the number
-		if ( prefix ) {
-			output += prefix;
-		}
-
-		// Normal negative option comes after the prefix. Defaults to '-'.
-		if ( inputIsNegative && negative ) {
-			output += negative;
-		}
-
-		// Append the actual number.
-		output += inputBase;
-		output += inputDecimals;
-
-		// Apply the suffix.
-		if ( suffix ) {
-			output += suffix;
-		}
-
-		// Run the output through a user-specified post-formatter.
-		if ( edit ) {
-			output = edit ( output, originalInput );
-		}
-
-		// All done.
-		return output;
-	}
-
-	// Accept a sting as input, output decoded number.
-	function formatFrom ( decimals, thousand, mark, prefix, suffix, encoder, decoder, negativeBefore, negative, edit, undo, input ) {
-
-		var originalInput = input, inputIsNegative, output = '';
-
-		// User defined pre-decoder. Result must be a non empty string.
-		if ( undo ) {
-			input = undo(input);
-		}
-
-		// Test the input. Can't be empty.
-		if ( !input || typeof input !== 'string' ) {
-			return false;
-		}
-
-		// If the string starts with the negativeBefore value: remove it.
-		// Remember is was there, the number is negative.
-		if ( negativeBefore && strStartsWith(input, negativeBefore) ) {
-			input = input.replace(negativeBefore, '');
-			inputIsNegative = true;
-		}
-
-		// Repeat the same procedure for the prefix.
-		if ( prefix && strStartsWith(input, prefix) ) {
-			input = input.replace(prefix, '');
-		}
-
-		// And again for negative.
-		if ( negative && strStartsWith(input, negative) ) {
-			input = input.replace(negative, '');
-			inputIsNegative = true;
-		}
-
-		// Remove the suffix.
-		// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/slice
-		if ( suffix && strEndsWith(input, suffix) ) {
-			input = input.slice(0, -1 * suffix.length);
-		}
-
-		// Remove the thousand grouping.
-		if ( thousand ) {
-			input = input.split(thousand).join('');
-		}
-
-		// Set the decimal separator back to period.
-		if ( mark ) {
-			input = input.replace(mark, '.');
-		}
-
-		// Prepend the negative symbol.
-		if ( inputIsNegative ) {
-			output += '-';
-		}
-
-		// Add the number
-		output += input;
-
-		// Trim all non-numeric characters (allow '.' and '-');
-		output = output.replace(/[^0-9\.\-.]/g, '');
-
-		// The value contains no parse-able number.
-		if ( output === '' ) {
-			return false;
-		}
-
-		// Covert to number.
-		output = Number(output);
-
-		// Run the user-specified post-decoder.
-		if ( decoder ) {
-			output = decoder(output);
-		}
-
-		// Check is the output is valid, otherwise: return false.
-		if ( !isValidNumber(output) ) {
-			return false;
-		}
-
-		return output;
-	}
-
-
-// Framework
-
-	// Validate formatting options
-	function validate ( inputOptions ) {
-
-		var i, optionName, optionValue,
-			filteredOptions = {};
-
-		if ( inputOptions['suffix'] === undefined ) {
-			inputOptions['suffix'] = inputOptions['postfix'];
-		}
-
-		for ( i = 0; i < FormatOptions.length; i+=1 ) {
-
-			optionName = FormatOptions[i];
-			optionValue = inputOptions[optionName];
-
-			if ( optionValue === undefined ) {
-
-				// Only default if negativeBefore isn't set.
-				if ( optionName === 'negative' && !filteredOptions.negativeBefore ) {
-					filteredOptions[optionName] = '-';
-				// Don't set a default for mark when 'thousand' is set.
-				} else if ( optionName === 'mark' && filteredOptions.thousand !== '.' ) {
-					filteredOptions[optionName] = '.';
-				} else {
-					filteredOptions[optionName] = false;
-				}
-
-			// Floating points in JS are stable up to 7 decimals.
-			} else if ( optionName === 'decimals' ) {
-				if ( optionValue >= 0 && optionValue < 8 ) {
-					filteredOptions[optionName] = optionValue;
-				} else {
-					throw new Error(optionName);
-				}
-
-			// These options, when provided, must be functions.
-			} else if ( optionName === 'encoder' || optionName === 'decoder' || optionName === 'edit' || optionName === 'undo' ) {
-				if ( typeof optionValue === 'function' ) {
-					filteredOptions[optionName] = optionValue;
-				} else {
-					throw new Error(optionName);
-				}
-
-			// Other options are strings.
-			} else {
-
-				if ( typeof optionValue === 'string' ) {
-					filteredOptions[optionName] = optionValue;
-				} else {
-					throw new Error(optionName);
-				}
-			}
-		}
-
-		// Some values can't be extracted from a
-		// string if certain combinations are present.
-		throwEqualError(filteredOptions, 'mark', 'thousand');
-		throwEqualError(filteredOptions, 'prefix', 'negative');
-		throwEqualError(filteredOptions, 'prefix', 'negativeBefore');
-
-		return filteredOptions;
-	}
-
-	// Pass all options as function arguments
-	function passAll ( options, method, input ) {
-		var i, args = [];
-
-		// Add all options in order of FormatOptions
-		for ( i = 0; i < FormatOptions.length; i+=1 ) {
-			args.push(options[FormatOptions[i]]);
-		}
-
-		// Append the input, then call the method, presenting all
-		// options as arguments.
-		args.push(input);
-		return method.apply('', args);
-	}
-
-	function wNumb ( options ) {
-
-		if ( !(this instanceof wNumb) ) {
-			return new wNumb ( options );
-		}
-
-		if ( typeof options !== "object" ) {
-			return;
-		}
-
-		options = validate(options);
-
-		// Call 'formatTo' with proper arguments.
-		this.to = function ( input ) {
-			return passAll(options, formatTo, input);
-		};
-
-		// Call 'formatFrom' with proper arguments.
-		this.from = function ( input ) {
-			return passAll(options, formatFrom, input);
-		};
-	}
-
-	return wNumb;
-
-}));
