@@ -31,6 +31,10 @@ module.exports = function () {
             'dev/scripts/mail.js'
         ])
             .pipe($.concat('scripts.js'))
+            .pipe($.babel({
+                presets: ['env']
+            }))
+
             .pipe($.gulp.dest('app/js'))
             .pipe($.browserSync.reload({
                 'stream': true

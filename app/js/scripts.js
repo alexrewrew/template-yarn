@@ -1,6 +1,7 @@
+'use strict';
+
 (function ($) {
     $.fn.rewAccordion = function () {
-
 
         var accordionLinks = $(this).find('.accordion--heading');
         var accordionContent = $(this).find('.accordion--panel');
@@ -15,11 +16,10 @@
 
                     $(this).removeClass('active');
                     $(accordionContent[j]).slideUp();
-
                 } else {
 
                     $(accordionLinks).removeClass('active');
-                    $(accordionContent).slideUp()
+                    $(accordionContent).slideUp();
 
                     $(this).addClass('active');
                     $(accordionContent[j]).slideDown();
@@ -54,17 +54,17 @@
 
     var DOMs = {
 
-        documentBodyHtml : $('html, body'),
-        documentBody : $('body'),
+        documentBodyHtml: $('html, body'),
+        documentBody: $('body'),
 
-        menuTrigger : $('#menu-trigger'),
+        menuTrigger: $('#menu-trigger'),
 
-        selectChosen : $(".chosen-select"),
-        selectSelect2 : $('.select2-select'),
+        selectChosen: $(".chosen-select"),
+        selectSelect2: $('.select2-select'),
 
-        sliderFull : $('.slider-full'),
+        sliderFull: $('.slider-full'),
 
-        linkSmooth : $(".smooth")
+        linkSmooth: $(".smooth")
     };
 
     $(document).ready(function () {
@@ -88,8 +88,8 @@
         // DOMs.selectSelect2.select2({
         //     placeholder: "Choose...",
         //     allowClear: true
-            // dropdownParent: $('.select-select2-container'),
-            // minimumResultsForSearch: Infinity
+        // dropdownParent: $('.select-select2-container'),
+        // minimumResultsForSearch: Infinity
         // });
 
         // ========== SLIDER ==========
@@ -139,7 +139,7 @@
         });
     });
 
-// ========== !!! RESPONSIVE SCRIPTS !!! ===========
+    // ========== !!! RESPONSIVE SCRIPTS !!! ===========
 
     // $(window).on('load resize', function () {
     //     if (window.matchMedia("(max-width: 767px)").matches) {
@@ -148,10 +148,7 @@
     //
     //     }
     // });
-
 })();
-
-
 
 (function () {
     'use strict';

@@ -1,8 +1,9 @@
 (function ($) {
     $.fn.rewTabs = function () {
 
-        var tabLinks = $(this).find('.tabs li a');
-        var tabContent = $(this).find('.tabs-content');
+        const tabLinks = $(this).find('.tabs li a');
+        let tabContent = $(this).find('.tabs-content');
+
 
         for (var i = 0; i < tabLinks.length; i++) {
             $(tabLinks[i]).click(function (e) {

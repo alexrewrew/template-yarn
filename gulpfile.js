@@ -16,6 +16,7 @@ global.$ = {
     uglify: require('gulp-uglify'),
     htmlmin: require('gulp-htmlmin'),
     browserSync: require('browser-sync').create(),
+    babel : require('gulp-babel'),
 
     path: {
         tasks: require('./gulp/config/tasks.js')
