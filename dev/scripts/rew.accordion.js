@@ -1,15 +1,14 @@
 (function ($) {
-    $.fn.rewAccordion = function () {
+    $.fn.rewAccordion = function() {
 
+        const accordionLinks = $(this).find('.accordion--heading');
+        const accordionContent = $(this).find('.accordion--panel');
 
-        var accordionLinks = $(this).find('.accordion--heading');
-        var accordionContent = $(this).find('.accordion--panel');
-
-        for (var i = 0; i < accordionLinks.length; i++) {
-            $(accordionLinks[i]).click(function (e) {
+        for (let i = 0; i < accordionLinks.length; i++) {
+            $(accordionLinks[i]).click(function(e) {
                 e.preventDefault();
 
-                var j = $(accordionLinks).index(this);
+                const j = $(accordionLinks).index(this);
 
                 if ($(this).hasClass('active')) {
 

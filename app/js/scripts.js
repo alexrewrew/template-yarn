@@ -49,7 +49,7 @@
         }
     };
 })(jQuery);
-(function () {
+(function ($) {
     "use strict";
 
     var DOMs = {
@@ -108,7 +108,7 @@
         });
 
         // ========== ACCORDION ==========
-        $('#accordion').rewAccordion();
+        // $('#accordion').rewAccordion();
 
         // ========== TABS ==========
         $('#tabs').rewTabs();
@@ -119,7 +119,7 @@
         // ========== SCROLLSPY ==========
 
         // ----- SCROLLING CLASS CHANGE -----
-        // $(window).scroll(function () {
+        // $(window).scroll(() => {
         //     if ($(this).scrollTop() > 200) {
         //         $(".link-up").addClass("visible");
         //     }
@@ -131,8 +131,8 @@
         // ----- ANCHOR LINKS SCROLLING -----
         DOMs.linkSmooth.click(function (e) {
             e.preventDefault();
-            var id = $(this).attr("href"),
-                top = $(id).offset().top - 70;
+            var id = $(undefined).attr("href");
+            var top = $(id).offset().top - 70;
             DOMs.documentBodyHtml.animate({
                 scrollTop: top
             }, 1500);
@@ -148,7 +148,7 @@
     //
     //     }
     // });
-})();
+})(jQuery);
 
 (function () {
     'use strict';

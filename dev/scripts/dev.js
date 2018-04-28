@@ -1,7 +1,7 @@
-(function () {
+(($) => {
     "use strict";
 
-    var DOMs = {
+    const DOMs = {
 
         documentBodyHtml : $('html, body'),
         documentBody : $('body'),
@@ -16,11 +16,12 @@
         linkSmooth : $(".smooth")
     };
 
-    $(document).ready(function () {
+    $(document).ready(() => {
+
 
         // ========== MENU ==========
 
-        DOMs.menuTrigger.click(function (e) {
+        DOMs.menuTrigger.click((e) => {
             e.preventDefault();
             DOMs.documentBodyHtml.toggleClass('open');
         });
@@ -44,8 +45,8 @@
         // ========== SLIDER ==========
 
         // ----- SLICK SLIDER COUNTER -----
-        DOMs.sliderFull.on('init reInit afterChange', function (event, slick, currentSlide) {
-            var i = (currentSlide ? currentSlide : 0) + 1;
+        DOMs.sliderFull.on('init reInit afterChange', (event, slick, currentSlide) => {
+            let i = (currentSlide ? currentSlide : 0) + 1;
             $('.slider-counter').text(i + '/' + slick.slideCount);
         });
 
@@ -57,7 +58,7 @@
         });
 
         // ========== ACCORDION ==========
-        $('#accordion').rewAccordion();
+        // $('#accordion').rewAccordion();
 
         // ========== TABS ==========
         $('#tabs').rewTabs();
@@ -68,7 +69,7 @@
         // ========== SCROLLSPY ==========
 
         // ----- SCROLLING CLASS CHANGE -----
-        // $(window).scroll(function () {
+        // $(window).scroll(() => {
         //     if ($(this).scrollTop() > 200) {
         //         $(".link-up").addClass("visible");
         //     }
@@ -78,10 +79,10 @@
         // });
 
         // ----- ANCHOR LINKS SCROLLING -----
-        DOMs.linkSmooth.click(function (e) {
+        DOMs.linkSmooth.click((e) => {
             e.preventDefault();
-            var id = $(this).attr("href"),
-                top = $(id).offset().top - 70;
+            const id = $(this).attr("href");
+            let top = $(id).offset().top - 70;
             DOMs.documentBodyHtml.animate({
                 scrollTop: top
             }, 1500);
@@ -98,6 +99,6 @@
     //     }
     // });
 
-})();
+})(jQuery);
 
 
