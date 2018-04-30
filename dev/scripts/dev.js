@@ -16,6 +16,14 @@
         linkSmooth : $(".smooth")
     };
 
+    // document.addEventListener('DOMContentLoaded', () => {
+    //     $('#tabs').rewTabs();
+    // });
+    //
+    // window.onload = function(event) {
+    //     alert();
+    // };
+
     $(document).ready(() => {
 
 
