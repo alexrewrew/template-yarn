@@ -1,0 +1,24 @@
+extend layouts/_layout.pug
+
+block title
+    | IT Ukraine Association - Сторінки
+
+
+block content
+
+
+
+    -var n = 1
+
+    -array = [{name: 'Бізнес про нас', href: 'about-business.html'}, {name: 'Про напрям', href: 'about-direction.html'}, {name: 'Про нас', href: 'about-us.html'}, {name: 'Переваги', href: 'advantages.html'}, {name: 'Відгук', href: 'article-businessin.html'}, {name: 'Подія', href: 'article-eventsin.html'}, {name: 'Ініціатива Внутрішня', href: 'article-initiativein.html'}, {name: 'Ініціатива Внутрішня 2', href: 'article-initiativein2.html'}, {name: 'Член Асоціації', href: 'article-membersin.html'}, {name: 'Проект Внутрішня', href: 'article-projectsin.html'}, {name: 'Звіт Внутрішня', href: 'article-reportsin.html'}, {name: 'Комітети', href: 'committees.html'}, {name: 'Комітети 2', href: 'committees2.html'}, {name: 'Головні Події', href: 'events-year.html'}, {name: 'Міжнародні Події', href: 'events-world.html'}, {name: 'Події всі', href: 'events-all.html'}, {name: 'Головна', href: 'index.html'}, {name: 'Інструменти', href: 'instruments.html'}, {name: 'Члени Асоціації', href: 'members.html'}, {name: 'Новини Асоціації', href: 'news-association.html'},{name: 'Новини Авторські', href: 'news-author.html'},{name: 'Новини Авторські Внутрішня', href: 'news-authorin.html'},{name: 'Новини Авторські Внутрішня 2', href: 'news-authorin2.html'}, {name: 'Новини Галузі', href: 'news-branch.html'},{name: 'Новини Галузі Внутрішня', href: 'news-branchin.html'},{name: 'Новини Галузі Внутрішня 2', href: 'news-branchin2.html'},{name: 'Новини Напрямку', href: 'news-direction.html'},{name: 'Партнери', href: 'partners.html'},{name: 'Проекти та ініціативи', href: 'projects-initiatives.html'},{name: 'Проекти та ініціативи 2', href: 'projects-initiatives2.html'},{name: 'Звіти', href: 'reports.html'},{name: 'Контакти', href: 'contacts.html'},{name: '404', href: '404.html'},{name: '503', href: '503.html'},{name: 'Результати пошуку', href: 'search-result.html'},]
+
+    section
+        .container
+            .row
+                each val in array
+                    .col-md-4.col-lg-3
+                        a(href= val.href title='' target='_blank' style='margin-bottom:25px').btn
+                            = n++
+                            | .
+                            | &nbsp;
+                            = val.name

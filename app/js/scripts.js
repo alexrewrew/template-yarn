@@ -145,6 +145,19 @@
                 scrollTop: top
             }, 1500);
         });
+
+        if (bowser.firefox) {
+            DOMs.body.addClass('brow-firefox');
+        }
+        if (bowser.safari) {
+            DOMs.body.addClass('brow-safari');
+        }
+        if (bowser.msie) {
+            DOMs.body.addClass('brow-msie');
+        }
+        if (bowser.msedge) {
+            DOMs.body.addClass('brow-msedge');
+        }
     });
 
     // ========== !!! RESPONSIVE SCRIPTS !!! ===========
