@@ -1,16 +1,16 @@
 .breadcrumbs
   df(row)
-  mb(r(15))
+  mb(15)
   li
     position relative
-    pr(r(15))
-    mr(r(15))
+    pr(15)
+    mr(15)
     &:after
       pseudo(block, absolute)
       right 0
       top 0
       height 100%
-      width 1px
+      width r(1)
       bg($bk)
       transform rotate(25deg)
     &:last-child

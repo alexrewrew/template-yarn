@@ -5,8 +5,8 @@ column-init($col = $column-number + 2)
     position: relative;
     width: 100%;
     min-height: 1px; // Prevent columns from collapsing when empty
-    padding-right: ($column-gutter / 2)px
-    padding-left: ($column-gutter / 2)px
+    padding-right: r(($column-gutter / 2))
+    padding-left: r(($column-gutter / 2))
 
   for l in (1..$column-number)
     .col,
@@ -43,7 +43,7 @@ column-generator($col = $column-number)
         .order-{k}
           order k
 
-      for n in (1..$col)
+      for n in (0..$col)
         .offset-{n}
           margin-left ((100 / $col) * n)%
 
@@ -69,6 +69,6 @@ column-generator($col = $column-number)
           .order-{prefixes[i]}-{k}
             order k
 
-        for n in (1..$col)
+        for n in (0..$col)
           .offset-{prefixes[i]}-{n}
             margin-left ((100 / $col) * n)%

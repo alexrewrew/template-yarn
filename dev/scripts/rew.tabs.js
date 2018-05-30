@@ -1,6 +1,6 @@
 (function ($) {
     $.fn.rewTabs = function() {
-
+        let make = function () {
         const tabLinks = $(this).find('.tabs li a');
         const tabContent = $(this).find('.tabs-content');
 
@@ -18,5 +18,7 @@
                 $(tabContent[j]).addClass('active');
             });
         }
+    }
+    return this.each(make);
     };
 })(jQuery);

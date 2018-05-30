@@ -1,6 +1,6 @@
 (function ($) {
     $.fn.rewAccordion = function() {
-
+        let make = function () {
         const accordionLinks = $(this).find('.accordion--heading');
         const accordionContent = $(this).find('.accordion--panel');
 
@@ -25,5 +25,7 @@
                 }
             });
         }
+    }
+    return this.each(make);
     };
 })(jQuery);

@@ -1,24 +1,26 @@
-nav
-    .container
-        .row
-            .col-6.col-md-2
-                a(href='./' title='').link-logo
-                    img(src='img/logo/logo.png' title='' alt='')
+mixin navigation()
 
-            .col-6.nav-mobile
-                .nav-icon#menu-trigger
-                    span
-                    span
-                    span
-                    span
+    nav
+        .container
+            .row
+                .col-6.col-md-2
+                    a(href='./' title='').link-logo
+                        img(src='img/logo/logo.png' title='' alt='')
 
-            .col-md-10.nav-panel
-                ul.menu
-                    li
-                        a(href='./' title='').active Google
-                    li
-                        a(href='examples.html' title='') Facebook
-                    li
-                        a(href='./' title='') Medium
-                    li
-                        a(href='examples.html' title='') Telegram
+                .col-6.nav-mobile
+                    .nav-icon#menu-trigger
+                        span
+                        span
+                        span
+                        span
+
+                .col-md-10.nav-panel
+                    ul.menu
+                        li
+                            a(href='./' title='').active Google
+                        li
+                            a(href='examples.html' title='') Facebook
+                        li
+                            a(href='./' title='') Medium
+                        li
+                            a(href='examples.html' title='') Telegram

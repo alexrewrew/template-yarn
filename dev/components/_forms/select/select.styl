@@ -1,28 +1,25 @@
-
-
-
 select
   width 100%
   bg($wt)
-  border 1px solid $gr2
+  border r(1) solid $gr2
   padding r(12) r(15) r(13)
   border-radius 0
   display block
-  mb(r(20))
+  mb(20)
   -webkit-appearance none
   -moz-appearance none
   trans()
   &:focus
     outline none
-    border 1px solid blue
+    border r(1) solid blue
 
 .select-group
   position relative
-  mb(r(20))
+  mb(20)
   &:after
     triangle($bk, down, 4px)
     top calc(50% - 2px)
-    right 15px
+    right r(15)
 
 .select-group-noarrow
   &:after

@@ -1,6 +1,6 @@
 .radio-check
-  mb(r(15))
-  mr(r(15))
+  mb(15)
+  mr(15)
   position relative
   padding 0
 
@@ -10,24 +10,24 @@
 
   input + span
     position relative
-    pl(r(35))
+    pl(35)
     cursor pointer
     fw(400)
     &:before, &:after
       pseudo(block, absolute)
-      top 2px
+      top r(2)
       left 0
-      width 15px
-      height 15px
+      width r(15)
+      height r(15)
       trans()
 
     &:before
-      border 1px solid $gr2
+      border r(1) solid $gr2
       opacity 1
 
     &:after
       bg(blue)
-      border 1px solid blue
+      border r(1) solid blue
       opacity 0
 
 

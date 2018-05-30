@@ -1,12 +1,9 @@
-
-
-
 ul
   li
     list-style none
     ul
-      mr(r(15))
-      ml(r(20))
+      mr(15)
+      ml(20)
 
 ul, ol
   padding 0
@@ -15,20 +12,20 @@ ul, ol
     font-family $m-font, sans-serif
 
 ol
-  ml(r(20))
+  ml(20)
   li
     ol
-      mt(r(15))
+      mt(15)
 
 .ul-regular
   li
     position relative
-    pl(r(20))
-    mb(r(20))
+    pl(20)
+    mb(20)
     &:before
       pseudo(block, absolute)
-      width 8px
-      height 1px
+      width r(8)
+      height r(1)
       bg($bk)
-      top 10px
+      top r(10)
       left 0

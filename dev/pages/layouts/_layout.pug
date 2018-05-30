@@ -4,19 +4,21 @@ doctype html
 
 html
 
-    include ../../components/_layout/head/head
+    +head()
 
     body
-        //include ../../components/_layout/preloader/preloader
 
-        include ../../components/_layout/navigation/navigation
+        +preloader()
+
+        +navigation()
 
         main
-            include ../../components/_layout/headers/header
+
+            +header()
 
             block content
 
-            include ../../components/_layout/footer/footer
+            +footer()
 
         script(type="text/javascript" src="js/vendor.js")
         //script(type="text/javascript" src="js/noui.js")

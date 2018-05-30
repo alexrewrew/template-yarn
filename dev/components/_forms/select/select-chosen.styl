@@ -22,7 +22,7 @@
 
 .chosen-container
   width 100%
-  mb(r(20))
+  mb(20)
   &:after
     triangle($bk, down, 4px)
     top calc(50% - 2px)
@@ -34,13 +34,13 @@
     padding 0
     height auto
     border-radius 0
-    border 1px solid $gr2
+    border r(1) solid $gr2
     bg($wt)
     box-shadow none
     trans()
     span
       padding r(10) r(15) r(11)
-      fs(e(16))
+      fs(16)
   .chosen-default
     span
       opacity .5
@@ -48,10 +48,10 @@
 .chosen-container-single
   .chosen-search
     padding 0 r(5)
-    mb(r(12))
+    mb(12)
     input[type='text']
-      fs(e(16))
-      border 1px solid $gr2
+      fs(16)
+      border r(1) solid $gr2
       padding r(11) r(10) r(12)
       background-image none !important
 
@@ -63,12 +63,12 @@
   box-shadow none
   .chosen-single
     box-shadow none
-    border 1px solid blue
+    border r(1) solid blue
     background none
 
 .chosen-container-single .chosen-drop
   border-radius 0
-  border 1px solid blue
+  border r(1) solid blue
   border-top 0
   padding 0
   box-shadow none
@@ -78,7 +78,7 @@
     box-shadow none
     .active-result
       padding r(12) r(15) r(13)
-      fs(e(16))
+      fs(16)
       line-height normal
       &.highlighted
         bg(blue)
@@ -94,5 +94,5 @@
     li.no-results
       bg($wt)
       co($gr)
-      fs(e(14))
+      fs(14)
       padding r(12) r(10) r(13)

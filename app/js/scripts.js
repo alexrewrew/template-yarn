@@ -2,51 +2,55 @@
 
 (function ($) {
     $.fn.rewAccordion = function () {
+        var make = function make() {
+            var accordionLinks = $(this).find('.accordion--heading');
+            var accordionContent = $(this).find('.accordion--panel');
 
-        var accordionLinks = $(this).find('.accordion--heading');
-        var accordionContent = $(this).find('.accordion--panel');
+            for (var i = 0; i < accordionLinks.length; i++) {
+                $(accordionLinks[i]).click(function (e) {
+                    e.preventDefault();
 
-        for (var i = 0; i < accordionLinks.length; i++) {
-            $(accordionLinks[i]).click(function (e) {
-                e.preventDefault();
+                    var j = $(accordionLinks).index(this);
 
-                var j = $(accordionLinks).index(this);
+                    if ($(this).hasClass('active')) {
 
-                if ($(this).hasClass('active')) {
+                        $(this).removeClass('active');
+                        $(accordionContent[j]).slideUp();
+                    } else {
 
-                    $(this).removeClass('active');
-                    $(accordionContent[j]).slideUp();
-                } else {
+                        $(accordionLinks).removeClass('active');
+                        $(accordionContent).slideUp();
 
-                    $(accordionLinks).removeClass('active');
-                    $(accordionContent).slideUp();
-
-                    $(this).addClass('active');
-                    $(accordionContent[j]).slideDown();
-                }
-            });
-        }
+                        $(this).addClass('active');
+                        $(accordionContent[j]).slideDown();
+                    }
+                });
+            }
+        };
+        return this.each(make);
     };
 })(jQuery);
 (function ($) {
     $.fn.rewTabs = function () {
+        var make = function make() {
+            var tabLinks = $(this).find('.tabs li a');
+            var tabContent = $(this).find('.tabs-content');
 
-        var tabLinks = $(this).find('.tabs li a');
-        var tabContent = $(this).find('.tabs-content');
+            for (var i = 0; i < tabLinks.length; i++) {
+                $(tabLinks[i]).click(function (e) {
+                    e.preventDefault();
 
-        for (var i = 0; i < tabLinks.length; i++) {
-            $(tabLinks[i]).click(function (e) {
-                e.preventDefault();
+                    $(tabLinks).removeClass('active');
+                    $(tabContent).removeClass('active');
 
-                $(tabLinks).removeClass('active');
-                $(tabContent).removeClass('active');
+                    var j = $(tabLinks).index(this);
 
-                var j = $(tabLinks).index(this);
-
-                $(this).addClass('active');
-                $(tabContent[j]).addClass('active');
-            });
-        }
+                    $(this).addClass('active');
+                    $(tabContent[j]).addClass('active');
+                });
+            }
+        };
+        return this.each(make);
     };
 })(jQuery);
 (function ($) {
@@ -54,26 +58,28 @@
 
     var DOMs = {
 
-        documentBodyHtml: $('html, body'),
-        documentBody: $('body'),
+        documentBodyHtml: $("html, body"),
+        // documentBody: $("body"),
 
-        menuTrigger: $('#menu-trigger'),
+        menuTrigger: $("#menu-trigger")
 
-        selectChosen: $(".chosen-select"),
-        selectSelect2: $('.select2-select'),
+        // selectChosen: $(".chosen-select"),
+        // selectSelect2: $(".select2-select"),
+        // selectSelect2Container: $(".select-select2-container"),
+        //
+        // sliderFull: $(".slider-full"),
+        // sliderArrowLeft : "",
+        // sliderArrowRight : "",
+        // sliderCounter : $(".slider-counter"),
+        //
+        // linkSmooth: $(".smooth"),
+        // linkUp : $(".link-up"),
+        //
+        // accordion : $('#accordion'),
+        // tabs : $('#tabs'),
+        // datepicker : $(".datepicker"),
 
-        sliderFull: $('.slider-full'),
-
-        linkSmooth: $(".smooth")
     };
-
-    // document.addEventListener('DOMContentLoaded', () => {
-    //     $('#tabs').rewTabs();
-    // });
-    //
-    // window.onload = function(event) {
-    //     alert();
-    // };
 
     $(document).ready(function () {
 
@@ -81,7 +87,7 @@
 
         DOMs.menuTrigger.click(function (e) {
             e.preventDefault();
-            DOMs.documentBodyHtml.toggleClass('open');
+            DOMs.documentBodyHtml.toggleClass("open");
         });
 
         // ========== SELECT ==========
@@ -95,69 +101,69 @@
         // ----- SELECT2 -----
         // DOMs.selectSelect2.select2({
         //     placeholder: "Choose...",
-        //     allowClear: true
-        // dropdownParent: $('.select-select2-container'),
-        // minimumResultsForSearch: Infinity
+        //     allowClear: true,
+        //     dropdownParent: DOMs.selectSelect2Container,
+        //     minimumResultsForSearch: Infinity
         // });
 
         // ========== SLIDER ==========
 
         // ----- SLICK SLIDER COUNTER -----
-        DOMs.sliderFull.on('init reInit afterChange', function (event, slick, currentSlide) {
-            var i = (currentSlide ? currentSlide : 0) + 1;
-            $('.slider-counter').text(i + '/' + slick.slideCount);
-        });
+        // DOMs.sliderFull.on("nit reInit afterChange", (event, slick, currentSlide) => {
+        //     let i = (currentSlide ? currentSlide : 0) + 1;
+        //     DOMs.sliderCounter.text(i + '/' + slick.slideCount);
+        // });
 
         // ----- SLICK SLIDER -----
-        DOMs.sliderFull.slick({
-            prevArrow: "<div class='arrow left'><i class='fa fa-angle-left'></i></div>",
-            nextArrow: "<div class='arrow right'><i class='fa fa-angle-right'></i></div>",
-            dots: true
-        });
+        // DOMs.sliderFull.slick({
+        //     prevArrow: DOMs.sliderArrowLeft,
+        //     nextArrow: DOMs.sliderArrowRight,
+        //     dots: true
+        // });
 
         // ========== ACCORDION ==========
-        // $('#accordion').rewAccordion();
+        // DOMs.accordion.rewAccordion();
 
         // ========== TABS ==========
-        $('#tabs').rewTabs();
+        // DOMs.tabs.rewTabs();
 
         // ========== DATEPICKER ==========
-        // $(".datepicker").flatpickr();
+        // DOMs.datepicker.flatpickr();
 
         // ========== SCROLLSPY ==========
 
         // ----- SCROLLING CLASS CHANGE -----
         // $(window).scroll(() => {
         //     if ($(this).scrollTop() > 200) {
-        //         $(".link-up").addClass("visible");
+        //         DOMs.linkUp.addClass("visible");
         //     }
         //     else {
-        //         $(".link-up").removeClass("visible");
+        //         DOMs.linkUp.removeClass("visible");
         //     }
         // });
 
         // ----- ANCHOR LINKS SCROLLING -----
-        DOMs.linkSmooth.click(function (e) {
-            e.preventDefault();
-            var id = $(undefined).attr("href");
-            var top = $(id).offset().top - 70;
-            DOMs.documentBodyHtml.animate({
-                scrollTop: top
-            }, 1500);
-        });
+        // DOMs.linkSmooth.click((e) => {
+        //     e.preventDefault();
+        //     const id = $(this).attr("href");
+        //     let top = $(id).offset().top - 70;
+        //     DOMs.documentBodyHtml.animate({
+        //         scrollTop: top
+        //     }, 1500);
+        // });
 
-        if (bowser.firefox) {
-            DOMs.body.addClass('brow-firefox');
-        }
-        if (bowser.safari) {
-            DOMs.body.addClass('brow-safari');
-        }
-        if (bowser.msie) {
-            DOMs.body.addClass('brow-msie');
-        }
-        if (bowser.msedge) {
-            DOMs.body.addClass('brow-msedge');
-        }
+        // if (bowser.firefox) {
+        //     DOMs.body.addClass('brow-firefox');
+        // }
+        // if (bowser.safari) {
+        //     DOMs.body.addClass('brow-safari');
+        // }
+        // if (bowser.msie) {
+        //     DOMs.body.addClass('brow-msie');
+        // }
+        // if (bowser.msedge) {
+        //     DOMs.body.addClass('brow-msedge');
+        // }
     });
 
     // ========== !!! RESPONSIVE SCRIPTS !!! ===========

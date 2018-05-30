@@ -12,7 +12,7 @@ ba()
 
 //  TRANSITIONS
 trans()
-  transition: all 0.4s ease
+  transition: all .2s ease
 
 // TRIANGLE
 triangle($colour, $direction, $rize)
@@ -44,3 +44,24 @@ co($txtcolor)
 // BACKGROUND COLOR
 bg($bgcolor)
   background-color $bgcolor
+
+dsnone()
+  @keyframes ds-none {
+    0% {
+      opacity: 0;
+    }
+  } 
+
+//animation ds-none .2s both
+
+//  HIDDEN
+$hidden
+  opacity 0
+  visibility hidden
+  z-index -1
+
+//  VISIBLE
+$visible
+  opacity 1
+  visibility visible
+  z-index 1

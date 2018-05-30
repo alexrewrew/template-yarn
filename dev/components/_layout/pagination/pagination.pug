@@ -2,7 +2,7 @@ mixin pagination()
     ul.pagination
         li.arrow.left
             a(href='' title='')
-                //include ../../_svgs/arrow-left.svg
+                +arrow-left()
 
         +li-a('1')
         +li-a('2')
@@ -12,4 +12,4 @@ mixin pagination()
 
         li.arrow.right
             a(href='' title='')
-                //include ../../_svgs/arrow-right.svg
+                +arrow-right()

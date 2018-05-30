@@ -3,35 +3,6 @@ mc()
   margin-left auto
   margin-right auto
 
-//  MARGINS
-
-mt($sz)
-  margin-top $sz
-
-mr($sz)
-  margin-right $sz
-
-mb($sz)
-  margin-bottom $sz
-
-ml($sz)
-  margin-left $sz
-
-//  PADDINGS
-
-pt($sz)
-  padding-top $sz
-
-pr($sz)
-  padding-right $sz
-
-pb($sz)
-  padding-bottom $sz
-
-pl($sz)
-  padding-left $sz
-
-
 // ----- POSITION -----
 pos($top = false, $right = false, $bottom = false, $left = false)
   if $top
@@ -50,3 +21,31 @@ r(n)
 // EM SIZES
 e(n)
   (n * ( 1 / $base-font-size ))em
+
+//  MARGINS
+
+mt($sz)
+  margin-top r($sz)
+
+mr($sz)
+  margin-right r($sz)
+
+mb($sz)
+  margin-bottom r($sz)
+
+ml($sz)
+  margin-left r($sz)
+
+//  PADDINGS
+
+pt($sz)
+  padding-top r($sz)
+
+pr($sz)
+  padding-right r($sz)
+
+pb($sz)
+  padding-bottom r($sz)
+
+pl($sz)
+  padding-left r($sz)

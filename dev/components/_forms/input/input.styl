@@ -1,11 +1,8 @@
-
-
-
 input
   -webkit-appearance none
   width 100%
-  mb(r(20))
-  border 1px solid $gr2
+  mb(20)
+  border r(1) solid $gr2
   border-radius: 0;
   padding r(11) r(15) r(12)
   trans()
@@ -31,52 +28,11 @@ input[type=reset]
   cursor pointer
 
 label
-  pl(r(16))
+  pl(16)
   fw(700)
-  fs(e(16))
-  mb(r(13))
+  fs(16)
+  mb(13)
 
-textarea
-  -webkit-appearance none
-  resize none
-  mb(r(20))
-  border 1px solid $gr2
-  border-radius: 0;
-  width 100%
-  height 100px
-  padding r(11) r(15) r(12)
-  trans()
-  &:focus
-    outline none
-    border-color blue
-  +placeholder()
-    co(#999)
 
-.input-group
-  position relative
-  mb(r(20))
-  input
-    mb(0)
-    pl(r(45))
-    &:focus + span
-      co(blue)
-  textarea
-    pl(r(45))
-    mb(0)
-    & + span
-      height 45px
-    &:focus + span
-      co(blue)
-  select
-    pl(r(45))
-    mb(0)
-  span
-    position absolute
-    top 0
-    left 0
-    display flex
-    justify-content center
-    align-items center
-    width 45px
-    height 100%
-    trans()
+
+

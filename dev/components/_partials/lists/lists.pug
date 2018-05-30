@@ -7,4 +7,4 @@ mixin ul-a(array, className)
     ul(class= className)
         each val in array
             li
-                a(href='' title='')= val
+                +a(val)

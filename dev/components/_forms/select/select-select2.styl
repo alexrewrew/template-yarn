@@ -1,6 +1,6 @@
 .select2-container--default
   .select2-selection--single
-    border 1px solid #ccc
+    border r(1) solid #ccc
     border-radius 0
     height auto
     trans()
@@ -8,15 +8,15 @@
       outline none
       border-color blue
     .select2-selection__clear
-      right 20px
+      right r(20)
     .select2-selection__rendered
       co($bk)
-      fs(e(16))
+      fs(16)
       line-height normal
       padding r(12) r(15) r(13)
     .select2-selection__arrow
       top calc(50% - 15px)
-      right 9px
+      right r(9)
       b
         border-color: $bk transparent transparent transparent;
         trans()
@@ -32,14 +32,14 @@
 
   .select2-results__option.select2-results__message
     bg($wt)
-    fs(e(14))
+    fs(14)
     co(#999)
     padding r(12) r(10) r(13)
 
   .select2-search--dropdown .select2-search__field
-      fs(e(16))
-      mb(r(12))
-      border 1px solid $gr2
+      fs(16)
+      mb(12)
+      border r(1) solid $gr2
       padding r(11) r(10) r(12)
 
 .select2-container--default.select2-container--open.select2-container--below .select2-selection--single
@@ -47,13 +47,13 @@
   border-bottom-color $tr
 
 .select2-container--open .select2-dropdown--below
-  border 1px solid blue
+  border r(1) solid blue
   border-top 0
   border-radius 0
 
 .select2-results__option
   padding r(12) r(15) r(13)
-  fs(e(16))
+  fs(16)
 
 .select2-container--default.select2-container--open .select2-selection--single .select2-selection__arrow b
   border-color: $bk transparent transparent transparent;
