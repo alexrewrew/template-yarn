@@ -164,6 +164,7 @@
         // if (bowser.msedge) {
         //     DOMs.body.addClass('brow-msedge');
         // }
+
     });
 
     // ========== !!! RESPONSIVE SCRIPTS !!! ===========

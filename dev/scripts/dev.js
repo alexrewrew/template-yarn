@@ -27,7 +27,7 @@
     };
 
     $(document).ready(() => {
-
+        
         // ========== MENU ==========
 
         DOMs.menuTrigger.click((e) => {
@@ -109,6 +109,8 @@
         // if (bowser.msedge) {
         //     DOMs.body.addClass('brow-msedge');
         // }
+
+
     });
 
 // ========== !!! RESPONSIVE SCRIPTS !!! ===========
