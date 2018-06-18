@@ -3,8 +3,8 @@
 (function ($) {
     $.fn.rewAccordion = function () {
         var make = function make() {
-            var accordionLinks = $(this).find('.accordion--heading');
-            var accordionContent = $(this).find('.accordion--panel');
+            var accordionLinks = $(this).find('.accordion_heading');
+            var accordionContent = $(this).find('.accordion__panel');
 
             for (var i = 0; i < accordionLinks.length; i++) {
                 $(accordionLinks[i]).click(function (e) {

@@ -22,6 +22,13 @@ r(n)
 e(n)
   (n * ( 1 / $base-font-size ))em
 
+rmi(n)
+  -((n * ( 1 / $base-font-size )))rem
+
+// EM SIZES
+emi(n)
+  -((n * ( 1 / $base-font-size )))em
+
 //  MARGINS
 
 mt($sz)
@@ -49,3 +56,18 @@ pb($sz)
 
 pl($sz)
   padding-left r($sz)
+
+
+//  MARGINS MINUS
+
+mtm($sz)
+  margin-top rmi($sz)
+
+mrm($sz)
+  margin-right rmi($sz)
+
+mbm($sz)
+  margin-bottom rmi($sz)
+
+mlm($sz)
+  margin-left rmi($sz)

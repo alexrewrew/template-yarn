@@ -1,29 +1,31 @@
 (function ($) {
     $.fn.rewAccordion = function() {
+        let make = function () {
+            const accordionLinks = $(this).find('.accordion_heading');
+            const accordionContent = $(this).find('.accordion__panel');
 
-        const accordionLinks = $(this).find('.accordion_heading');
-        const accordionContent = $(this).find('.accordion__panel');
+            for (let i = 0; i < accordionLinks.length; i++) {
+                $(accordionLinks[i]).click(function(e) {
+                    e.preventDefault();
 
-        for (let i = 0; i < accordionLinks.length; i++) {
-            $(accordionLinks[i]).click(function(e) {
-                e.preventDefault();
+                    const j = $(accordionLinks).index(this);
 
-                const j = $(accordionLinks).index(this);
+                    if ($(this).hasClass('active')) {
 
-                if ($(this).hasClass('active')) {
+                        $(this).removeClass('active');
+                        $(accordionContent[j]).slideUp();
 
-                    $(this).removeClass('active');
-                    $(accordionContent[j]).slideUp();
+                    } else {
 
-                } else {
+                        $(accordionLinks).removeClass('active');
+                        $(accordionContent).slideUp()
 
-                    $(accordionLinks).removeClass('active');
-                    $(accordionContent).slideUp()
-
-                    $(this).addClass('active');
-                    $(accordionContent[j]).slideDown();
-                }
-            });
+                        $(this).addClass('active');
+                        $(accordionContent[j]).slideDown();
+                    }
+                });
+            }
         }
+        return this.each(make);
     };
 })(jQuery);
