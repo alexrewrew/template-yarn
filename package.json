@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "@fancyapps/fancybox": "^3.3.5",
-    "animejs": "^2.2.0",
+
     "bootstrap": "^4.1.1",
     "bowser": "^1.9.3",
     "chosen-js": "^1.8.5",
