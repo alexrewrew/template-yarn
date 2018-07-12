@@ -1,5 +1,5 @@
     "animate.css": "^3.6.1",
-    "aos": "^2.3.2",
+    "aos": "^2.3.3",
     "autosize": "^4.0.2",
     "font-awesome": "^4.7.0",
     "flatpickr": "^4.5.1",
