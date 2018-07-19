@@ -27,7 +27,7 @@ module.exports = function () {
 
         ])
             .pipe($.concat('vendor.js'))
-            .pipe($.gulp.dest('app/js'))
+            .pipe($.gulp.dest('dev/app/js'))
             .pipe($.browserSync.reload({
                 'stream': true
             }))
@@ -35,8 +35,6 @@ module.exports = function () {
 
     $.gulp.task('scripts', function () {
         return $.gulp.src([
-            'dev/scripts/rew.accordion.js',
-            'dev/scripts/rew.tabs.js',
             'dev/scripts/dev.js',
             'dev/scripts/mail.js'
         ])
@@ -45,18 +43,18 @@ module.exports = function () {
                 presets: ['env']
             }))
 
-            .pipe($.gulp.dest('app/js'))
+            .pipe($.gulp.dest('dev/app/js'))
             .pipe($.browserSync.reload({
                 'stream': true
             }))
     });
 
     $.gulp.task('scripts:build', function () {
-        return $.gulp.src('app/js/*.js')
+        return $.gulp.src('dev/app/js/*.js')
             .pipe($.sourcemaps.init())
             .pipe($.strip.text())
             .pipe($.uglify())
             .pipe($.sourcemaps.write())
-            .pipe($.gulp.dest('dist/js'))
+            .pipe($.gulp.dest('build/js'))
     });
 }

@@ -1,9 +1,9 @@
 module.exports = function () {
     $.gulp.task('imagemin:build', function () {
-        return $.gulp.src('app/img/**/*')
+        return $.gulp.src('dev/app/img/**/*')
 
             .pipe($.imagemin())
 
-            .pipe($.gulp.dest('dist/img'))
+            .pipe($.gulp.dest('build/img'))
     });
 }

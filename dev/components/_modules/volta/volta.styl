@@ -1,29 +1,49 @@
-.volta
+.link-volta
+  display inline-block
+  co(#52555A)
+  fs(12)
   float right
-  display block
-  position relative
-  &--text
-    fs(0.625em)
-    co(#bebebe)
-    position relative
-    top -3px
-    margin-right r(5)
-  &--visible
-    svg
-      width 62px
-      g
-        fill #BEBEBE
-  &--hidden
-    position absolute
-    right 0
-    top 0
-    height 0
-    overflow hidden
-    trans()
-    svg
-      width 62px
-      g
-        fill #7521E1
+  svg
+    ml(9)
+    mmt(1)
+    path, polygon
+      fill #52555A
+      trans()
   &:hover
-    .volta--hidden
-      height 100%
+    co(lightblue)
+    svg path, svg polygon
+      fill lightblue
+
+//.link-example
+//  position relative
+//  padding-left 20px
+//  display inline-block
+//  &__arrow
+//    height 2px
+//    width 0
+//    background red
+//    position absolute
+//    top calc(50% - 1px)
+//    left 0
+//    trans()
+//    &:after, &:before
+//      ba()
+//      height 2px
+//      width 10px
+//      background red
+//      right -2px
+//    &:before
+//      transform rotate(-45deg)
+//      bottom -3px
+//    &:after
+//      top -3px
+//      transform rotate(45deg)
+//
+//  &:hover
+//    padding-left 30px
+//    .link-example__arrow
+//      width 15px
+
+//a(href='').link-example
+//  .link-example__arrow
+//  | Advantages

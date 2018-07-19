@@ -1,0 +1,44 @@
+input, textarea
+  -webkit-appearance none
+  width 100%
+  display block
+  border r(1) solid $gr
+  border-radius: 0;
+  padding r(11) r(15) r(12)
+  trans()
+  &:focus
+    outline none
+  +placeholder()
+    co(#999)
+
+
+
+input
+  &:-webkit-autofill
+    -webkit-box-shadow: inset 0 0 0 50px #fff !important
+    -webkit-text-fill-color: #999 !important
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button
+  -webkit-appearance: none;
+  margin: 0;
+
+input[type=number]
+  -moz-appearance:textfield;
+
+  
+label
+  pl(16)
+  fw(700)
+  fs(16)
+  mb(13)
+
+
+
+textarea
+  resize none
+  height r(100)
+
+
+
+

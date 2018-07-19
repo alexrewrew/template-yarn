@@ -16,20 +16,20 @@ module.exports = function () {
                 'title': 'Error running something'
             }))
 
-            .pipe($.gulp.dest('app/css'))
+            .pipe($.gulp.dest('dev/app/css'))
             .pipe($.browserSync.reload({
                 'stream': true
             }))
     });
 
     $.gulp.task('stylus:build', function () {
-        return $.gulp.src('app/css/*.css')
+        return $.gulp.src('dev/app/css/*.css')
             .pipe($.sourcemaps.init())
 
             .pipe($.minify())
             .pipe($.strip.text())
 
             .pipe($.sourcemaps.write())
-            .pipe($.gulp.dest('dist/css'))
+            .pipe($.gulp.dest('build/css'))
     });
 }

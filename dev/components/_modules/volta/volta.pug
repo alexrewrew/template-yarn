@@ -1,9 +1,4 @@
-mixin volta()
-
-    a(href='//volta.one' title='Volta Agency' target='_blank').volta
-        span.volta--text created by
-        span.volta--visible
-            +volta-svg1()
-
-        span.volta--hidden
-            +volta-svg2()
+mixin link-volta()
+    a(href='//volta.one' title='volta.one' target='_blank' rel='noopener' class='link-volta')
+        | Created by
+        +icon-volta()

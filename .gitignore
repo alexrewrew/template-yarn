@@ -1,8 +1,8 @@
 /.idea
 /.vscode
 /src
-/dist
+/build
 /node_modules
-/app/js
-/app/css
-/app/*.html
+/dev/app/js
+/dev/app/css
+/dev/app/*.html

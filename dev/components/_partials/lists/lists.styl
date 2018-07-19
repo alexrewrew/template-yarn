@@ -1,21 +1,10 @@
 ul
   li
     list-style none
-    ul
-      mr(15)
-      ml(20)
 
 ul, ol
   padding 0
   margin 0
-  li
-    font-family $m-font, sans-serif
-
-ol
-  ml(20)
-  li
-    ol
-      mt(15)
 
 .ul-regular
   li
@@ -23,7 +12,7 @@ ol
     pl(20)
     mb(20)
     &:before
-      pseudo(block, absolute)
+      ba() //content, display, position
       width r(8)
       height r(1)
       bg($bk)

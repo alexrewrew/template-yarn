@@ -1,15 +1,12 @@
 mixin pagination()
     ul.pagination
         li.arrow.left
-            a(href='' title='')
-                +arrow-left()
+            a(href='' title='' rel="prev") <
 
         +li-a('1')
-        +li-a('2')
-        +li-a('3', 'active')
-        +li-a('4')
+        +li-a('2', 'active')
+        +li-a('3')
         +li-a('...')
 
         li.arrow.right
-            a(href='' title='')
-                +arrow-right()
+            a(href='' title='' rel="next") >

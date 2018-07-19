@@ -1,0 +1,13 @@
+mixin input(placeholder)
+    input(type='text', placeholder= placeholder)
+
+mixin input-group(placeholder)
+    .input-group
+        +input(placeholder)
+
+mixin textarea(placeholder)
+    textarea(placeholder= placeholder)
+
+mixin textarea-group(placeholder)
+    .input-group
+        +textarea(placeholder)

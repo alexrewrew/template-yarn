@@ -1,16 +1,16 @@
 module.exports = function() {
     $.gulp.task('fonts:copy', function () {
-        return $.gulp.src('app/fonts/**/*')
-            .pipe($.gulp.dest('dist/fonts'))
+        return $.gulp.src('dev/app/fonts/**/*')
+            .pipe($.gulp.dest('build/fonts'))
     });
 
     $.gulp.task('php:copy', function () {
-        return $.gulp.src('app/php/**/*')
-            .pipe($.gulp.dest('dist/php'))
+        return $.gulp.src('dev/app/php/**/*')
+            .pipe($.gulp.dest('build/php'))
     });
 
     $.gulp.task('media:copy', function () {
-        return $.gulp.src('app/media/**/*')
-            .pipe($.gulp.dest('dist/media'))
+        return $.gulp.src('dev/app/media/**/*')
+            .pipe($.gulp.dest('build/media'))
     });
 }
