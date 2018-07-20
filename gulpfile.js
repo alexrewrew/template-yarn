@@ -37,3 +37,9 @@ $.gulp.task('build', $.gulp.series(
     $.gulp.parallel('pug', 'stylus', 'scripts:lib', 'scripts'),
     $.gulp.parallel('pug:build', 'stylus:build', 'scripts:build', 'imagemin:build', 'fonts:copy', 'media:copy', 'php:copy')
 ));
+
+$.gulp.task('build:back', $.gulp.series(
+    'clean',
+    $.gulp.parallel('stylus', 'scripts:lib', 'scripts'),
+    $.gulp.parallel('stylus:build', 'scripts:build', 'imagemin:build', 'fonts:copy', 'media:copy', 'php:copy')
+));
