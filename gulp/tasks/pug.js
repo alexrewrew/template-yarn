@@ -9,12 +9,14 @@ module.exports = function () {
                 'title': 'Error running something'
             }))
             .pipe($.gulp.dest('dev/app'))
-            .on('end', $.browserSync.reload)
+            .on('end', $.browserSync.reload);
     });
 
     $.gulp.task('pug:build', function () {
         return $.gulp.src('dev/app/*.html')
-            .pipe($.htmlmin({collapseWhitespace: true}))
-            .pipe($.gulp.dest('build'))
+            // .pipe($.htmlmin({
+            //     collapseWhitespace: true
+            // }))
+            .pipe($.gulp.dest('build'));
     });
-}
+};

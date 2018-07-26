@@ -30,7 +30,7 @@ module.exports = function () {
             .pipe($.gulp.dest('dev/app/js'))
             .pipe($.browserSync.reload({
                 'stream': true
-            }))
+            }));
     });
 
     $.gulp.task('scripts', function () {
@@ -46,15 +46,15 @@ module.exports = function () {
             .pipe($.gulp.dest('dev/app/js'))
             .pipe($.browserSync.reload({
                 'stream': true
-            }))
+            }));
     });
 
     $.gulp.task('scripts:build', function () {
         return $.gulp.src('dev/app/js/*.js')
             .pipe($.sourcemaps.init())
             .pipe($.strip.text())
-            .pipe($.uglify())
+            // .pipe($.uglify())
             .pipe($.sourcemaps.write())
-            .pipe($.gulp.dest('build/js'))
+            .pipe($.gulp.dest('build/js'));
     });
-}
+};

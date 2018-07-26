@@ -19,17 +19,17 @@ module.exports = function () {
             .pipe($.gulp.dest('dev/app/css'))
             .pipe($.browserSync.reload({
                 'stream': true
-            }))
+            }));
     });
 
     $.gulp.task('stylus:build', function () {
         return $.gulp.src('dev/app/css/*.css')
             .pipe($.sourcemaps.init())
 
-            .pipe($.minify())
+            // .pipe($.minify())
             .pipe($.strip.text())
 
             .pipe($.sourcemaps.write())
-            .pipe($.gulp.dest('build/css'))
+            .pipe($.gulp.dest('build/css'));
     });
-}
+};
