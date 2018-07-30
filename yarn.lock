@@ -971,10 +971,6 @@ boolbase@^1.0.0, boolbase@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/boolbase/-/boolbase-1.0.0.tgz#68dff5fbe60c51eb37725ea9e3ed310dcc1e776e"
 
-bootstrap@^4.1.2:
-  version "4.1.2"
-  resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-4.1.2.tgz#aee2a93472e61c471fc79fb475531dcbc87de326"
-
 bowser@^2.0.0-alpha.2:
   version "2.0.0-alpha.2"
   resolved "https://registry.yarnpkg.com/bowser/-/bowser-2.0.0-alpha.2.tgz#08df12adc77c85f50b8645d79272b8c23f2b8b5b"
