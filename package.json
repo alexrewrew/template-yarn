@@ -28,7 +28,6 @@
   },
   "devDependencies": {
     "@fancyapps/fancybox": "^3.3.5",
-
     "bowser": "^2.0.0-alpha.2",
     "chosen-js": "^1.8.7",
     "jquery": "^3.3.1",
