@@ -1,6 +1,7 @@
 (($) => {
     "use strict";
 
+
     const DOMs = {
 
         documentBodyHtml: $("html, body"),
@@ -27,7 +28,7 @@
     };
 
     $(document).ready(() => {
-        
+
         // ========== MENU ==========
 
         DOMs.menuTrigger.click((e) => {
