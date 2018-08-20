@@ -24,7 +24,9 @@ module.exports = function () {
             // 'node_modules/swiper/dist/js/swiper.js',
             // 'node_modules/wowjs/dist/wow.js',
             // 'node_modules/wnumb/wNumb.js',
-            'node_modules/retinajs/dist/retina.js'
+            'node_modules/retinajs/dist/retina.js',
+            // 'node_modules/moment/moment.js',
+            // 'node_modules/fullcalendar/dist/fullcalendar.js'
 
         ])
             .pipe($.concat('vendor.js'))
