@@ -5,7 +5,7 @@ module.exports = function () {
             // 'node_modules/aos/dist/aos.js',
             // 'node_modules/autosize/dist/autosize.js',
             // 'node_modules/bootstrap/dist/js/bootstrap.bundle.js',
-            // 'node_modules/bowser/bowser.js',
+            // 'node_modules/bowser/src/bowser.js',
             // 'node_modules/chosen-js/chosen.jquery.js',
             // 'node_modules/animejs/anime.js',
             // 'node_modules/flatpickr/dist/flatpickr.js',
