@@ -27,6 +27,10 @@ module.exports = function () {
             'node_modules/retinajs/dist/retina.js',
             // 'node_modules/moment/moment.js',
             // 'node_modules/fullcalendar/dist/fullcalendar.js'
+            'node_modules/scrollmagic/scrollmagic/uncompressed/ScrollMagic.js',
+            'node_modules/scrollmagic/scrollmagic/uncompressed/plugins/debug.addIndicators.js',
+            'node_modules/scrollmagic/scrollmagic/uncompressed/plugins/animation.gsap.js',
+            'node_modules/scrollmagic/scrollmagic/uncompressed/plugins/animation.velocity.js'
 
         ])
             .pipe($.concat('vendor.js'))
