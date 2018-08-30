@@ -137,13 +137,15 @@
         // });
 
         // ----- ANCHOR LINKS SCROLLING -----
-        // DOMs.linkSmooth.click((e) => {
+        // DOMs.linkSmooth.click(function (e) {
         //     e.preventDefault();
-        //     const id = $(this).attr("href");
-        //     let top = $(id).offset().top - 70;
+
+        //     var id = $(this).attr("href");
+        //     var top = $(id).offset().top - 70;
+
         //     DOMs.documentBodyHtml.animate({
         //         scrollTop: top
-        //     }, 1500);
+        //     }, 500);
         // });
 
         // if (bowser.firefox) {
