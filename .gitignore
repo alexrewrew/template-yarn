@@ -5,4 +5,4 @@
 /node_modules
 /dev/app/js
 /dev/app/css
-/dev/app/*.html
+#/dev/app/*.html
