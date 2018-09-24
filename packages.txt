@@ -19,7 +19,7 @@
     "animejs": "^2.2.0",
     "bootstrap": "^4.1.3",
     "moment": "^2.22.2",
-    "retinajs": "^2.1.3",
+    "typed.js": "^2.0.9",
     "scrollmagic": "^2.0.5",
     "smoothscroll-for-websites": "^1.4.6",
     yarn add slick-carousel-latest

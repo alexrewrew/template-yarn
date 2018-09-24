@@ -15,7 +15,7 @@
     z-index 100
     height r(50)
     width r(50)
-    top calc(50% - 25px)
+    top calc(50% - r(25))
     cursor pointer
     fs(50)
     co($gr)
@@ -26,9 +26,9 @@
     &:hover
       co(blue)
   .arrow.left
-    left -50px
+    left -(r(50))
   .arrow.right
-    right -50px
+    right -(r(50))
   .slide
     display flex !important
     justify-content center
@@ -52,8 +52,8 @@
         padding 0
         border-radius 50%
         bg(#ccc)
-        width 10px
-        height 10px
+        width r(10)
+        height r(10)
         fs(0)
         trans()
         &:before

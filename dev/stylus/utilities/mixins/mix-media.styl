@@ -13,6 +13,10 @@ sm()
   @media (min-width: 568px) and (max-width 767px)
     {block}
 
+ix()
+  @media (min-width: 768px) and (max-width 812px) and (orientation : landscape)
+    {block}    
+
 // PAD
 pad()
   @media (min-width: 768px) and (max-width: 1199px)
@@ -37,6 +41,10 @@ xl()
 xxl()
   @media (min-width: 1600px)
     {block}
+
+hei()
+  @media (min-height: 1024px) and (max-width: 1366px) and (min-width: 1024px)
+    {block}    
 
 
 mmin($minwidth)
