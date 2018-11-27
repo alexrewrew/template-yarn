@@ -25,7 +25,7 @@ global.$ = {
 
 $.path.tasks.forEach(function (taskPath) {
     require(taskPath)();
-})
+});
 
 $.gulp.task('default', $.gulp.series(
     $.gulp.parallel('pug', 'stylus', 'scripts:lib', 'scripts'),
