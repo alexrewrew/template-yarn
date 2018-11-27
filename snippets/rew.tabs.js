@@ -18,7 +18,7 @@
                 $(tabContent[j]).addClass('active');
             });
         }
-    }
+    };
     return this.each(make);
     };
 })(jQuery);

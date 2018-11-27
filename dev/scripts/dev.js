@@ -1,6 +1,62 @@
 (($) => {
     "use strict";
 
+    // (function ($) {
+    //     $.fn.rewAccordion = function() {
+    //         let make = function () {
+    //             const accordionLinks = $(this).find('.accordion_heading');
+    //             const accordionContent = $(this).find('.accordion__panel');
+    //
+    //             for (let i = 0; i < accordionLinks.length; i++) {
+    //                 $(accordionLinks[i]).click(function(e) {
+    //                     e.preventDefault();
+    //
+    //                     const j = $(accordionLinks).index(this);
+    //
+    //                     if ($(this).hasClass('active')) {
+    //
+    //                         $(this).removeClass('active');
+    //                         $(accordionContent[j]).slideUp();
+    //
+    //                     } else {
+    //
+    //                         $(accordionLinks).removeClass('active');
+    //                         $(accordionContent).slideUp();
+    //
+    //                         $(this).addClass('active');
+    //                         $(accordionContent[j]).slideDown();
+    //                     }
+    //                 });
+    //             }
+    //         };
+    //         return this.each(make);
+    //     };
+    // })(jQuery);
+
+    // (function ($) {
+    //     $.fn.rewTabs = function() {
+    //         let make = function () {
+    //             const tabLinks = $(this).find('.tabs li a');
+    //             const tabContent = $(this).find('.tabs-content');
+    //
+    //
+    //             for (let i = 0; i < tabLinks.length; i++) {
+    //                 $(tabLinks[i]).click(function(e) {
+    //                     e.preventDefault();
+    //
+    //                     $(tabLinks).removeClass('active');
+    //                     $(tabContent).removeClass('active');
+    //
+    //                     let j = $(tabLinks).index(this);
+    //
+    //                     $(this).addClass('active');
+    //                     $(tabContent[j]).addClass('active');
+    //                 });
+    //             }
+    //         };
+    //         return this.each(make);
+    //     };
+    // })(jQuery);
 
     const DOMs = {
 
@@ -34,55 +90,10 @@
         DOMs.menuTrigger.click((e) => {
             e.preventDefault();
             DOMs.documentBodyHtml.toggleClass("open");
-
-            if ($('body').hasClass('open')) {
-                disableScroll();
-            } else {
-                enableScroll();
-            }
             
         });
 
-        var keys = {37: 1, 38: 1, 39: 1, 40: 1};
 
-        function preventDefault(e) {
-            e = e || window.event;
-            if (e.preventDefault) {
-                e.preventDefault();
-            }
-            e.returnValue = false;
-        }
-
-        function preventDefaultForScrollKeys(e) {
-            if (keys[e.keyCode]) {
-                preventDefault(e);
-                return false;
-            }
-        }
-
-        function disableScroll() {
-            if (window.matchMedia("(max-width: 767px)").matches) {
-                if (window.addEventListener) { // older FF
-                    window.addEventListener('DOMMouseScroll', preventDefault, false);
-                }
-                window.onwheel = preventDefault; // modern standard
-                window.onmousewheel = document.onmousewheel = preventDefault; // older browsers, IE
-                window.ontouchmove = preventDefault; // mobile
-                document.onkeydown = preventDefaultForScrollKeys;
-            }
-        }
-
-        function enableScroll() {
-            if (window.matchMedia("(max-width: 767px)").matches) {
-                if (window.removeEventListener) {
-                    window.removeEventListener('DOMMouseScroll', preventDefault, false);
-                }
-                window.onmousewheel = document.onmousewheel = null;
-                window.onwheel = null;
-                window.ontouchmove = null;
-                document.onkeydown = null;
-            }
-        }
 
         // ========== SELECT ==========
 

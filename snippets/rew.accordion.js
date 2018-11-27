@@ -18,14 +18,14 @@
                     } else {
 
                         $(accordionLinks).removeClass('active');
-                        $(accordionContent).slideUp()
+                        $(accordionContent).slideUp();
 
                         $(this).addClass('active');
                         $(accordionContent[j]).slideDown();
                     }
                 });
             }
-        }
+        };
         return this.each(make);
     };
 })(jQuery);

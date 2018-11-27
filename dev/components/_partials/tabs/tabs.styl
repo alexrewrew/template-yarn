@@ -1,0 +1,33 @@
+.tabs
+  df(row)
+  mb(16)
+  li
+    a
+      cursor: pointer;
+      padding 0 r(15) r(3)
+      co($bk)
+      display flex
+      align-items center
+      justify-content center
+      height 45px
+      trans()
+      &:hover
+        co($wt)
+        bg(lightblue)
+      &.active
+        co($wt)
+        bg(blue)
+
+.tabs-content
+  display: none;
+  padding: r(10) r(15)
+  animation: fadeEffect 1s;
+
+.tabs-content.active
+  display block
+
+@keyframes fadeEffect
+  from
+    opacity: 0;
+  to
+    opacity: 1;
