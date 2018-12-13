@@ -25,7 +25,7 @@
   mb(20)
   &:after
     triangle($bk, down, r(4))
-    top calc(50% - r(2))
+    top calc(50% - 2px)
     right r(15)
     trans()
   &:focus
@@ -34,7 +34,7 @@
     padding 0
     height auto
     border-radius 0
-    border r(1) solid $gr2
+    border r(1) solid $gr
     background $wt
     box-shadow none
     trans()
@@ -51,7 +51,7 @@
     mb(12)
     input[type='text']
       fs(16)
-      border r(1) solid $gr2
+      border r(1) solid $gr
       padding r(11) r(10) r(12)
       background-image none !important
 
@@ -83,7 +83,7 @@
       &.highlighted
         background blue
     .result-selected
-      background $gr2
+      background $gr
       co($wt)
 
 .chosen-container-single .chosen-single div b

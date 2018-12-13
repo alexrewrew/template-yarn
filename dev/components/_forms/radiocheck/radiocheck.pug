@@ -1,4 +1,5 @@
-mixin radiocheck(radiocheck)
-    label.radio-check
+mixin radiocheck(radiocheck, text)
+    label.radiocheck
         input(type= radiocheck)
-        span
+        .radiocheck__icon
+        .radiocheck__text= text

@@ -1,20 +1,38 @@
-ul
-  li
-    list-style none
-
 ul, ol
   padding 0
   margin 0
+  li
+    list-style none
+    position relative
+
+
+ol
+  counter-reset: list1
+  li
+    pl(20)
+    &:before
+      display: block
+      position absolute
+
+      counter-increment: list1
+      content: counter(list1) ". "
+
+      lr(0)
+      tr(0)
+
+      fs(16)
+      fw(500)
+
+      lh(2)
+      co($bk)
 
 .ul-regular
   li
-    position relative
     pl(20)
-    mb(20)
     &:before
-      ba() //content, display, position
+      ba()
       width r(8)
       height r(1)
       bg($bk)
-      top r(10)
-      left 0
+      tr(10)
+      lr(0)

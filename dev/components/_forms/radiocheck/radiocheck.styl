@@ -1,41 +1,43 @@
-.radio-check
-  mb(15)
-  mr(15)
+.radiocheck
   position relative
   padding 0
+  mb(15)
 
   input
     position absolute
     opacity 0
 
-  input + span
-    position relative
-    pl(35)
-    cursor pointer
-    fw(400)
-    &:before, &:after
-      pseudo(block, absolute)
-      top r(2)
-      left 0
-      width r(15)
-      height r(15)
-      trans()
+    & + .radiocheck__icon
+      position relative
+      cursor pointer
+      fw(400)
+      &:before, &:after
+        ba()
+        tr(2)
+        lr(0)
+        wir(15)
+        her(15)
+        trans()
 
-    &:before
-      border r(1) solid $gr2
-      opacity 1
+      &:before
+        border r(1) solid $gr
+        opacity 1
 
-    &:after
-      bg(blue)
-      border r(1) solid blue
-      opacity 0
+      &:after
+        bg(blue)
+        border r(1) solid blue
+        opacity 0
+
+  &__text
+    pl(20)
 
 
-  input[type='radio'] + span
+
+  input[type='radio'] + &__icon
     &:after, &:before
       border-radius 50%
 
-  input:checked + span
+  input:checked + &__icon
     &:before
       opacity 0
     &:after

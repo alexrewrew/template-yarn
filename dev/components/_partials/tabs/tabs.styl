@@ -1,15 +1,13 @@
 .tabs
   df(row)
-  mb(16)
+  mb(15)
   li
     a
       cursor: pointer;
       padding 0 r(15) r(3)
       co($bk)
-      display flex
-      align-items center
-      justify-content center
-      height 45px
+      fc()
+      her(54)
       trans()
       &:hover
         co($wt)
@@ -20,11 +18,11 @@
 
 .tabs-content
   display: none;
-  padding: r(10) r(15)
+  padding r(10) r(15)
   animation: fadeEffect 1s;
 
-.tabs-content.active
-  display block
+  &.active
+    display block
 
 @keyframes fadeEffect
   from

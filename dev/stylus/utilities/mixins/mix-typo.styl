@@ -5,10 +5,24 @@ font($rz = false, $wght = false, $lh = false)
   if $rz
     font-size: $rz
   if $wght
-    font-weight: $wght
+    fw($wght)
   if $lh
-    line-height: $lh
+    lh($lh)
 
+// FONT-FAMILY
+ff($font)
+  font-family $font, sans-serif
+
+// LINE-HEIGHT
+lh($line-h)
+  line-height $line-h
+
+lhr($line-hr)
+  line-height r($var)
+
+// LETTER-SPACING
+ls($lsr)
+  letter-spacing r($var)
 
 //  FONT SIZE
 fs($fontsize)

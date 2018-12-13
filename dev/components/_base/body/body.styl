@@ -8,7 +8,7 @@ body
   font(r(16), 400, normal)
   co($bk)
   bg($wt)
-  font-family $m-font, sans-serif
+  ff($m-font)
 
 +mob()
   html.open
@@ -18,41 +18,47 @@ body
     pt(71)
     &.open
       overflow hidden !important
+
       nav
-        height 100%
+        he(100%)
         overflow scroll !important
+
       .nav-panel
         transform none
         position static
+
       .nav-icon
         span
           &:nth-child(1)
-            top r(18)
-            width 0
+            tr(18)
+            wi(0)
             left 50%
+
           &:nth-child(2)
             transform rotate(45deg)
+
           &:nth-child(3)
             transform rotate(-45deg)
+
           &:nth-child(4)
-            top r(18)
-            width 0
+            tr(18)
+            wi(0)
             left 50%
 
   nav
     position fixed
-    left 0
-    right 0
-    top 0
+    lr(0)
+    rr(0)
+    tr(0)
     z-index 5000
 
   .nav-panel
     background $wt
     position: fixed;
-    top: r(60)
-    left: 0;
-    right: 0;
-    bottom: 0;
+    tr(60)
+    lr(0)
+    rr(0)
+    br(0)
     transform translateY(-100vh)
     trans()
 

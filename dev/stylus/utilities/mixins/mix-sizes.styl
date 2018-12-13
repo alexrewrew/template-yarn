@@ -1,43 +1,39 @@
-// ----- MARGIN CENTER -----
-mc()
-  margin-left auto
-  margin-right auto
-
-// REM SIZES
+//  EM SIZES
 r(n)
   (n * ( 1 / $base-font-size ))rem
-
-// EM SIZES
-e(n)
-  (n * ( 1 / $base-font-size ))em
 
 rmi(n)
   -((n * ( 1 / $base-font-size )))rem
 
-// EM SIZES
+//  EM SIZES
+e(n)
+  (n * ( 1 / $base-font-size ))em
+
 emi(n)
   -((n * ( 1 / $base-font-size )))em
 
-//  SIZES
-wr($wr)
-  width r($wr)
+//  PADDINGS
 
-hr($hr)
-  height r($hr)
+pp($top, $right, $bottom, $left)
+  padding r($top) r($right) r($bottom) r($left)
 
-maxwr($maxwr)
-  max-width r($maxwr)  
+pt($sz)
+  padding-top r($sz)
 
-maxhr($maxhr)
-  max-height: r($maxhr)
+pr($sz)
+  padding-right r($sz)
 
-minwr($minwr)  
-  min-width: r($minwr)
+pb($sz)
+  padding-bottom r($sz)
 
-minhr($minhr)
-  min-height: r($minhr)
+pl($sz)
+  padding-left r($sz)
 
 //  MARGINS
+
+mc()
+  margin-left auto
+  margin-right auto
 
 mm($top, $right, $bottom, $left)
   margin r($top) r($right) r($bottom) r($left)
@@ -54,41 +50,92 @@ mb($sz)
 ml($sz)
   margin-left r($sz)
 
-//  PADDINGS
-
-pp($top, $right, $bottom, $left)
-  padding r($top) r($right) r($bottom) r($left)
-
-
-pt($sz)
-  padding-top r($sz)
-
-pr($sz)
-  padding-right r($sz)
-
-pb($sz)
-  padding-bottom r($sz)
-
-pl($sz)
-  padding-left r($sz)
-
 
 //  MARGINS MINUS
 
-mtm($sz)
+mmt($sz)
   margin-top rmi($sz)
 
-mrm($sz)
+mmr($sz)
   margin-right rmi($sz)
 
-mbm($sz)
+mmb($sz)
   margin-bottom rmi($sz)
 
-mlm($sz)
+mml($sz)
   margin-left rmi($sz)
+
+
 
 //FLEX
 
 fl($sz)
   flex 0 0 $sz
   max-width $sz
+
+//FLEX REM
+
+flr($sz)
+  flex 0 0 r($sz)
+  max-width r($sz)
+
+
+
+//  SIZES
+wi($wr)
+  width $wr
+
+he($hr)
+  height $hr
+
+
+//  SIZES REM
+
+wir($wr)
+  width r($wr)
+
+her($hr)
+  height r($hr)
+
+
+//MIN-MAX WIDTH HEIGHT
+
+maxwi($maxwr)
+  max-width $maxwr
+
+maxhe($maxhr)
+  max-height: $maxhr
+
+minwi($minwr)
+  min-width: $minwr
+
+minhe($minhr)
+  min-height: $minhr
+
+
+//MIN-MAX WIDTH HEIGHT REM
+
+maxwir($maxwr)
+  max-width r($maxwr)
+
+maxher($maxhr)
+  max-height: r($maxhr)
+
+minwir($minwr)
+  min-width: r($minwr)
+
+minher($minhr)
+  min-height: r($minhr)
+
+//  POSITION
+tr($sz)
+  top r($sz)
+
+lr($sz)
+  left r($sz)
+
+rr($sz)
+  right r($sz)
+
+br($sz)
+  bottom r($sz)

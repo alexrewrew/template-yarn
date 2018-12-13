@@ -1,11 +1,16 @@
 select
-  width 100%
+  fca()
+
   bg($wt)
+
+  wi(100%)
+  her(54)
+
   border r(1) solid $gr
-  padding 0 r(15) r(3)
-  he(54)
   border-radius 0
-  display block
+  padding 0 r(15) r(3)
+  mb(15)
+
   -webkit-appearance none
   -moz-appearance none
   trans()
@@ -13,8 +18,7 @@ select
     outline none
 
 .select-group
-  position relative
   &:after
     triangle($bk, down, r(4))
     top calc(50% - 2px)
-    right r(15)
+    rr(15)
