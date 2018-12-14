@@ -32,7 +32,8 @@
     "chosen-js": "^1.8.7",
     "jquery": "^3.3.1",
     "jquery.maskedinput": "^1.4.1",
-    "slick-carousel": "^1.8.1"
+    "slick-carousel": "^1.8.1",
+    "bowser": "^2.0.0-beta.3"
   }
 }
 

@@ -1,4 +1,23 @@
-mixin select(array, className)
+mixin select()
     select(class= className)
-        each val in array
-            option= val
+        option Тест 1
+        option Тест 2
+        option Тест 3
+
+mixin select-chosen()
+    .input-group.select-group
+        select.select-chosen
+            option Тест 1
+            option Тест 2
+            option Тест 3
+
+mixin select-select2()
+    .input-group.select-group
+        select.select-select2
+            option Тест 1
+            option Тест 2
+            option Тест 3
+
+mixin select-group()
+    .input-group.select-group
+        +select()

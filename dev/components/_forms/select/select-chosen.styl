@@ -20,27 +20,38 @@
   }
 }
 
+
+
 .chosen-container
   width 100%
-  mb(20)
+  fs(16)
+  mb(15)
   &:after
     triangle($bk, down, r(4))
     top calc(50% - 2px)
-    right r(15)
+    rr(15)
     trans()
+
   &:focus
     outline none
+
   .chosen-single
     padding 0
     height auto
+
     border-radius 0
     border r(1) solid $gr
+
     background $wt
     box-shadow none
     trans()
+    fs(16)
     span
-      padding r(10) r(15) r(11)
+      fca()
+      her(54)
+      padding 0 r(15) r(3)
       fs(16)
+
   .chosen-default
     span
       opacity .5
@@ -48,7 +59,7 @@
 .chosen-container-single
   .chosen-search
     padding 0 r(5)
-    mb(12)
+    mb(15)
     input[type='text']
       fs(16)
       border r(1) solid $gr
@@ -77,7 +88,9 @@
     margin 0
     box-shadow none
     .active-result
-      padding r(12) r(15) r(13)
+      fca()
+      her(54)
+      padding 0 r(15) r(3)
       fs(16)
       line-height normal
       &.highlighted
@@ -94,5 +107,6 @@
     li.no-results
       background $wt
       co($gr)
-      fs(14)
-      padding r(12) r(10) r(13)
+      fca()
+      her(54)
+      padding 0 r(15) r(3)

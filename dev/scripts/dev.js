@@ -1,72 +1,16 @@
 (($) => {
     "use strict";
 
-    // (function ($) {
-    //     $.fn.rewAccordion = function() {
-    //         let make = function () {
-    //             const accordionLinks = $(this).find('.accordion_heading');
-    //             const accordionContent = $(this).find('.accordion__panel');
-    //
-    //             for (let i = 0; i < accordionLinks.length; i++) {
-    //                 $(accordionLinks[i]).click(function(e) {
-    //                     e.preventDefault();
-    //
-    //                     const j = $(accordionLinks).index(this);
-    //
-    //                     if ($(this).hasClass('active')) {
-    //
-    //                         $(this).removeClass('active');
-    //                         $(accordionContent[j]).slideUp();
-    //
-    //                     } else {
-    //
-    //                         $(accordionLinks).removeClass('active');
-    //                         $(accordionContent).slideUp();
-    //
-    //                         $(this).addClass('active');
-    //                         $(accordionContent[j]).slideDown();
-    //                     }
-    //                 });
-    //             }
-    //         };
-    //         return this.each(make);
-    //     };
-    // })(jQuery);
-
-    // (function ($) {
-    //     $.fn.rewTabs = function() {
-    //         let make = function () {
-    //             const tabLinks = $(this).find('.tabs li a');
-    //             const tabContent = $(this).find('.tabs-content');
-    //
-    //
-    //             for (let i = 0; i < tabLinks.length; i++) {
-    //                 $(tabLinks[i]).click(function(e) {
-    //                     e.preventDefault();
-    //
-    //                     $(tabLinks).removeClass('active');
-    //                     $(tabContent).removeClass('active');
-    //
-    //                     let j = $(tabLinks).index(this);
-    //
-    //                     $(this).addClass('active');
-    //                     $(tabContent[j]).addClass('active');
-    //                 });
-    //             }
-    //         };
-    //         return this.each(make);
-    //     };
-    // })(jQuery);
 
     const DOMs = {
 
         documentBodyHtml: $("html, body"),
-        // documentBody: $("body"),
+        documentBody: $("body"),
 
         menuTrigger: $("#menu-trigger"),
 
-        // selectChosen: $(".chosen-select"),
-        // selectSelect2: $(".select2-select"),
+        selectChosen: $(".select-chosen"),
+        // selectSelect2: $(".select-select2"),
         // selectSelect2Container: $(".select-select2-container"),
         //
         // sliderFull: $(".slider-full"),
@@ -77,38 +21,36 @@
         // linkSmooth: $(".smooth"),
         // linkUp : $(".link-up"),
         //
-        // accordion : $('#accordion'),
-        // tabs : $('#tabs'),
+        accordion : $('#accordion'),
+        tabs : $('#tabs'),
         // datepicker : $(".datepicker"),
 
     };
 
-    $(document).ready(() => {
+    $(document).ready(function() {
 
         // ========== MENU ==========
 
-        DOMs.menuTrigger.click((e) => {
+        DOMs.menuTrigger.on('click', function(e) {
             e.preventDefault();
             DOMs.documentBodyHtml.toggleClass("open");
             
         });
 
-
-
         // ========== SELECT ==========
 
         // ----- CHOSEN -----
         // DOMs.selectChosen.chosen({
-        //     disable_search_threshold: 4,
-        //     no_results_text: "Нічого не знайдено"
+            // disable_search_threshold: 4,
+            // no_results_text: "Нічого не знайдено"
         // });
 
         // ----- SELECT2 -----
         // DOMs.selectSelect2.select2({
         //     placeholder: "Choose...",
         //     allowClear: true,
-        //     dropdownParent: DOMs.selectSelect2Container,
-        //     minimumResultsForSearch: Infinity
+            // dropdownParent: DOMs.selectSelect2Container,
+            // minimumResultsForSearch: Infinity
         // });
 
         // ========== SLIDER ==========
@@ -127,10 +69,10 @@
         // });
 
         // ========== ACCORDION ==========
-        // DOMs.accordion.rewAccordion();
+        DOMs.accordion.rewAccordion();
 
         // ========== TABS ==========
-        // DOMs.tabs.rewTabs();
+        DOMs.tabs.rewTabs();
 
         // ========== DATEPICKER ==========
         // DOMs.datepicker.flatpickr();
@@ -138,7 +80,7 @@
         // ========== SCROLLSPY ==========
 
         // ----- SCROLLING CLASS CHANGE -----
-        // $(window).scroll(() => {
+        // $(window).scroll(function() {
         //     if ($(this).scrollTop() > 200) {
         //         DOMs.linkUp.addClass("visible");
         //     }
@@ -148,28 +90,35 @@
         // });
 
         // ----- ANCHOR LINKS SCROLLING -----
-        // DOMs.linkSmooth.click(function (e) {
+        // DOMs.linkSmooth.on('click', function (e) {
         //     e.preventDefault();
-
-        //     var id = $(this).attr("href");
-        //     var top = $(id).offset().top - 70;
-
+        //
+        //     const id = $(this).attr("href");
+        //     const top = $(id).offset().top - 70;
+        //
         //     DOMs.documentBodyHtml.animate({
         //         scrollTop: top
         //     }, 500);
         // });
 
-        // if (bowser.firefox) {
-        //     DOMs.body.addClass('brow-firefox');
+        // const browser = bowser.getParser(window.navigator.userAgent);
+        // const currentBrowser = browser.getBrowserName();
+        //
+        //
+        // if (currentBrowser === 'Firefox') {
+        //     DOMs.documentBody.addClass('brow-firefox');
         // }
-        // if (bowser.safari) {
-        //     DOMs.body.addClass('brow-safari');
+        // if (currentBrowser === 'Chrome') {
+        //     DOMs.documentBody.addClass('brow-chrome');
         // }
-        // if (bowser.msie) {
-        //     DOMs.body.addClass('brow-msie');
+        // if (currentBrowser === 'Safari') {
+        //     DOMs.documentBody.addClass('brow-safari');
         // }
-        // if (bowser.msedge) {
-        //     DOMs.body.addClass('brow-msedge');
+        // if (currentBrowser === 'Internet Explorer') {
+        //     DOMs.documentBody.addClass('brow-msie');
+        // }
+        // if (currentBrowser === 'Microsoft Edge') {
+        //     DOMs.documentBody.addClass('brow-msedge');
         // }
 
 

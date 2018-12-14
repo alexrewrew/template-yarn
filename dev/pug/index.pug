@@ -6,6 +6,7 @@ block title
 block content
 
 
+
     +sec-r()
         .col-6
             h1 Header 1
@@ -52,11 +53,7 @@ block content
         .col-3
             +input-group('input')
 
-            .input-group.select-group
-                select
-                    option 1
-                    option 2
-                    option 3
+            +select-group()
 
             .input-group
                 +datepicker('date')
@@ -66,10 +63,7 @@ block content
         .col-3
             +input('input')
 
-            select
-                option 1
-                option 2
-                option 3
+            +select()
 
             +textarea('textarea')
 
@@ -80,6 +74,22 @@ block content
             br
             +radiocheck('radio', 'lorem')
             +radiocheck('radio', 'lorem')
+
+        .col-3
+            +select-chosen()
+            +select-select2()
+        .col-3
+            +datepicker('Выберите дату')
+
+            +modal-link('open', '#my-modal', 'btn btn-text-center')
+        .col-12
+            +accordion()
+        .col-12
+            +tabs()
+
+    +modal('my-modal')
+        p 123
+        p 456
 
 
 

@@ -5,7 +5,7 @@
             const accordionContent = $(this).find('.accordion__panel');
 
             for (let i = 0; i < accordionLinks.length; i++) {
-                $(accordionLinks[i]).click(function(e) {
+                $(accordionLinks[i]).on('click', function(e) {
                     e.preventDefault();
 
                     const j = $(accordionLinks).index(this);

@@ -18,7 +18,10 @@ select
     outline none
 
 .select-group
-  &:after
-    triangle($bk, down, r(4))
-    top calc(50% - 2px)
-    rr(15)
+  .chosen-container
+    mb(0)
+  +mob()
+    &:after
+      triangle($bk, down, r(4))
+      top calc(50% - 2px)
+      rr(15)
