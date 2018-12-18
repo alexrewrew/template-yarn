@@ -1,10 +1,8 @@
-mixin li-a(text, className)
+mixin li-a(className, href)
     li
-        +a(text, className)
+        +a(className, href)
 
 
-
-
-
-mixin a(text, className)
-    a(href='' title='' class= className)= text
+mixin a(className, href)
+    a(href= href title='' class= className)
+        block
