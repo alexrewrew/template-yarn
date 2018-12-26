@@ -4,7 +4,7 @@ mixin navigation()
         .container
             .row
                 .col-6.col-md-2
-                    a(href='./' title='').nav-logo
+                    +a('nav-logo', './')
                         img(src='img/logo/logo.png' title='' alt='')
 
                 .col-6.nav-mobile
@@ -15,4 +15,4 @@ mixin navigation()
                         +li-a('active', '')
                             | Google
                         +li-a('', '')
-                                | Facebook
+                            | Facebook
