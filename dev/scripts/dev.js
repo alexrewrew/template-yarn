@@ -14,8 +14,8 @@
         // selectSelect2Container: $(".select-select2-container"),
         //
         // sliderFull: $(".slider-full"),
-        // sliderArrowLeft : "",
-        // sliderArrowRight : "",
+        // sliderArrowLeft : "<div class='arrow left'></div>",
+        // sliderArrowRight : "<div class='arrow right'></div>",
         // sliderCounter : $(".slider-counter"),
         //
         // linkSmooth: $(".smooth"),
@@ -65,7 +65,9 @@
         // DOMs.sliderFull.slick({
         //     prevArrow: DOMs.sliderArrowLeft,
         //     nextArrow: DOMs.sliderArrowRight,
-        //     dots: true
+        //     dots: true,
+        //     variableWidth: true,
+        //     adaptiveHeight: true
         // });
 
         // ========== ACCORDION ==========

@@ -4,19 +4,15 @@ mixin navigation()
         .container
             .row
                 .col-6.col-md-2
-                    a(href='./' title='').link-logo
-                        img(src='img/logo/logo.png' title='' alt='' data-rjs="3")
+                    a(href='./' title='').nav-logo
+                        img(src='img/logo/logo.png' title='' alt='')
 
                 .col-6.nav-mobile
-                    .nav-icon#menu-trigger
-                        span
-                        span
-                        span
-                        span
+                    +nav-icon()
 
                 .col-md-10.nav-panel
                     ul.menu
-                        li
-                            a(href='' title='').active Google
-                        li
-                            a(href='' title='') Facebook
+                        +li-a('active', '')
+                            | Google
+                        +li-a('', '')
+                                | Facebook
