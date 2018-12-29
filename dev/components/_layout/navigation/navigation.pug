@@ -4,15 +4,19 @@ mixin navigation()
         .container
             .row
                 .col-6.col-md-2
-                    +a('nav-logo', './')
-                        img(src='img/logo/logo.png' title='' alt='')
+                    +a('nav-logo', '')
+                        img(src='img/logo/logo.png' title='' alt='' )
 
                 .col-6.nav-mobile
-                    +nav-icon()
+                    .nav-icon#menu-trigger
+                        span
+                        span
+                        span
+                        span
 
                 .col-md-10.nav-panel
                     ul.menu
-                        +li-a('active', '')
-                            | Google
-                        +li-a('', '')
-                            | Facebook
+                        +li-a('','').active Google
+                        +li-a('','') Facebook
+
+                           
