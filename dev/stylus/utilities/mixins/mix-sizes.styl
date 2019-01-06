@@ -18,16 +18,28 @@ pp($top, $right, $bottom, $left)
   padding r($top) r($right) r($bottom) r($left)
 
 pt($sz)
-  padding-top r($sz)
+  if $sz == 0
+    padding-top 0
+  else
+    padding-top r($sz)
 
 pr($sz)
-  padding-right r($sz)
+  if $sz == 0
+    padding-right 0
+  else
+    padding-right r($sz)
 
 pb($sz)
-  padding-bottom r($sz)
+  if $sz == 0
+    padding-bottom 0
+  else
+    padding-bottom r($sz)
 
 pl($sz)
-  padding-left r($sz)
+  if $sz == 0
+    padding-left 0
+  else
+    padding-left r($sz)
 
 //  MARGINS
 
@@ -39,16 +51,28 @@ mm($top, $right, $bottom, $left)
   margin r($top) r($right) r($bottom) r($left)
 
 mt($sz)
-  margin-top r($sz)
+  if $sz == 0
+    margin-top 0
+  else
+    margin-top r($sz)
 
 mr($sz)
-  margin-right r($sz)
+  if $sz == 0
+    margin-right 0
+  else
+    margin-right r($sz)
 
 mb($sz)
-  margin-bottom r($sz)
+  if $sz == 0
+    margin-bottom 0
+  else
+    margin-bottom r($sz)
 
 ml($sz)
-  margin-left r($sz)
+  if $sz == 0
+    margin-left 0
+  else
+    margin-left r($sz)
 
 
 //  MARGINS MINUS
@@ -72,6 +96,7 @@ mml($sz)
 fl($sz)
   flex 0 0 $sz
   max-width $sz
+
 
 //FLEX REM
 
@@ -129,16 +154,28 @@ minher($minhr)
 
 //  POSITION
 tr($sz)
-  top r($sz)
+  if $sz == 0
+    top 0
+  else
+    top r($sz)
 
 lr($sz)
-  left r($sz)
+  if $sz == 0
+    left 0
+  else
+    left r($sz)
 
 rr($sz)
-  right r($sz)
+  if $sz == 0
+    right 0
+  else
+    right r($sz)
 
 br($sz)
-  bottom r($sz)
+  if $sz == 0
+    bottom 0
+  else
+    bottom r($sz)
 
 trm($sz)
   top rmi($sz)
@@ -150,7 +187,7 @@ rrm($sz)
   right rmi($sz)
 
 brm($sz)
-  bottom rmi($sz)  
+  bottom rmi($sz)
 
 //  CALC SIZES
 //arrow-size = 5px
