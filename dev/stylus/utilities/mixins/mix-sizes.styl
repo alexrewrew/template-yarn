@@ -77,16 +77,16 @@ ml($sz)
 
 //  MARGINS MINUS
 
-mmt($sz)
+mtm($sz)
   margin-top rmi($sz)
 
-mmr($sz)
+mrm($sz)
   margin-right rmi($sz)
 
-mmb($sz)
+mbm($sz)
   margin-bottom rmi($sz)
 
-mml($sz)
+mlm($sz)
   margin-left rmi($sz)
 
 
@@ -125,31 +125,31 @@ her($hr)
 
 //MIN-MAX WIDTH HEIGHT
 
-maxwi($maxwr)
+mxwi($maxwr)
   max-width $maxwr
 
-maxhe($maxhr)
+mxhe($maxhr)
   max-height: $maxhr
 
-minwi($minwr)
+mnwi($minwr)
   min-width: $minwr
 
-minhe($minhr)
+mnhe($minhr)
   min-height: $minhr
 
 
 //MIN-MAX WIDTH HEIGHT REM
 
-maxwir($maxwr)
+mxwir($maxwr)
   max-width r($maxwr)
 
-maxher($maxhr)
+mxher($maxhr)
   max-height: r($maxhr)
 
-minwir($minwr)
+mnwir($minwr)
   min-width: r($minwr)
 
-minher($minhr)
+mnher($minhr)
   min-height: r($minhr)
 
 //  POSITION
@@ -189,9 +189,15 @@ rrm($sz)
 brm($sz)
   bottom rmi($sz)
 
-//  CALC SIZES
-//arrow-size = 5px
-//left "calc(50% - %s)" % arrow-size
+cl($property, $measure, $number)
+  measure = $measure
+  number = r($number)
+  {$property} "calc(%s + %s)" % (measure number)
+
+clm($property, $measure, $number)
+  measure = $measure
+  number = r($number)
+  {$property} "calc(%s - %s)" % (measure number)
 
 //BORDERS
 bo($sz, $co)

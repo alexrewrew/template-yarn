@@ -9,3 +9,13 @@
 
   input, textarea, select
     mb(0)
+
+  &.select-group
+    .chosen-container
+      mb(0)
+
+    +mob()
+      &:after
+        triangle($bk, down, 4)
+        clm(top, 50%, 2)
+        rr(15)

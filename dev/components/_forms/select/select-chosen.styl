@@ -27,8 +27,8 @@
   fs(16)
   mb(15)
   &:after
-    triangle($bk, down, r(4))
-    top calc(50% - 2px)
+    triangle($bk, down, 4)
+    clm(top, 50%, 2)
     rr(15)
     trans()
 
@@ -40,7 +40,7 @@
     height auto
 
     border-radius 0
-    border r(1) solid $gr
+    bo(1, $gr)
 
     background $wt
     box-shadow none
@@ -62,7 +62,7 @@
     mb(15)
     input[type='text']
       fs(16)
-      border r(1) solid $gr
+      bo(1, $gr)
       padding r(11) r(10) r(12)
       background-image none !important
 
@@ -74,13 +74,13 @@
   box-shadow none
   .chosen-single
     box-shadow none
-    border r(1) solid blue
+    bo(1, blue)
     background none
 
 .chosen-container-single .chosen-drop
   border-radius 0
-  border r(1) solid blue
-  border-top 0
+  bo(1, blue)
+  bot(0)
   padding 0
   box-shadow none
   .chosen-results
