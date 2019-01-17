@@ -1,6 +1,6 @@
 /.idea
 /.vscode
-/src/*.sketch
+/src/sketch
 /build
 /node_modules
 /dev/app/js
