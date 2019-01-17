@@ -18,6 +18,11 @@ global.$ = {
     browserSync: require('browser-sync').create(),
     babel : require('gulp-babel'),
 
+    realFavicon : require ('gulp-real-favicon'),
+    fs : require('fs'),
+
+    FAVICON_DATA_FILE : 'faviconData.json',
+
     path: {
         tasks: require('./gulp/config/tasks.js')
     }

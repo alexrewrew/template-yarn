@@ -34,8 +34,9 @@
         DOMs.menuTrigger.on('click', function(e) {
             e.preventDefault();
             DOMs.documentBodyHtml.toggleClass("open");
-            
         });
+
+        jQuery.scrollSpeed(100, 600);
 
         // ========== SELECT ==========
 
@@ -137,5 +138,7 @@
     // });
 
 })(jQuery);
+
+
 
 
