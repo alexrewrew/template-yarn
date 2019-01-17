@@ -17,10 +17,8 @@ global.$ = {
     htmlmin: require('gulp-htmlmin'),
     browserSync: require('browser-sync').create(),
     babel : require('gulp-babel'),
-
-    realFavicon : require ('gulp-real-favicon'),
     fs : require('fs'),
-
+    realFavicon : require ('gulp-real-favicon'),
     FAVICON_DATA_FILE : 'faviconData.json',
 
     path: {
@@ -35,6 +33,11 @@ $.path.tasks.forEach(function (taskPath) {
 $.gulp.task('default', $.gulp.series(
     $.gulp.parallel('pug', 'stylus', 'scripts:lib', 'scripts'),
     $.gulp.parallel('watch', 'serve')
+));
+
+$.gulp.task('start', $.gulp.series(
+    'clean:generate',
+    $.gulp.parallel('favicon:generate')
 ));
 
 $.gulp.task('build', $.gulp.series(
