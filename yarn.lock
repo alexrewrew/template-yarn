@@ -3986,6 +3986,11 @@ html-minifier@^3.5.20:
     relateurl "0.2.x"
     uglify-js "3.4.x"
 
+html5shiv@^3.7.3:
+  version "3.7.3"
+  resolved "https://registry.npmjs.org/html5shiv/-/html5shiv-3.7.3.tgz#d78a84a367bcb9a710100d57802c387b084631d2"
+  integrity sha1-14qEo2e8uacQEA1XgCw4ewhGMdI=
+
 htmlparser2@^3.9.1:
   version "3.10.0"
   resolved "https://registry.npmjs.org/htmlparser2/-/htmlparser2-3.10.0.tgz#5f5e422dcf6119c0d983ed36260ce9ded0bee464"
@@ -5118,6 +5123,11 @@ loose-envify@^1.0.0:
   dependencies:
     js-tokens "^3.0.0 || ^4.0.0"
 
+lottie-web@^5.4.3:
+  version "5.4.3"
+  resolved "https://registry.npmjs.org/lottie-web/-/lottie-web-5.4.3.tgz#add7ca75a41f3f0c07c7defd81c1b8c5922e1a3e"
+  integrity sha512-/3e1Rb0aBfV7u/s6oS6ZqBQnY56FL0gcSIdPVlWfJk+Ik/2WrEpGHgzL9QRV126GJtGUw4bwbjeb2c93QeqS7g==
+
 loud-rejection@^1.0.0:
   version "1.6.0"
   resolved "https://registry.npmjs.org/loud-rejection/-/loud-rejection-1.6.0.tgz#5b46f80147edee578870f086d04821cf998e551f"
@@ -5601,6 +5611,11 @@ normalize-url@2.0.1:
     prepend-http "^2.0.0"
     query-string "^5.0.1"
     sort-keys "^2.0.0"
+
+nouislider@^12.1.0:
+  version "12.1.0"
+  resolved "https://registry.npmjs.org/nouislider/-/nouislider-12.1.0.tgz#a4416b4b3357e77e52217f8ecf060eb14a855f59"
+  integrity sha512-SAOabF6hBm8201c6LDbkVOVhgwY49+/ms72ZLUF2qkN5RCf7FfUvEh/hGZ7XcwZHU+I/grlicPmcSk1/rrMnOw==
 
 now-and-later@^2.0.0:
   version "2.0.0"
@@ -6734,6 +6749,11 @@ resp-modifier@6.0.2:
   dependencies:
     debug "^2.2.0"
     minimatch "^3.0.2"
+
+respond.js@^1.4.2:
+  version "1.4.2"
+  resolved "https://registry.npmjs.org/respond.js/-/respond.js-1.4.2.tgz#fd5c07450acce6090916d8d090b86b672dd9748b"
+  integrity sha1-/VwHRQrM5gkJFtjQkLhrZy3ZdIs=
 
 responselike@1.0.2:
   version "1.0.2"

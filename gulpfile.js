@@ -35,9 +35,19 @@ $.gulp.task('default', $.gulp.series(
     $.gulp.parallel('watch', 'serve')
 ));
 
-$.gulp.task('start', $.gulp.series(
-    'clean:generate',
+$.gulp.task('favicon', $.gulp.series(
+    'favicon:clean',
     $.gulp.parallel('favicon:generate')
+));
+
+$.gulp.task('lottie', $.gulp.series(
+    'lottie:clean',
+    $.gulp.parallel('lottie:generate')
+));
+
+$.gulp.task('noui', $.gulp.series(
+    'noui:clean',
+    $.gulp.parallel('noui:generate')
 ));
 
 $.gulp.task('build', $.gulp.series(
