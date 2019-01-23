@@ -2760,7 +2760,7 @@ eventemitter3@1.x.x:
   resolved "https://registry.npmjs.org/eventemitter3/-/eventemitter3-1.2.0.tgz#1c86991d816ad1e504750e73874224ecf3bec508"
   integrity sha1-HIaZHYFq0eUEdQ5zh0Ik7PO+xQg=
 
-exec-buffer@^3.0.0:
+exec-buffer@^3.0.0, exec-buffer@^3.1.0:
   version "3.2.0"
   resolved "https://registry.npmjs.org/exec-buffer/-/exec-buffer-3.2.0.tgz#b1686dbd904c7cf982e652c1f5a79b1e5573082b"
   integrity sha512-wsiD+2Tp6BWHoVv3B+5Dcx6E7u5zky+hUwOHjuH2hKSLR3dvRmX8fk8UD8uqQixHs4Wk6eDmiegVrMPjKj7wpA==
@@ -3592,6 +3592,15 @@ growly@^1.3.0:
   resolved "https://registry.npmjs.org/growly/-/growly-1.3.0.tgz#f10748cbe76af964b7c96c93c6bcc28af120c081"
   integrity sha1-8QdIy+dq+WS3yWyTxrzCivEgwIE=
 
+guetzli@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.npmjs.org/guetzli/-/guetzli-2.0.0.tgz#eb481c0e853fb9792a6704265f3da0011ec379eb"
+  integrity sha512-o/g6IZeTN0kOXGxr2SlvwDKa6CJHIRYh6kR28keyhE2+uJl+3bODBAJR4kmX8gKjFEQVAq02GYwfIIbJAFFekw==
+  dependencies:
+    bin-build "^3.0.0"
+    bin-wrapper "^4.0.0"
+    logalot "^2.1.0"
+
 gulp-autoprefixer@^6.0.0:
   version "6.0.0"
   resolved "https://registry.npmjs.org/gulp-autoprefixer/-/gulp-autoprefixer-6.0.0.tgz#7034ef12c24a92a5b20158d63623ebbd900faed8"
@@ -4071,6 +4080,17 @@ imagemin-gifsicle@^6.0.1:
     gifsicle "^4.0.0"
     is-gif "^3.0.0"
 
+imagemin-guetzli@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.npmjs.org/imagemin-guetzli/-/imagemin-guetzli-2.0.0.tgz#a8948fcf1f4ac410ff829edb5aa28c930c9f9567"
+  integrity sha512-tLnQkJ5n9y8cZUEe0THcHjwXwLJp/y0BnKDBITcvfYD75N19GzbZ4JkWEizmIViUhAv9es0Tt3OqZQCeiOGR4Q==
+  dependencies:
+    exec-buffer "^3.1.0"
+    guetzli "^2.0.0"
+    is-jpg "^2.0.0"
+    is-png "^1.1.0"
+    number-is-integer "^1.0.1"
+
 imagemin-jpegtran@^6.0.0:
   version "6.0.0"
   resolved "https://registry.npmjs.org/imagemin-jpegtran/-/imagemin-jpegtran-6.0.0.tgz#c8d3bcfb6ec9c561c20a987142854be70d90b04f"
@@ -4346,7 +4366,7 @@ is-extglob@^2.1.0, is-extglob@^2.1.1:
   resolved "https://registry.npmjs.org/is-extglob/-/is-extglob-2.1.1.tgz#a88c02535791f02ed37c76a1b9ea9773c833f8c2"
   integrity sha1-qIwCU1eR8C7TfHahueqXc8gz+MI=
 
-is-finite@^1.0.0:
+is-finite@^1.0.0, is-finite@^1.0.1:
   version "1.0.2"
   resolved "https://registry.npmjs.org/is-finite/-/is-finite-1.0.2.tgz#cc6677695602be550ef11e8b4aa6305342b6d0aa"
   integrity sha1-zGZ3aVYCvlUO8R6LSqYwU0K20Ko=
@@ -4477,7 +4497,7 @@ is-plain-object@^2.0.1, is-plain-object@^2.0.3, is-plain-object@^2.0.4:
   dependencies:
     isobject "^3.0.1"
 
-is-png@^1.0.0:
+is-png@^1.0.0, is-png@^1.1.0:
   version "1.1.0"
   resolved "https://registry.npmjs.org/is-png/-/is-png-1.1.0.tgz#d574b12bf275c0350455570b0e5b57ab062077ce"
   integrity sha1-1XSxK/J1wDUEVVcLDltXqwYgd84=
@@ -5103,7 +5123,7 @@ lodash@^4.11.2, lodash@^4.13.1, lodash@^4.17.10, lodash@^4.17.4, lodash@^4.17.5:
   resolved "https://registry.npmjs.org/lodash/-/lodash-4.17.11.tgz#b39ea6229ef607ecd89e2c8df12536891cac9b8d"
   integrity sha512-cQKh8igo5QUhZ7lg38DYWAxMvjSAKG0A8wGSVimP07SIUEK2UO+arSRKbRZWtelMtN5V0Hkwh5ryOto/SshYIg==
 
-logalot@^2.0.0:
+logalot@^2.0.0, logalot@^2.1.0:
   version "2.1.0"
   resolved "https://registry.npmjs.org/logalot/-/logalot-2.1.0.tgz#5f8e8c90d304edf12530951a5554abb8c5e3f552"
   integrity sha1-X46MkNME7fElMJUaVVSruMXj9VI=
@@ -5673,6 +5693,13 @@ num2fraction@^1.2.2:
   version "1.2.2"
   resolved "https://registry.npmjs.org/num2fraction/-/num2fraction-1.2.2.tgz#6f682b6a027a4e9ddfa4564cd2589d1d4e669ede"
   integrity sha1-b2gragJ6Tp3fpFZM0lidHU5mnt4=
+
+number-is-integer@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.npmjs.org/number-is-integer/-/number-is-integer-1.0.1.tgz#e59bca172ffed27318e79c7ceb6cb72c095b2152"
+  integrity sha1-5ZvKFy/+0nMY55x862y3LAlbIVI=
+  dependencies:
+    is-finite "^1.0.1"
 
 number-is-nan@^1.0.0:
   version "1.0.1"

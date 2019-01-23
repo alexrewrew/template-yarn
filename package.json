@@ -27,7 +27,8 @@
     "gulp-sourcemaps": "^2.6.4",
     "gulp-strip-comments": "^2.5.2",
     "gulp-stylus": "^2.7.0",
-    "gulp-uglify": "^3.0.1"
+    "gulp-uglify": "^3.0.1",
+    "imagemin-guetzli": "^2.0.0"
   },
   "devDependencies": {
     "@fancyapps/fancybox": "^3.5.6",
