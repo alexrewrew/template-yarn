@@ -13,10 +13,10 @@
         // selectSelect2: $(".select-select2"),
         // selectSelect2Container: $(".select-select2-container"),
         //
-        // sliderFull: $(".slider-full"),
-        // sliderArrowLeft : "<div class='arrow left'></div>",
-        // sliderArrowRight : "<div class='arrow right'></div>",
-        // sliderCounter : $(".slider-counter"),
+        sliderSlick: $(".slider-slick"),
+        sliderSlickArrowLeft : "<div class='slider-slick__arrow left'></div>",
+        sliderSlickArrowRight : "<div class='slider-slick__arrow right'></div>",
+        sliderSlickCounter : $(".slider-slick-counter"),
         //
         // linkSmooth: $(".smooth"),
         // linkUp : $(".link-up"),
@@ -57,18 +57,41 @@
         // ========== SLIDER ==========
 
         // ----- SLICK SLIDER COUNTER -----
-        // DOMs.sliderFull.on("nit reInit afterChange", (event, slick, currentSlide) => {
+        // DOMs.sliderSlick.on("nit reInit afterChange", (event, slick, currentSlide) => {
         //     let i = (currentSlide ? currentSlide : 0) + 1;
-        //     DOMs.sliderCounter.text(i + '/' + slick.slideCount);
+        //     DOMs.sliderSlickCounter.text(i + '/' + slick.slideCount);
         // });
 
         // ----- SLICK SLIDER -----
-        // DOMs.sliderFull.slick({
-        //     prevArrow: DOMs.sliderArrowLeft,
-        //     nextArrow: DOMs.sliderArrowRight,
+        // DOMs.sliderSlick.slick({
+        //     prevArrow: DOMs.sliderSlickArrowLeft,
+        //     nextArrow: DOMs.sliderSlickArrowRight,
         //     dots: true,
         //     variableWidth: true,
         //     adaptiveHeight: true
+        // });
+
+        // const swiper = new Swiper('.swiper-container', {
+        //     slidesPerView: 'auto',
+        //     centeredSlides: true,
+        //     spaceBetween: 45,
+        //     loop: true,
+        //     preventClicks: false,
+        //     preventClicksPropagation: false,
+        //     slideToClickedSlide: true,
+        //     autoplay: {
+        //         delay: 2500,
+        //         disableOnInteraction: false,
+        //     },
+        //     pagination: {
+        //         el: '.swiper-pagination',
+        //         type: 'fraction',
+        //         // clickable: true,
+        //     },
+        //     navigation: {
+        //         prevEl: '.swiper-arrow.left',
+        //         nextEl: '.swiper-arrow.right',
+        //     },
         // });
 
         // ========== ACCORDION ==========

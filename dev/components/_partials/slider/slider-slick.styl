@@ -9,8 +9,8 @@
   src: url('../fonts/slick/slick.eot?#iefix') format('embedded-opentype'), url('../fonts/slick/slick.woff') format('woff'), url('../fonts/slick/slick.ttf') format('truetype'), url('../fonts/slick/slick.svg#slick') format('svg');
 
 
-.slider
-  .arrow
+.slider-slick
+  &__arrow
     position absolute
     z-index 100
     her(50)
@@ -23,11 +23,12 @@
     trans()
     &:hover
       co(blue)
-  .arrow.left
-    lr(-50)
-  .arrow.right
-    rr(-50)
-  .slide
+    &.left
+      lr(-50)
+    &.right
+      rr(-50)
+
+  &__slide
     display flex !important
     justify-content center
     align-items center
@@ -58,6 +59,7 @@
           display none
         &:hover
           bg(blue)
+
     .slick-active
       button
         bg(blue)

@@ -40,6 +40,7 @@
     "lottie-web": "^5.4.3",
     "nouislider": "^12.1.0",
     "respond.js": "^1.4.2",
-    "slick-carousel": "^1.8.1"
+    "slick-carousel": "^1.8.1",
+    "swiper": "^4.4.6"
   }
 }
