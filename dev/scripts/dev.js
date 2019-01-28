@@ -36,7 +36,7 @@
             DOMs.documentBodyHtml.toggleClass("open");
         });
 
-        jQuery.scrollSpeed(100, 600);
+        // jQuery.scrollSpeed(100, 600);
 
         // ========== SELECT ==========
 
