@@ -10,6 +10,7 @@ module.exports = function () {
 
             // 'node_modules/slick-carousel/slick/slick.js',
             'node_modules/swiper/dist/js/swiper.js',
+            // 'node_modules/owl.carousel/dist/owl.carousel.js',
 
             // 'node_modules/chosen-js/chosen.jquery.js',
             // 'node_modules/select2/dist/js/select2.full.js',

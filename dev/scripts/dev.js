@@ -62,6 +62,13 @@
         //     DOMs.sliderSlickCounter.text(i + '/' + slick.slideCount);
         // });
 
+        $('.owl-carousel').owlCarousel({
+            center: true,
+            // items:2,
+            autoWidth:true,
+            loop:true,
+        });
+
         // ----- SLICK SLIDER -----
         // DOMs.sliderSlick.slick({
         //     prevArrow: DOMs.sliderSlickArrowLeft,
