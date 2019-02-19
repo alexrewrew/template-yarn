@@ -1,75 +1,128 @@
 (($) => {
     "use strict";
 
-
+    // --- DOM elements ---
     const DOMs = {
-
-        documentBodyHtml: $("html, body"),
         documentBody: $("body"),
+        documentBodyHtml: $("html, body"),
 
-        menuTrigger: $("#menu-trigger"),
+        navTrigger: $("#nav-trigger"),
 
         selectChosen: $(".select-chosen"),
-        // selectSelect2: $(".select-select2"),
-        // selectSelect2Container: $(".select-select2-container"),
-        //
+        selectSelect2: $(".select-select2"),
+        selectSelect2Container: $(".select-select2-container"),
+
         sliderSlick: $(".slider-slick"),
-        sliderSlickArrowLeft : "<div class='slider-slick__arrow left'></div>",
-        sliderSlickArrowRight : "<div class='slider-slick__arrow right'></div>",
-        sliderSlickCounter : $(".slider-slick-counter"),
-        //
-        // linkSmooth: $(".smooth"),
-        // linkUp : $(".link-up"),
-        //
-        accordion : $('#accordion'),
-        tabs : $('#tabs'),
-        // datepicker : $(".datepicker"),
+        sliderSlickArrowLeft: "<div class='slider-slick__arrow left'></div>",
+        sliderSlickArrowRight: "<div class='slider-slick__arrow right'></div>",
+        sliderSlickCounter: $(".slider-slick-counter"),
+        sliderOwl: $('.owl-carousel'),
+
+        linkSmooth: $(".smooth"),
+        linkUp: $(".link-up"),
+
+        accordion: $('.accordion'),
+        tabs: $('.tabs-wrapper'),
+        datepicker: $(".datepicker"),
 
     };
 
-    $(document).ready(function() {
+    const STATEs = {
+        hidden: 'hidden',
+        visible: 'visible',
+        scroll: 'scroll',
+        active: 'active',
+        open: 'open'
+    };
 
-        // ========== MENU ==========
+    // --- Browser detection ---
+    // const browser = bowser.getParser(window.navigator.userAgent);
+    // const currentBrowser = browser.getBrowserName();
+    //
+    // if (currentBrowser === 'Firefox') {
+    //     DOMs.documentBody.addClass('brow-firefox');
+    // }
+    // if (currentBrowser === 'Chrome') {
+    //     DOMs.documentBody.addClass('brow-chrome');
+    // }
+    // if (currentBrowser === 'Safari') {
+    //     DOMs.documentBody.addClass('brow-safari');
+    // }
+    // if (currentBrowser === 'Internet Explorer') {
+    //     DOMs.documentBody.addClass('brow-msie');
+    // }
+    // if (currentBrowser === 'Microsoft Edge') {
+    //     DOMs.documentBody.addClass('brow-msedge');
+    // }
 
-        DOMs.menuTrigger.on('click', function(e) {
+    // --- Size detection ---
+    const NUMs = {
+        windowHeight: 0,
+        windowWidth: 0
+    };
+
+    // --- Init page ---
+    const initPage = function () {
+        // NUMs.windowHeight = $(window).height();
+        // NUMs.windowWidth = $(window).width();
+        NUMs.windowHeight = window.innerHeight;
+        NUMs.windowWidth = window.innerWidth;
+    };
+
+    // --- Viewport element detection ---
+    $.fn.isInViewport = function () {
+        let elementTop = $(this).offset().top;
+        let elementBottom = elementTop + $(this).outerHeight();
+        let viewportTop = $(window).scrollTop();
+        let viewportBottom = viewportTop + NUMs.windowHeight;
+        return elementBottom > viewportTop && elementTop < viewportBottom;
+    };
+
+    // --- Responsive scripts ---
+
+    $(window).on('load resize', function () {
+        initPage();
+
+        // if (NUMs.windowWidth < 768) {
+
+        // } else if (NUMs.windowWidth > 767) {
+
+        // }
+    });
+
+    // --- Document ready scripts ---
+    $(document).ready(function () {
+
+        // --- Nav trigger ---
+        DOMs.navTrigger.on('click', function (e) {
             e.preventDefault();
-            DOMs.documentBodyHtml.toggleClass("open");
+            DOMs.documentBodyHtml.toggleClass(STATEs.open);
         });
 
+        // --- Scroll speed ---
         // jQuery.scrollSpeed(100, 600);
 
-        // ========== SELECT ==========
-
-        // ----- CHOSEN -----
+        // --- Select Chosen ---
         // DOMs.selectChosen.chosen({
-            // disable_search_threshold: 4,
-            // no_results_text: "Нічого не знайдено"
+        //     disable_search_threshold: 4,
+        //     no_results_text: "Нічого не знайдено"
         // });
 
-        // ----- SELECT2 -----
+        // --- Select Select2 ---
         // DOMs.selectSelect2.select2({
         //     placeholder: "Choose...",
         //     allowClear: true,
-            // dropdownParent: DOMs.selectSelect2Container,
-            // minimumResultsForSearch: Infinity
+        //     dropdownParent: DOMs.selectSelect2Container,
+        //     minimumResultsForSearch: Infinity
         // });
 
-        // ========== SLIDER ==========
-
-        // ----- SLICK SLIDER COUNTER -----
+        // --- Slider Slick Counter ---
         // DOMs.sliderSlick.on("nit reInit afterChange", (event, slick, currentSlide) => {
         //     let i = (currentSlide ? currentSlide : 0) + 1;
         //     DOMs.sliderSlickCounter.text(i + '/' + slick.slideCount);
         // });
 
-        $('.owl-carousel').owlCarousel({
-            center: true,
-            // items:2,
-            autoWidth:true,
-            loop:true,
-        });
-
-        // ----- SLICK SLIDER -----
+        // --- Slider Slick
         // DOMs.sliderSlick.slick({
         //     prevArrow: DOMs.sliderSlickArrowLeft,
         //     nextArrow: DOMs.sliderSlickArrowRight,
@@ -78,6 +131,15 @@
         //     adaptiveHeight: true
         // });
 
+        // --- Slider Owl ---
+        // DOMs.sliderOwl.owlCarousel({
+        //     center: true,
+        //     items: 2,
+        //     autoWidth: true,
+        //     loop: true,
+        // });
+
+        // --- Slider Swiper ---
         // const swiper = new Swiper('.swiper-container', {
         //     slidesPerView: 'auto',
         //     centeredSlides: true,
@@ -93,7 +155,7 @@
         //     pagination: {
         //         el: '.swiper-pagination',
         //         type: 'fraction',
-        //         // clickable: true,
+        //         clickable: true,
         //     },
         //     navigation: {
         //         prevEl: '.swiper-arrow.left',
@@ -101,37 +163,25 @@
         //     },
         // });
 
-        // ========== ACCORDION ==========
-        DOMs.accordion.rewAccordion();
+        // --- Accordion ---
+        // DOMs.accordion.rewAccordion();
 
-        // ========== TABS ==========
-        DOMs.tabs.rewTabs();
+        // --- Tabs ---
+        // DOMs.tabs.rewTabs();
 
-        // ========== DATEPICKER ==========
+        // --- Datepicker ---
         // DOMs.datepicker.flatpickr();
 
-        // ========== SCROLLSPY ==========
-
-        // ----- SCROLLING CLASS CHANGE -----
-        // $(window).scroll(function() {
+        // --- Scroll class change ---
+        // $(window).scroll(function () {
         //     if ($(this).scrollTop() > 200) {
-        //         DOMs.linkUp.addClass("visible");
-        //     }
-        //     else {
-        //         DOMs.linkUp.removeClass("visible");
+        //         DOMs.linkUp.addClass(STATEs.visible);
+        //     } else {
+        //         DOMs.linkUp.removeClass(STATEs.visible);
         //     }
         // });
 
-        // ----- IN VIEWPORT -----
-        // $.fn.isInViewport = function() {
-        //     let elementTop = $(this).offset().top;
-        //     let elementBottom = elementTop + $(this).outerHeight();
-        //     let viewportTop = $(window).scrollTop();
-        //     let viewportBottom = viewportTop + $(window).height();
-        //     return elementBottom > viewportTop && elementTop < viewportBottom;
-        // };
-
-        // ----- ANCHOR LINKS SCROLLING -----
+        // --- Anchor links smooth ---
         // DOMs.linkSmooth.on('click', function (e) {
         //     e.preventDefault();
         //
@@ -142,39 +192,9 @@
         //         scrollTop: top
         //     }, 500);
         // });
-
-        // const browser = bowser.getParser(window.navigator.userAgent);
-        // const currentBrowser = browser.getBrowserName();
-        //
-        //
-        // if (currentBrowser === 'Firefox') {
-        //     DOMs.documentBody.addClass('brow-firefox');
-        // }
-        // if (currentBrowser === 'Chrome') {
-        //     DOMs.documentBody.addClass('brow-chrome');
-        // }
-        // if (currentBrowser === 'Safari') {
-        //     DOMs.documentBody.addClass('brow-safari');
-        // }
-        // if (currentBrowser === 'Internet Explorer') {
-        //     DOMs.documentBody.addClass('brow-msie');
-        // }
-        // if (currentBrowser === 'Microsoft Edge') {
-        //     DOMs.documentBody.addClass('brow-msedge');
-        // }
-
-
     });
 
-// ========== !!! RESPONSIVE SCRIPTS !!! ===========
 
-    // $(window).on('load resize', function () {
-    //     if (window.matchMedia("(max-width: 767px)").matches) {
-    //
-    //     } else if (window.matchMedia("(min-width: 768px)").matches) {
-    //
-    //     }
-    // });
 
 })(jQuery);
 
