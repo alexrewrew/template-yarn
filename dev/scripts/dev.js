@@ -58,15 +58,15 @@
     // --- Size detection ---
     const NUMs = {
         windowHeight: 0,
-        windowWidth: 0
+        windowWidth: 0,
+        headerHeight: 0
     };
 
     // --- Init page ---
     const initPage = function () {
-        // NUMs.windowHeight = $(window).height();
-        // NUMs.windowWidth = $(window).width();
         NUMs.windowHeight = window.innerHeight;
         NUMs.windowWidth = window.innerWidth;
+        NUMs.headerHeight = $('header').height();
     };
 
     // --- Viewport element detection ---
@@ -193,9 +193,6 @@
         //     }, 500);
         // });
     });
-
-
-
 })(jQuery);
 
 
