@@ -76,8 +76,8 @@ module.exports = function () {
 
     $.gulp.task('scripts', function () {
         return $.gulp.src([
-            'dev/components/_partials/accordion/rew.accordion.js',
-            'dev/components/_partials/tabs/rew.tabs.js',
+            // 'dev/components/_partials/accordion/rew.accordion.js',
+            // 'dev/components/_partials/tabs/rew.tabs.js',
             'dev/scripts/dev.js',
             'dev/scripts/mail.js'
         ])

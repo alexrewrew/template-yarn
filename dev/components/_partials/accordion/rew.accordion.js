@@ -1,11 +1,11 @@
 (function ($) {
-    $.fn.rewAccordion = function() {
+    $.fn.rewAccordion = function () {
         let make = function () {
             const accordionLinks = $(this).find('.accordion_heading');
             const accordionContent = $(this).find('.accordion__panel');
 
-            for (let i = 0; i < accordionLinks.length; i++) {
-                $(accordionLinks[i]).on('click', function(e) {
+            $.map(accordionLinks, function (val, i) {
+                $(accordionLinks[i]).on('click', function (e) {
                     e.preventDefault();
 
                     const j = $(accordionLinks).index(this);
@@ -24,7 +24,7 @@
                         $(accordionContent[j]).slideDown();
                     }
                 });
-            }
+            });
         };
         return this.each(make);
     };

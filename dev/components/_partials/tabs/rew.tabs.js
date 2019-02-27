@@ -1,24 +1,24 @@
 (function ($) {
-    $.fn.rewTabs = function() {
+    $.fn.rewTabs = function () {
         let make = function () {
-        const tabLinks = $(this).find('.tabs li a');
-        const tabContent = $(this).find('.tabs-content');
+            const tabLinks = $(this).find('.tabs li a');
+            const tabContent = $(this).find('.tabs-content');
 
+            $.map(tabLinks, function (val, i) {
 
-        for (let i = 0; i < tabLinks.length; i++) {
-            $(tabLinks[i]).click(function(e) {
-                e.preventDefault();
+                $(tabLinks[i]).click(function (e) {
+                    e.preventDefault();
 
-                $(tabLinks).removeClass('active');
-                $(tabContent).removeClass('active');
+                    $(tabLinks).removeClass('active');
+                    $(tabContent).removeClass('active');
 
-                let j = $(tabLinks).index(this);
+                    let j = $(tabLinks).index(this);
 
-                $(this).addClass('active');
-                $(tabContent[j]).addClass('active');
+                    $(this).addClass('active');
+                    $(tabContent[j]).addClass('active');
+                });
             });
-        }
-    };
-    return this.each(make);
+        };
+        return this.each(make);
     };
 })(jQuery);
