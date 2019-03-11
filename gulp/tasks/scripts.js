@@ -53,7 +53,8 @@ module.exports = function () {
             // 'node_modules/scrollmagic/scrollmagic/uncompressed/ScrollMagic.js',
             // 'node_modules/scrollmagic/scrollmagic/uncompressed/plugins/debug.addIndicators.js',
 
-
+            'node_modules/mediaelement/build/mediaelement.js',
+            'node_modules/mediaelement/build/mediaelement-and-player.js',
 
 
             // 'node_modules/@fortawesome/fontawesome-free/js/all.js',
