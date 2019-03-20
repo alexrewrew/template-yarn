@@ -5,6 +5,9 @@
     const DOMs = {
         documentBody: $("body"),
         documentBodyHtml: $("html, body"),
+        
+        header: $('header'),
+        nav: $('nav'),
 
         navTrigger: $("#nav-trigger"),
 
@@ -59,14 +62,16 @@
     const NUMs = {
         windowHeight: 0,
         windowWidth: 0,
-        headerHeight: 0
+        headerHeight: 0,
+        navHeight: 0
     };
 
     // --- Init page ---
     const initPage = function () {
         NUMs.windowHeight = window.innerHeight;
         NUMs.windowWidth = window.innerWidth;
-        NUMs.headerHeight = $('header').height();
+        NUMs.headerHeight = DOMs.header.outerHeight();
+        NUMs.navHeight = DOMs.nav.outerHeight();
     };
 
     // --- Viewport element detection ---
