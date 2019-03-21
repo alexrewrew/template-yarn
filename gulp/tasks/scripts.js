@@ -53,8 +53,8 @@ module.exports = function () {
             // 'node_modules/scrollmagic/scrollmagic/uncompressed/ScrollMagic.js',
             // 'node_modules/scrollmagic/scrollmagic/uncompressed/plugins/debug.addIndicators.js',
 
-            'node_modules/mediaelement/build/mediaelement.js',
-            'node_modules/mediaelement/build/mediaelement-and-player.js',
+            // 'node_modules/mediaelement/build/mediaelement.js',
+            // 'node_modules/mediaelement/build/mediaelement-and-player.js',
 
 
             // 'node_modules/@fortawesome/fontawesome-free/js/all.js',
@@ -83,9 +83,9 @@ module.exports = function () {
             'dev/scripts/mail.js'
         ])
             .pipe($.concat('scripts.js'))
-            .pipe($.babel({
-                presets: ['env']
-            }))
+            // .pipe($.babel({
+            //     presets: ['env']
+            // }))
 
             .pipe($.gulp.dest('dev/app/js'))
             .pipe($.browserSync.reload({
@@ -95,10 +95,10 @@ module.exports = function () {
 
     $.gulp.task('scripts:build', function () {
         return $.gulp.src('dev/app/js/*.js')
-            .pipe($.sourcemaps.init())
+            // .pipe($.sourcemaps.init())
             .pipe($.strip.text())
             // .pipe($.uglify())
-            .pipe($.sourcemaps.write())
+            // .pipe($.sourcemaps.write())
             .pipe($.gulp.dest('build/js'));
     });
 };

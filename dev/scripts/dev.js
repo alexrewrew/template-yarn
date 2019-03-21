@@ -75,13 +75,36 @@
     };
 
     // --- Viewport element detection ---
-    $.fn.isInViewport = function () {
-        let elementTop = $(this).offset().top;
-        let elementBottom = elementTop + $(this).outerHeight();
-        let viewportTop = $(window).scrollTop();
-        let viewportBottom = viewportTop + NUMs.windowHeight;
-        return elementBottom > viewportTop && elementTop < viewportBottom;
-    };
+    (function ($) {
+        $.fn.isInViewport = function () {
+            if ($(this).length > 0) {
+                let elementTop = $(this).offset().top + (NUMs.headerHeight / 2) - NUMs.navHeight;
+                let elementBottom = elementTop;
+                let viewportTop = $(window).scrollTop();
+                let viewportBottom = viewportTop + NUMs.windowHeight;
+                return elementBottom > viewportTop && elementTop < viewportBottom;
+            }
+        };
+    })(jQuery);
+
+    // adaptive change images places
+    (function ($) {
+        $.fn.insertChange = function () {
+
+            let make = function () {
+                const insertAfter = $(this).find('.insert-after');
+                const insertIn = $(this).find('.insert-in');
+                const insertImg = $(this).find('.insert-img');
+
+                if (NUMs.windowWidth < 768) {
+                    $(insertImg).insertAfter($(insertAfter));
+                } else if (NUMs.windowWidth > 767) {
+                    $(insertImg).appendTo($(insertIn));
+                }
+            };
+            return this.each(make);
+        };
+    })(jQuery);
 
     // --- Responsive scripts ---
 
