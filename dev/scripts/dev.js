@@ -8,6 +8,7 @@
         
         header: $('header'),
         nav: $('nav'),
+        footer: $('footer'),
 
         navTrigger: $("#nav-trigger"),
 
@@ -20,6 +21,8 @@
         sliderSlickArrowRight: "<div class='slider-slick__arrow right'></div>",
         sliderSlickCounter: $(".slider-slick-counter"),
         sliderOwl: $('.owl-carousel'),
+
+        stickyDiv: $('.sticky-div'),
 
         linkSmooth: $(".smooth"),
         linkUp: $(".link-up"),
@@ -112,9 +115,9 @@
         initPage();
 
         // if (NUMs.windowWidth < 768) {
-
+            // DOMs.stickyDiv.trigger("sticky_kit:detach");
         // } else if (NUMs.windowWidth > 767) {
-
+            // DOMs.stickyDiv.stick_in_parent();
         // }
     });
 
