@@ -117,7 +117,7 @@
         // if (NUMs.windowWidth < 768) {
             // DOMs.stickyDiv.trigger("sticky_kit:detach");
         // } else if (NUMs.windowWidth > 767) {
-            // DOMs.stickyDiv.stick_in_parent();
+            // DOMs.stickyDiv.stick_in_parent({offset_top: NUMs.navHeight});
         // }
     });
 
