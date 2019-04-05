@@ -20,8 +20,6 @@
   }
 }
 
-
-
 .chosen-container
   width 100%
   fs(16)
@@ -56,6 +54,24 @@
     span
       opacity .5
 
+  .chosen-results
+    li.no-results
+      background $wt
+      co($gr)
+      fca()
+      her(54)
+      padding 0 r(15) r(3)
+
+  &.chosen-with-drop
+    &:after
+      transform rotate(180deg)
+  &.chosen-container-active
+    box-shadow none
+    .chosen-single
+      box-shadow none
+      bo(1, blue)
+      background none
+
 .chosen-container-single
   .chosen-search
     padding 0 r(5)
@@ -66,48 +82,30 @@
       padding r(11) r(10) r(12)
       background-image none !important
 
-.chosen-container.chosen-with-drop
-  &:after
-    transform rotate(180deg)
 
-.chosen-container.chosen-container-active
-  box-shadow none
-  .chosen-single
-    box-shadow none
+
+  .chosen-drop
+    border-radius 0
     bo(1, blue)
-    background none
-
-.chosen-container-single .chosen-drop
-  border-radius 0
-  bo(1, blue)
-  bot(0)
-  padding 0
-  box-shadow none
-  .chosen-results
+    bot(0)
     padding 0
-    margin 0
     box-shadow none
-    .active-result
-      fca()
-      her(54)
-      padding 0 r(15) r(3)
-      fs(16)
-      line-height normal
-      trans()
-      &.highlighted
-        background blue
-    .result-selected
-      background $gr
-      co($wt)
+    .chosen-results
+      padding 0
+      margin 0
+      box-shadow none
+      .active-result
+        fca()
+        her(54)
+        padding 0 r(15) r(3)
+        fs(16)
+        line-height normal
+        trans()
+        &.highlighted
+          background blue
+      .result-selected
+        background $gr
+        co($wt)
 
-.chosen-container-single .chosen-single div b
-  display none
-
-.chosen-container
-  .chosen-results
-    li.no-results
-      background $wt
-      co($gr)
-      fca()
-      her(54)
-      padding 0 r(15) r(3)
+  .chosen-single div b
+    display none

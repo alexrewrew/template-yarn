@@ -12,9 +12,7 @@ block content
 
     -array = [{name: 'Головна', href: 'index.html'}]
 
-    section
-        .container
-            .row
+    +s-c-r()
                 each val in array
                     .col-md-4.col-lg-3
                         a(href= val.href title='' target='_blank' style='margin-bottom:25px').btn
