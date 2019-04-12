@@ -1,0 +1,21 @@
+extend templates/_template.pug
+
+block title
+    | Не очень страница
+
+block content
+
+    .transition-wipe.overlay
+
+    .container
+        nav
+            +a('', '#') company
+
+
+    main#swup.transition-fade
+
+        h1 The Sub page
+
+        p Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cumque expedita incidunt reiciendis repellat sed similique sint unde velit voluptas. Asperiores aut cum earum est impedit in minus molestiae, porro quam.
+
+        a(href='/index.html').transition-left Go to the home page

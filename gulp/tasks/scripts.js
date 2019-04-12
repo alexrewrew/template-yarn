@@ -3,13 +3,14 @@ module.exports = function () {
         return $.gulp.src([
             'node_modules/jquery/dist/jquery.js',
 
-            'node_modules/jquery.maskedinput/src/jquery.maskedinput.js',
-            'snippets/smoothscroll/jQuery.scrollSpeed.js',
+            // 'node_modules/jquery.maskedinput/src/jquery.maskedinput.js',
+
+            // 'snippets/smoothscroll/jQuery.scrollSpeed.js',
 
             // 'node_modules/@fancyapps/fancybox/dist/jquery.fancybox.js',
 
             // 'node_modules/slick-carousel/slick/slick.js',
-            'node_modules/swiper/dist/js/swiper.js',
+            // 'node_modules/swiper/dist/js/swiper.js',
             // 'node_modules/owl.carousel/dist/owl.carousel.js',
 
             // 'node_modules/chosen-js/chosen.jquery.js',
@@ -27,12 +28,10 @@ module.exports = function () {
             // 'node_modules/jquery-ui-dist/jquery-ui.js',
 
             // 'node_modules/bowser/src/bowser.js',
-            'node_modules/bowser/bundled.js',
+            // 'node_modules/bowser/bundled.js',
 
             // 'node_modules/popper.js/dist/popper.js',
             // 'node_modules/bootstrap/dist/js/bootstrap.bundle.js',
-
-
 
 
             // 'node_modules/aos/dist/aos.js',
@@ -43,15 +42,24 @@ module.exports = function () {
 
 
             // 'node_modules/animejs/anime.js',
+
             // 'node_modules/rellax/rellax.js',
+            // 'node_modules/scroll-out/dist/scroll-out.js',
+
             // 'node_modules/fullpage.js/dist/fullpage.js',
             // 'node_modules/typed.js/lib/typed.js',
 
-            // 'node_modules/scrollmagic/scrollmagic/uncompressed/plugins/animation.gsap.js',
-            // 'node_modules/scrollmagic/scrollmagic/uncompressed/plugins/animation.velocity.js',
+            'node_modules/swup/dist/swup.js',
+            // 'node_modules/swupjs/dist/swupjs.js',
+
+
+            // 'node_modules/gsap/src/minified/TweenMax.min.js',
             // 'node_modules/gsap/src/minified/TimelineMax.min.js',
             // 'node_modules/scrollmagic/scrollmagic/uncompressed/ScrollMagic.js',
             // 'node_modules/scrollmagic/scrollmagic/uncompressed/plugins/debug.addIndicators.js',
+            // 'node_modules/scrollmagic/scrollmagic/uncompressed/plugins/animation.gsap.js',
+
+            // 'node_modules/scrollmagic/scrollmagic/uncompressed/plugins/animation.velocity.js',
 
             // 'node_modules/mediaelement/build/mediaelement.js',
             // 'node_modules/mediaelement/build/mediaelement-and-player.js',
@@ -80,7 +88,7 @@ module.exports = function () {
             // 'dev/components/_partials/accordion/rew.accordion.js',
             // 'dev/components/_partials/tabs/rew.tabs.js',
             'dev/scripts/dev.js',
-            'dev/scripts/mail.js'
+            // 'dev/scripts/mail.js'
         ])
             .pipe($.concat('scripts.js'))
             // .pipe($.babel({

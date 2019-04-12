@@ -1,3 +1,7 @@
+const swup = new Swup();
+
+
+
 (($) => {
     "use strict";
 
@@ -5,7 +9,7 @@
     const DOMs = {
         documentBody: $("body"),
         documentBodyHtml: $("html, body"),
-        
+
         header: $('header'),
         nav: $('nav'),
         footer: $('footer'),
@@ -125,10 +129,14 @@
     $(document).ready(function () {
 
         // --- Nav trigger ---
-        DOMs.navTrigger.on('click', function (e) {
-            e.preventDefault();
-            DOMs.documentBodyHtml.toggleClass(STATEs.open);
-        });
+        // DOMs.navTrigger.on('click', function (e) {
+        //     e.preventDefault();
+        //     DOMs.documentBodyHtml.toggleClass(STATEs.open);
+        // });
+
+
+
+
 
         // --- Scroll speed ---
         // jQuery.scrollSpeed(100, 600);
