@@ -5,105 +5,90 @@ block title
 
 block content
 
-    .transition-wipe.overlay
+
+    +s-c-r()
+        .col-6
+            h1 Header 1
+            h2 Header 2
+            h3 Header 3
+            h4 Header 4
+            h5 Header 5
+            h6 Header 6
+
+        .col-6
+            p paragraph
+            p
+                +a('link')
+            p
+                em italic
+                | &nbsp
+                i italic
+            p
+                b bold
+                | &nbsp
+                strong bold
+
+            hr
+
+            blockquote
+                | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus ad atque esse expedita nam numquam optio, soluta? Aperiam, explicabo iusto! Ducimus eius, eligendi eveniet harum iure modi non numquam quaerat!
+
+        .col-3
+            ul
+                li list
+                li list
+                li list
+
+            ul.ul-regular
+                li list
+                li list
+                li list
+
+            ol
+                li list
+                li list
+                li list
+
+        .col-3
+            +input-group('input')
+
+            +select-group()
+
+            .input-group
+                +datepicker('date')
+
+            +textarea-group('textarea')
+
+        .col-3
+            +input('input')
+
+            +select()
+
+            +textarea('textarea')
 
 
-    .container
-        nav
-            +a('', '#') company
+        .col-3
+            +radiocheck('checkbox', 'lorem')
+            +radiocheck('checkbox', 'lorem')
+            br
+            +radiocheck('radio', 'lorem')
+            +radiocheck('radio', 'lorem')
 
-    main#swup.transition-fade
+        .col-3
+            +select-chosen()
+            +select-select2()
+        .col-3
+            +datepicker('Выберите дату')
 
-        h1 Home page here
+            +modal-link('open', '#my-modal', 'btn btn-text-center')
+        .col-12
+            +accordion()
+        .col-12
+            +tabs()
 
-        p Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cumque expedita incidunt reiciendis repellat sed similique sint unde velit voluptas. Asperiores aut cum earum est impedit in minus molestiae, porro quam.
-
-        a(href='/subpage.html').transition-left Go to the other page
-
-
-        +s-c-r()
-            .col-6
-                h1 Header 1
-                h2 Header 2
-                h3 Header 3
-                h4 Header 4
-                h5 Header 5
-                h6 Header 6
-
-            .col-6
-                p paragraph
-                p
-                    +a('link')
-                p
-                    em italic
-                    | &nbsp
-                    i italic
-                p
-                    b bold
-                    | &nbsp
-                    strong bold
-
-                hr
-
-                blockquote
-                    | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus ad atque esse expedita nam numquam optio, soluta? Aperiam, explicabo iusto! Ducimus eius, eligendi eveniet harum iure modi non numquam quaerat!
-
-            .col-3
-                ul
-                    li list
-                    li list
-                    li list
-
-                ul.ul-regular
-                    li list
-                    li list
-                    li list
-
-                ol
-                    li list
-                    li list
-                    li list
-
-            .col-3
-                +input-group('input')
-
-                +select-group()
-
-                .input-group
-                    +datepicker('date')
-
-                +textarea-group('textarea')
-
-            .col-3
-                +input('input')
-
-                +select()
-
-                +textarea('textarea')
-
-
-            .col-3
-                +radiocheck('checkbox', 'lorem')
-                +radiocheck('checkbox', 'lorem')
-                br
-                +radiocheck('radio', 'lorem')
-                +radiocheck('radio', 'lorem')
-
-            .col-3
-                +select-chosen()
-                +select-select2()
-            .col-3
-                +datepicker('Выберите дату')
-
-                +modal-link('open', '#my-modal', 'btn btn-text-center')
-            .col-12
-                +accordion()
-            .col-12
-                +tabs()
-
-        //+modal('my-modal')
-            p 123
-            p 456
+    +modal('my-modal')
+        p 123
+        p 456
 
 
 

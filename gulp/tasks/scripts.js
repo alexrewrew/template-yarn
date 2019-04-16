@@ -27,7 +27,6 @@ module.exports = function () {
             // 'node_modules/jquery.nicescroll/jquery.nicescroll.js',
             // 'node_modules/jquery-ui-dist/jquery-ui.js',
 
-            // 'node_modules/bowser/src/bowser.js',
             // 'node_modules/bowser/bundled.js',
 
             // 'node_modules/popper.js/dist/popper.js',
@@ -49,7 +48,7 @@ module.exports = function () {
             // 'node_modules/fullpage.js/dist/fullpage.js',
             // 'node_modules/typed.js/lib/typed.js',
 
-            'node_modules/swup/dist/swup.js',
+            // 'node_modules/swup/dist/swup.js',
             // 'node_modules/swupjs/dist/swupjs.js',
 
 
