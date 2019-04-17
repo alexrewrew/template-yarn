@@ -1,5 +1,5 @@
 Arguments: 
-  /usr/local/bin/node /usr/local/Cellar/yarn/1.15.2/libexec/bin/yarn.js add scrollfeatures --dev
+  /usr/local/bin/node /usr/local/Cellar/yarn/1.15.2/libexec/bin/yarn.js
 
 PATH: 
   /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/alexrewrew/Documents/WEB/template-yarn/node_modules/.bin
@@ -14,7 +14,7 @@ Platform:
   darwin x64
 
 Trace: 
-  SyntaxError: /Users/alexrewrew/Documents/WEB/template-yarn/package.json: Unexpected token } in JSON at position 1091
+  SyntaxError: /Users/alexrewrew/Documents/WEB/template-yarn/package.json: Unexpected token } in JSON at position 1098
       at JSON.parse (<anonymous>)
       at /usr/local/Cellar/yarn/1.15.2/libexec/lib/cli.js:1625:59
       at Generator.next (<anonymous>)
@@ -35,7 +35,7 @@ npm manifest:
       "babel-preset-env": "^1.7.0",
       "browser-sync": "^2.26.3",
       "del": "^4.1.0",
-      "eslint": "^5.16.0",
+      "eslint": "^6.0.0-alpha.0",
       "gulp": "^4.0.0",
       "gulp-autoprefixer": "^6.0.0",
       "gulp-babel": "^8.0.0",
@@ -55,10 +55,10 @@ npm manifest:
       "imagemin-guetzli": "^2.0.0"
     },
     "devDependencies": {
-      "bowser": "^2.2.0",
+      "bowser": "^2.3.0",
       "gsap": "^2.1.2",
       "html5shiv": "^3.7.3",
-      "jquery": "^3.3.1",
+      "jquery": "^3.4.0",
       "jquery.maskedinput": "^1.4.1",
       "respond.js": "^1.4.2",
       "scrollmagic": "^2.0.6",
@@ -2355,6 +2355,11 @@ Lockfile:
       p-map "^2.0.0"
       pify "^4.0.1"
       rimraf "^2.6.3"
+  
+  delegate@3.1.3:
+    version "3.1.3"
+    resolved "https://registry.npmjs.org/delegate/-/delegate-3.1.3.tgz#9a8251a777d7025faa55737bc3b071742127a9fd"
+    integrity sha1-moJRp3fXAl+qVXN7w7BxdCEnqf0=
   
   delegates@^1.0.0:
     version "1.0.0"
@@ -7105,11 +7110,6 @@ Lockfile:
     dependencies:
       readable-stream "~1.0.31"
   
-  smoothscroll-for-websites@^1.4.9:
-    version "1.4.9"
-    resolved "https://registry.npmjs.org/smoothscroll-for-websites/-/smoothscroll-for-websites-1.4.9.tgz#cf2a6336db36127f2a3cc6d2b0b09de45f0e1371"
-    integrity sha512-8crs6Hihx0Yn0Y2+yRvL0owFyQbqeVXiJZi2QNLdkMZS+ANRPrnLgGp41i7S14CmuRdbk/hob4BCze7YEGkPGw==
-  
   snapdragon-node@^2.0.1:
     version "2.1.1"
     resolved "https://registry.npmjs.org/snapdragon-node/-/snapdragon-node-2.1.1.tgz#6c175f86ff14bdb0724563e8f3c1b021a286853b"
@@ -7531,6 +7531,13 @@ Lockfile:
       stable "~0.1.6"
       unquote "~1.1.1"
       util.promisify "~1.0.0"
+  
+  swup@^1.9.0:
+    version "1.9.0"
+    resolved "https://registry.npmjs.org/swup/-/swup-1.9.0.tgz#9bfc2c80abf7cc4e0071e7aedde8e0463d8d9822"
+    integrity sha512-XqOxjaR4OlFnQgxnJPQrh/kDpkMDGQY4aa7/bPISyijpzrWVnr6LeSXAXJT1CkeV+LFoAOTrxCtirqsFGwJuKw==
+    dependencies:
+      delegate "3.1.3"
   
   symbol-observable@1.0.1:
     version "1.0.1"

@@ -6,7 +6,22 @@ block title
 block content
 
 
-    +s-c-r()
+    section
+        .d-grid
+            h1 MilkIsNice oh yeah!
+            p Scroll down
+
+    section
+        .grid-12.project.project-left
+            .box
+                img(src='https://source.unsplash.com/71vAb1FXB6g')
+                .overlay
+            .project-info
+                p.small-title Identity // Website // Print
+                h4 This is the first project
+                +a('project-link', '') See case study
+
+    //+s-c-r()
         .col-6
             h1 Header 1
             h2 Header 2

@@ -11,7 +11,7 @@
     "babel-preset-env": "^1.7.0",
     "browser-sync": "^2.26.3",
     "del": "^4.1.0",
-    "eslint": "^5.16.0",
+    "eslint": "^6.0.0-alpha.0",
     "gulp": "^4.0.0",
     "gulp-autoprefixer": "^6.0.0",
     "gulp-babel": "^8.0.0",
@@ -31,13 +31,12 @@
     "imagemin-guetzli": "^2.0.0"
   },
   "devDependencies": {
-    "bowser": "^2.2.0",
+    "bowser": "^2.3.0",
     "gsap": "^2.1.2",
     "html5shiv": "^3.7.3",
-    "jquery": "^3.3.1",
+    "jquery": "^3.4.0",
     "jquery.maskedinput": "^1.4.1",
     "respond.js": "^1.4.2",
-    "scrollmagic": "^2.0.6",
-    "swup": "^1.9.0"
+    "scrollmagic": "^2.0.6"
   }
 }
