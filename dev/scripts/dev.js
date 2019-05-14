@@ -12,7 +12,7 @@
         nav: $('nav'),
         footer: $('footer'),
 
-        navTrigger: $("#nav-trigger"),
+        navBtn: $("#nav-btn"),
 
         selectChosen: $(".select-chosen"),
         selectSelect2: $(".select-select2"),
@@ -127,7 +127,7 @@
     $(document).ready(function () {
 
         // --- Nav trigger ---
-        // DOMs.navTrigger.on('click', function (e) {
+        // DOMs.navBtn.on('click', function (e) {
         //     e.preventDefault();
         //     DOMs.documentBodyHtml.toggleClass(STATEs.open);
         // });
@@ -154,7 +154,7 @@
         // });
 
         // --- Slider Slick Counter ---
-        // DOMs.sliderSlick.on("nit reInit afterChange", (event, slick, currentSlide) => {
+        // DOMs.sliderSlick.on("init reInit afterChange", (event, slick, currentSlide) => {
         //     let i = (currentSlide ? currentSlide : 0) + 1;
         //     DOMs.sliderSlickCounter.text(i + '/' + slick.slideCount);
         // });
