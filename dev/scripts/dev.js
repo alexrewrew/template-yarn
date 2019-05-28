@@ -156,7 +156,7 @@
         // --- Slider Slick Counter ---
         // DOMs.sliderSlick.on("init reInit afterChange", (event, slick, currentSlide) => {
         //     let i = (currentSlide ? currentSlide : 0) + 1;
-        //     DOMs.sliderSlickCounter.text(i + '/' + slick.slideCount);
+        //     DOMs.sliderSlickCounter.html(i + '<span>/</span>' + slick.slideCount);
         // });
 
         // --- Slider Slick
