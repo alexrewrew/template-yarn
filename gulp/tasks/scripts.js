@@ -2,6 +2,7 @@ module.exports = function () {
     $.gulp.task('scripts:lib', function () {
         return $.gulp.src([
             'node_modules/jquery/dist/jquery.js',
+            // 'node_modules/jquery-migrate/dist/jquery-migrate.js',    
 
             // 'node_modules/jquery.maskedinput/src/jquery.maskedinput.js',
 
@@ -12,6 +13,8 @@ module.exports = function () {
             // 'node_modules/slick-carousel/slick/slick.js',
             // 'node_modules/swiper/dist/js/swiper.js',
             // 'node_modules/owl.carousel/dist/owl.carousel.js',
+
+            // 'node_modules/jquery.marquee/jquery.marquee.js',
 
             // 'node_modules/chosen-js/chosen.jquery.js',
             // 'node_modules/select2/dist/js/select2.full.js',
@@ -28,6 +31,7 @@ module.exports = function () {
             // 'node_modules/jquery-ui-dist/jquery-ui.js',
 
             // 'node_modules/bowser/bundled.js',
+            // 'node_modules/bowser/es5.js',
 
             // 'node_modules/popper.js/dist/popper.js',
             // 'node_modules/bootstrap/dist/js/bootstrap.bundle.js',
