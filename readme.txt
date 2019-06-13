@@ -12,3 +12,10 @@
 12. IMG: Зберегти картинки з макету
 13. IMG: Зберегти svg з макету
 14. GIT: Створити репозиторій
+
+gulp lottie:generate
+gulp favicon:generate
+gulp clean:generate
+noui:generate
+
+https://youtu.be/5QZcOugHQ6s

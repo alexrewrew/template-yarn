@@ -1,13 +1,13 @@
-mixin input(placeholder)
-    input(type='text', placeholder= placeholder)
+mixin input(placeholder, className)
+    input(type='text', placeholder= placeholder class= className)
 
-mixin input-group(placeholder)
+mixin input-group(placeholder, className)
     .input-group
-        +input(placeholder)
+        +input(placeholder, className)
 
-mixin textarea(placeholder)
-    textarea(placeholder= placeholder)
+mixin textarea(placeholder, className)
+    textarea(placeholder= placeholder class= className)
 
-mixin textarea-group(placeholder)
+mixin textarea-group(placeholder, className)
     .input-group
-        +textarea(placeholder)
+        +textarea(placeholder, className)
