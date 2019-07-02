@@ -9,14 +9,14 @@ column-init($col = $column-number + 2)
     padding-left: r($column-gutter / 2)
 
   for l in (1..$column-number)
-    .col,
-    .col-auto,
-    .col-{prefixes[l]},
-    .col-{prefixes[l]}-auto,
-    .col-{l}
+    .{$col-name},
+    .{$col-name}-auto,
+    .{$col-name}-{prefixes[l]},
+    .{$col-name}-{prefixes[l]}-auto,
+    .{$col-name}-{l}
       @extend $grid-column
     for m in (1..$breakpoints-count)
-      .col-{prefixes[m]}-{l}
+      .{$col-name}-{prefixes[m]}-{l}
         @extend $grid-column
 
 
@@ -25,17 +25,17 @@ column-generator($col = $column-number)
     if (i == 0)
       for j in (1..$col + 2)
         if (j == $col + 1)
-          .col
+          .{$col-name}
             flex-basis: 0;
             flex-grow: 1;
             max-width: 100%;
         else if (j == $col + 2)
-          .col-auto
+          .{$col-name}-auto
             flex: 0 0 auto;
             width: auto;
             max-width: none;
         else
-          .col-{j}
+          .{$col-name}-{j}
             flex 0 0 ((100 / $col) * j) %
             max-width ((100 / $col) * j) %
 
@@ -51,17 +51,17 @@ column-generator($col = $column-number)
       @media (min-width: breakpoints[i]px)
         for j in (1..$col + 2)
           if (j == $col + 1)
-            .col-{prefixes[i]}
+            .{$col-name}-{prefixes[i]}
               flex-basis: 0;
               flex-grow: 1;
               max-width: 100%;
           else if (j == $col + 2)
-              .col-{prefixes[i]}-auto
+              .{$col-name}-{prefixes[i]}-auto
                 flex: 0 0 auto;
                 width: auto;
                 max-width: none;
           else
-            .col-{prefixes[i]}-{j}
+            .{$col-name}-{prefixes[i]}-{j}
               flex 0 0 ((100 / $col) * j) %
               max-width ((100 / $col) * j) %
 

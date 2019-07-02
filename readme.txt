@@ -1,3 +1,4 @@
+0. GIT: Створити репозиторій
 1. YARN: Інсталювати пакети yarn install
 2. GULP: Підключити скрипти пактів в gulp/tasks/scripts.js
 3. STYLUS: Підключити стилі пакетів в dev/stylus/vendor.styl
@@ -11,11 +12,10 @@
 11. FAVICON: Ініціалізувати favicon gulp favicon:generate
 12. IMG: Зберегти картинки з макету
 13. IMG: Зберегти svg з макету
-14. GIT: Створити репозиторій
 
 gulp lottie:generate
 gulp favicon:generate
 gulp clean:generate
-noui:generate
+gulp noui:generate
 
 https://youtu.be/5QZcOugHQ6s
