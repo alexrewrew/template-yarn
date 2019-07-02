@@ -7,7 +7,7 @@
     position absolute
     opacity 0
 
-    & + .radiocheck__icon
+    & + .radiocheck_icon
       position relative
       cursor pointer
       fw(400)
@@ -28,16 +28,14 @@
         border r(1) solid blue
         opacity 0
 
-  &__text
+  &_text
     pl(20)
 
-
-
-  input[type='radio'] + &__icon
+  input[type='radio'] + &_icon
     &:after, &:before
       border-radius 50%
 
-  input:checked + &__icon
+  input:checked + &_icon
     &:before
       opacity 0
     &:after
