@@ -1,5 +1,6 @@
-mixin radiocheck(radiocheck, text)
-    label.radiocheck
-        input(type= radiocheck name= name)
+mixin radiocheck(radioCheck, className, name)
+    label.radiocheck(class= className)
+        input(type= radioCheck name= name)
         .radiocheck_icon
-        .radiocheck_text= text
+        .radiocheck_text
+            block
