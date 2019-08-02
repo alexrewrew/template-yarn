@@ -10,10 +10,11 @@ module.exports = function () {
 
             // 'node_modules/@fancyapps/fancybox/dist/jquery.fancybox.js',
 
-            // 'node_modules/slick-carousel/slick/slick.js',
+            'node_modules/slick-carousel/slick/slick.js',
             // 'node_modules/swiper/dist/js/swiper.js',
             // 'node_modules/owl.carousel/dist/owl.carousel.js',
 
+            // 'node_modules/jquery.marquee/jquery.marquee.js',
             // 'node_modules/jquery.marquee/jquery.marquee.js',
 
             // 'node_modules/chosen-js/chosen.jquery.js',

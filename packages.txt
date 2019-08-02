@@ -8,7 +8,7 @@
 "font-awesome": "^4.7.0",
 "fullcalendar": "^4.0.0-alpha.4",
 "fullpage.js": "^3.0.7",
-"slick-carousel": "^1.8.1",
+
 "swiper": "^4.5.0",
 "lottie-web": "^5.5.7",
 "nouislider": "^14.0.2",

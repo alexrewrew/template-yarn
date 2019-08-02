@@ -39,6 +39,7 @@
     "jquery": "^3.4.1",
     "jquery.maskedinput": "^1.4.1",
     "respond.js": "^1.4.2",
-    "scrollmagic": "^2.0.7"
+    "scrollmagic": "^2.0.7",
+    "slick-carousel": "^1.8.1"
   }
 }

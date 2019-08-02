@@ -160,13 +160,13 @@
         // });
 
         // --- Slider Slick
-        // DOMs.sliderSlick.slick({
-        //     prevArrow: DOMs.sliderSlickArrowLeft,
-        //     nextArrow: DOMs.sliderSlickArrowRight,
-        //     dots: true,
-        //     variableWidth: true,
-        //     adaptiveHeight: true
-        // });
+        DOMs.sliderSlick.slick({
+            prevArrow: DOMs.sliderSlickArrowLeft,
+            nextArrow: DOMs.sliderSlickArrowRight,
+            dots: true,
+            // variableWidth: true,
+            // adaptiveHeight: true
+        });
 
         // --- Slider Owl ---
         // DOMs.sliderOwl.owlCarousel({
