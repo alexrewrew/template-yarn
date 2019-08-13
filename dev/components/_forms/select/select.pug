@@ -1,23 +1,19 @@
-mixin select()
-    select(class= className)
+mixin select(className, nameId)
+    select(class= className id= nameId name= nameId )
         option Тест 1
         option Тест 2
         option Тест 3
 
-mixin select-chosen()
-    .input-group.select-group
-        select.select-chosen
-            option Тест 1
-            option Тест 2
-            option Тест 3
 
-mixin select-select2()
-    .input-group.select-group
-        select.select-select2
-            option Тест 1
-            option Тест 2
-            option Тест 3
 
-mixin select-group()
+mixin select-group(className, nameId)
     .input-group.select-group
-        +select()
+        +select(className, nameId)
+
+mixin select-chosen(nameId)
+    .input-group.select-group
+        +select('select-chosen', nameId)
+
+mixin select-select2(nameId)
+    .input-group.select-group
+        +select('select-select2', nameId)
