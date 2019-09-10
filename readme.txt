@@ -13,6 +13,7 @@
 12. IMG: Зберегти картинки з макету
 13. IMG: Зберегти svg з макету
 
+gulp scripts:generate
 gulp lottie:generate
 gulp favicon:generate
 gulp clean:generate
