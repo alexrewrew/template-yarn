@@ -126,15 +126,36 @@
     // --- Document ready scripts ---
     $(document).ready(function () {
 
+        // --- Sending form ---
+        let subscribeForm = $('#ajax_form');
+        let data = {};
+
+        subscribeForm.on('submit', function(e) {
+            e.preventDefault();
+            data.webresource = subscribeForm[0][0].value;
+            data.phone = subscribeForm[0][1].value;
+            data.fio = subscribeForm[0][2].value;
+            data.message = subscribeForm[0][3].value;
+            data.submit = 'subscribe';
+            $.ajax({
+                type: 'POST',
+                url: 'php/send.php',
+                data: data,
+                success: function() { //Данные отправлены успешно
+                    $('form').removeClass('error');
+                    $('form').addClass('success');
+                },
+                error: function() { // Данные не отправлены
+                    $('formn').addClass('error');
+                }
+            });
+        });
+
         // --- Nav trigger ---
         // DOMs.navBtn.on('click', function (e) {
         //     e.preventDefault();
         //     DOMs.documentBodyHtml.toggleClass(STATEs.open);
         // });
-
-
-
-
 
         // --- Scroll speed ---
         // jQuery.scrollSpeed(100, 600);

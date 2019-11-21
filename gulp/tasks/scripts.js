@@ -113,4 +113,10 @@ module.exports = function () {
             // .pipe($.sourcemaps.write())
             .pipe($.gulp.dest('build/js'));
     });
+
+    $.gulp.task('zip:build', function () {
+        return $.gulp.src('build/**/*')
+            .pipe($.zip('build.zip'))
+            .pipe($.gulp.dest('./'));
+    });
 };

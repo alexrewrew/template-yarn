@@ -22,6 +22,8 @@ global.$ = {
     imageminGuetzli : require('imagemin-guetzli'),
     FAVICON_DATA_FILE : 'faviconData.json',
 
+    zip : require('gulp-zip'),
+
     path: {
         tasks: require('./gulp/config/tasks.js')
     }
@@ -30,6 +32,7 @@ global.$ = {
 $.path.tasks.forEach(function (taskPath) {
     require(taskPath)();
 });
+
 
 $.gulp.task('default', $.gulp.series(
     $.gulp.parallel('pug', 'stylus', 'scripts:lib', 'scripts'),
@@ -54,11 +57,13 @@ $.gulp.task('noui', $.gulp.series(
 $.gulp.task('build', $.gulp.series(
     'clean',
     $.gulp.parallel('pug', 'stylus', 'scripts:lib', 'scripts'),
-    $.gulp.parallel('pug:build', 'stylus:build', 'scripts:build', 'imagemin:build', 'fonts:copy', 'media:copy', 'php:copy')
+    $.gulp.parallel('pug:build', 'stylus:build', 'scripts:build', 'imagemin:build', 'fonts:copy', 'media:copy', 'php:copy'),
+    $.gulp.parallel('zip:build')
 ));
 
 $.gulp.task('build:back', $.gulp.series(
     'clean',
     $.gulp.parallel('stylus', 'scripts:lib', 'scripts'),
-    $.gulp.parallel('stylus:build', 'scripts:build', 'imagemin:build', 'fonts:copy', 'media:copy', 'php:copy')
+    $.gulp.parallel('stylus:build', 'scripts:build', 'imagemin:build', 'fonts:copy', 'media:copy', 'php:copy'),
+    $.gulp.parallel('zip:build')
 ));

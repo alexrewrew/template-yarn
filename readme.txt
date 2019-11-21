@@ -18,5 +18,3 @@ gulp lottie:generate
 gulp favicon:generate
 gulp clean:generate
 gulp noui:generate
-
-https://youtu.be/5QZcOugHQ6s

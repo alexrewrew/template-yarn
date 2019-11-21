@@ -30,6 +30,7 @@
     "gulp-strip-comments": "^2.5.2",
     "gulp-stylus": "^2.7.0",
     "gulp-uglify": "^3.0.2",
+    "gulp-zip": "^5.0.1",
     "imagemin-guetzli": "^2.0.0"
   },
   "devDependencies": {
