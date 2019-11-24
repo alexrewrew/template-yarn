@@ -2,6 +2,7 @@ module.exports = function () {
     $.gulp.task('scripts:lib', function () {
         return $.gulp.src([
             'node_modules/jquery/dist/jquery.js',
+            'node_modules/jquery-validation/dist/jquery.validate.js',
             // 'node_modules/jquery-migrate/dist/jquery-migrate.js',    
 
             // 'node_modules/jquery.maskedinput/src/jquery.maskedinput.js',
@@ -112,5 +113,11 @@ module.exports = function () {
             // .pipe($.uglify())
             // .pipe($.sourcemaps.write())
             .pipe($.gulp.dest('build/js'));
+    });
+
+    $.gulp.task('zip:build', function () {
+        return $.gulp.src('build/**/*')
+            .pipe($.zip('build.zip'))
+            .pipe($.gulp.dest('./'));
     });
 };

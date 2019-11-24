@@ -5,7 +5,7 @@ module.exports = function () {
                 'include css': true
             }))
             .pipe($.autoprefixer({
-                'browsers': ['last 6 versions', 'ie 9', 'ie 10'],
+                'overrideBrowserslist': ['last 6 versions', 'ie 9', 'ie 10'],
                 'cascade': true
             }))
 
