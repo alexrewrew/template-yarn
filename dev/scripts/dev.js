@@ -1,9 +1,8 @@
-// const swup = new Swup();
+/*eslint no-undef: "error"*/
 
-(($) => {
+(function ($) {
     "use strict";
 
-    // --- DOM elements ---
     const DOMs = {
         documentBody: $("body"),
         documentBodyHtml: $("html, body"),
@@ -22,7 +21,6 @@
         sliderSlickArrowLeft: "<div class='slider-slick__arrow left'></div>",
         sliderSlickArrowRight: "<div class='slider-slick__arrow right'></div>",
         sliderSlickCounter: $(".slider-slick-counter"),
-        sliderOwl: $('.owl-carousel'),
 
         stickyDiv: $('.sticky-div'),
 
@@ -32,7 +30,6 @@
         accordion: $('.accordion'),
         tabs: $('.tabs-wrapper'),
         datepicker: $(".datepicker"),
-
     };
 
     const STATEs = {
@@ -41,6 +38,13 @@
         scroll: 'scroll',
         active: 'active',
         open: 'open'
+    };
+
+    const NUMs = {
+        windowHeight: 0,
+        windowWidth: 0,
+        headerHeight: 0,
+        navHeight: 0
     };
 
     // --- Browser detection ---
@@ -64,12 +68,7 @@
     // }
 
     // --- Size detection ---
-    const NUMs = {
-        windowHeight: 0,
-        windowWidth: 0,
-        headerHeight: 0,
-        navHeight: 0
-    };
+
 
     // --- Init page ---
     const initPage = function () {
@@ -80,36 +79,32 @@
     };
 
     // --- Viewport element detection ---
-    (function ($) {
-        $.fn.isInViewport = function () {
-            if ($(this).length > 0) {
-                let elementTop = $(this).offset().top + (NUMs.headerHeight / 2) - NUMs.navHeight;
-                let elementBottom = elementTop;
-                let viewportTop = $(window).scrollTop();
-                let viewportBottom = viewportTop + NUMs.windowHeight;
-                return elementBottom > viewportTop && elementTop < viewportBottom;
-            }
-        };
-    })(jQuery);
+    $.fn.isInViewport = function () {
+        if ($(this).length > 0) {
+            let elementTop = $(this).offset().top + (NUMs.headerHeight / 2) - NUMs.navHeight;
+            let elementBottom = elementTop;
+            let viewportTop = $(window).scrollTop();
+            let viewportBottom = viewportTop + NUMs.windowHeight;
+            return elementBottom > viewportTop && elementTop < viewportBottom;
+        }
+    };
 
     // adaptive change images places
-    (function ($) {
-        $.fn.insertChange = function () {
+    $.fn.insertChange = function () {
 
-            let make = function () {
-                const insertAfter = $(this).find('.insert-after');
-                const insertIn = $(this).find('.insert-in');
-                const insertImg = $(this).find('.insert-img');
+        let make = function () {
+            const insertAfter = $(this).find('.insert-after');
+            const insertIn = $(this).find('.insert-in');
+            const insertImg = $(this).find('.insert-img');
 
-                if (NUMs.windowWidth < 768) {
-                    $(insertImg).insertAfter($(insertAfter));
-                } else if (NUMs.windowWidth > 767) {
-                    $(insertImg).appendTo($(insertIn));
-                }
-            };
-            return this.each(make);
+            if (NUMs.windowWidth < 768) {
+                $(insertImg).insertAfter($(insertAfter));
+            } else if (NUMs.windowWidth > 767) {
+                $(insertImg).appendTo($(insertIn));
+            }
         };
-    })(jQuery);
+        return this.each(make);
+    };
 
     // --- Responsive scripts ---
 
@@ -117,9 +112,9 @@
         initPage();
 
         // if (NUMs.windowWidth < 768) {
-            // DOMs.stickyDiv.trigger("sticky_kit:detach");
+        // DOMs.stickyDiv.trigger("sticky_kit:detach");
         // } else if (NUMs.windowWidth > 767) {
-            // DOMs.stickyDiv.stick_in_parent({offset_top: NUMs.navHeight});
+        // DOMs.stickyDiv.stick_in_parent({offset_top: NUMs.navHeight});
         // }
     });
 
@@ -130,7 +125,7 @@
         let subscribeForm = $('#ajax_form');
         let data = {};
 
-        subscribeForm.on('submit', function(e) {
+        subscribeForm.on('submit', function (e) {
             e.preventDefault();
             data.webresource = subscribeForm[0][0].value;
             data.phone = subscribeForm[0][1].value;
@@ -141,21 +136,21 @@
                 type: 'POST',
                 url: 'php/send.php',
                 data: data,
-                success: function() { //Данные отправлены успешно
+                success: function () { //Данные отправлены успешно
                     $('form').removeClass('error');
                     $('form').addClass('success');
                 },
-                error: function() { // Данные не отправлены
+                error: function () { // Данные не отправлены
                     $('formn').addClass('error');
                 }
             });
         });
 
         // --- Nav trigger ---
-        // DOMs.navBtn.on('click', function (e) {
-        //     e.preventDefault();
-        //     DOMs.documentBodyHtml.toggleClass(STATEs.open);
-        // });
+        DOMs.navBtn.on('click', function (e) {
+            e.preventDefault();
+            DOMs.documentBodyHtml.toggleClass(STATEs.open);
+        });
 
         // --- Scroll speed ---
         // jQuery.scrollSpeed(100, 600);
@@ -181,20 +176,12 @@
         // });
 
         // --- Slider Slick
-        DOMs.sliderSlick.slick({
-            prevArrow: DOMs.sliderSlickArrowLeft,
-            nextArrow: DOMs.sliderSlickArrowRight,
-            dots: true,
-            // variableWidth: true,
-            // adaptiveHeight: true
-        });
-
-        // --- Slider Owl ---
-        // DOMs.sliderOwl.owlCarousel({
-        //     center: true,
-        //     items: 2,
-        //     autoWidth: true,
-        //     loop: true,
+        // DOMs.sliderSlick.slick({
+        //     prevArrow: DOMs.sliderSlickArrowLeft,
+        //     nextArrow: DOMs.sliderSlickArrowRight,
+        //     dots: true,
+        // variableWidth: true,
+        // adaptiveHeight: true
         // });
 
         // --- Slider Swiper ---

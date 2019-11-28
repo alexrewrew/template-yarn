@@ -1,6 +1,6 @@
 module.exports = {
     // "extends": "google"
-    "extends": "eslint:recommended",
+    // "extends": "eslint:recommended",
     "env": {
         "browser": true,
         "commonjs": true,

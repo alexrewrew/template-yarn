@@ -8,8 +8,6 @@
   "dependencies": {
     "@babel/core": "^7.7.4",
     "@babel/preset-env": "^7.7.4",
-    "babel-core": "^6.26.3",
-    "babel-preset-env": "^1.7.0",
     "browser-sync": "^2.26.7",
     "browserslist": "^4.7.3",
     "del": "^5.1.0",
@@ -30,8 +28,7 @@
     "gulp-strip-comments": "^2.5.2",
     "gulp-stylus": "^2.7.0",
     "gulp-uglify": "^3.0.2",
-    "gulp-zip": "^5.0.1",
-    "imagemin-guetzli": "^2.0.0"
+    "gulp-zip": "^5.0.1"
   },
   "devDependencies": {
     "bowser": "^2.7.0",

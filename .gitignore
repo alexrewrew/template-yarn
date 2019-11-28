@@ -1,5 +1,6 @@
 /.idea
 /.vscode
+/build.zip
 /src/sketch
 /build
 /node_modules

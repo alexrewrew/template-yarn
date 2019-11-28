@@ -19,7 +19,6 @@ global.$ = {
     babel : require('gulp-babel'),
     fs : require('fs'),
     realFavicon : require ('gulp-real-favicon'),
-    imageminGuetzli : require('imagemin-guetzli'),
     FAVICON_DATA_FILE : 'faviconData.json',
 
     zip : require('gulp-zip'),
