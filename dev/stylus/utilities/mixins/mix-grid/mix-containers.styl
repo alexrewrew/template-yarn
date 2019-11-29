@@ -13,3 +13,6 @@ container-init()
     @media (min-width: breakpoints[i]px)
       .{$container-name}
         max-width: container-width[i]
+
+      .{$container-name}-{prefixes[i]}
+        max-width: 100%

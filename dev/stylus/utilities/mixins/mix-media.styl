@@ -1,63 +1,78 @@
-//  MOBILE
-mob()
-  @media (max-width: 767px)
-    {block}
-
-//  PHONE
+//  Extra small only
 xs()
   @media (max-width: 567px)
     {block}
 
-//  PHONE LANDSCAPE
+//  Small only
 sm()
-  @media (min-width: 568px) and (max-width 767px)
+  @media (min-width: 568px) and (max-width: 767px)
     {block}
 
-//  IPHONE X LANDSCAPE
-ix()
-  @media (min-width: 768px) and (max-width 812px) and (orientation : landscape)
-    {block}    
-
-//  TABLET
-pad()
-  @media (min-width: 768px) and (max-width: 1199px)
+//  Small and Up
+smu()
+  @media (min-width: 568px)
     {block}
 
-//  TABLET PORTRAIT AND MOBILE
-mmd()
-  @media (max-width: 991px)
-    {block}    
+//  Small and Down (Mobile only)
+mob()
+  @media (max-width: 767px)
+    {block}
 
-//  TABLET PORTRAIT
+//  Medium only
 md()
   @media (min-width: 768px) and (max-width: 991px)
     {block}
 
-//  TABLET LANDSCAPE
+//  Medium and Up
+mdu()
+  @media (min-width: 768px)
+    {block}
+
+//  Medium and Down
+mdd()
+  @media (max-width: 991px)
+    {block}
+
+//  Large only
 lg()
   @media (min-width: 992px) and (max-width: 1199px)
     {block}
 
-//  IPAD PRO
-hei()
-  @media (min-height: 1024px) and (max-width: 1366px) and (min-width: 1024px)
+//  Large and Up
+lgu()
+  @media (min-width: 992px)
     {block}
 
-//  DISPLAY
+//  Large and Down
+lgd()
+  @media (max-width: 1199px)
+    {block}
+
+// Tablet only
+tab()
+  @media (min-width: 768px) and (max-width: 1199px)
+    {block}
+
+//  Extra large only
 xl()
+  @media (min-width: 1200px) and (max-width: 1599px)
+    {block}
+
+//  Extra large and Up
+xlu()
   @media (min-width: 1200px)
     {block}
 
-//  LARGE DISPLAY
+//  Extra large and Down
+xld()
+  @media (max-width: 1599px)
+    {block}
+
+//  Super extra large only
 xxl()
   @media (min-width: 1600px)
     {block}
 
-//   HOVER ONLY FOR SCREENS
-hov()
-  @media (min-width: 768px)
-    &:hover 
-      {block}    
 
 //  CUSTOM MIN WIDTH
 mmin($minwidth)

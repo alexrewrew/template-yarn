@@ -1,7 +1,6 @@
 /*eslint no-undef: "error"*/
 
 (function ($) {
-    "use strict";
 
     const DOMs = {
         documentBody: $("body"),
