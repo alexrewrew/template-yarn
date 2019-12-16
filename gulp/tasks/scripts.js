@@ -2,23 +2,21 @@ module.exports = function () {
     $.gulp.task('scripts:lib', function () {
         return $.gulp.src([
             'node_modules/jquery/dist/jquery.js',
-            // 'node_modules/jquery-validation/dist/jquery.validate.js',
+            'node_modules/jquery-validation/dist/jquery.validate.js',
             // 'node_modules/jquery-migrate/dist/jquery-migrate.js',    
 
-            // 'node_modules/jquery.maskedinput/src/jquery.maskedinput.js',
+            'node_modules/jquery.maskedinput/src/jquery.maskedinput.js',
 
             // 'snippets/smoothscroll/jQuery.scrollSpeed.js',
 
-            // 'node_modules/@fancyapps/fancybox/dist/jquery.fancybox.js',
+            'node_modules/@fancyapps/fancybox/dist/jquery.fancybox.js',
 
-            // 'node_modules/slick-carousel/slick/slick.js',
-            // 'node_modules/swiper/dist/js/swiper.js',
-            // 'node_modules/owl.carousel/dist/owl.carousel.js',
+            'node_modules/slick-carousel/slick/slick.js',
+            'node_modules/swiper/js/swiper.js',
 
             // 'node_modules/jquery.marquee/jquery.marquee.js',
-            // 'node_modules/jquery.marquee/jquery.marquee.js',
 
-            // 'node_modules/chosen-js/chosen.jquery.js',
+            'node_modules/chosen-js/chosen.jquery.js',
             // 'node_modules/select2/dist/js/select2.full.js',
 
             // 'node_modules/flatpickr/dist/flatpickr.js',

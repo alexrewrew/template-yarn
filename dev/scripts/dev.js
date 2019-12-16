@@ -184,28 +184,30 @@
         // });
 
         // --- Slider Swiper ---
-        // const swiper = new Swiper('.swiper-container', {
-        //     slidesPerView: 'auto',
-        //     centeredSlides: true,
-        //     spaceBetween: 45,
-        //     loop: true,
-        //     preventClicks: false,
-        //     preventClicksPropagation: false,
-        //     slideToClickedSlide: true,
-        //     autoplay: {
-        //         delay: 2500,
-        //         disableOnInteraction: false,
-        //     },
-        //     pagination: {
-        //         el: '.swiper-pagination',
-        //         type: 'fraction',
-        //         clickable: true,
-        //     },
-        //     navigation: {
-        //         prevEl: '.swiper-arrow.left',
-        //         nextEl: '.swiper-arrow.right',
-        //     },
-        // });
+        const swiper = new Swiper('.swiper-container', {
+            slidesPerView: 'auto',
+            // centeredSlides: true,
+            // spaceBetween: 45,
+            // loop: true,
+            // preventClicks: false,
+            // preventClicksPropagation: false,
+            // slideToClickedSlide: true,
+            // autoplay: {
+            //     delay: 2500,
+            //     disableOnInteraction: false,
+            // },
+            // pagination: {
+            //     el: '.swiper-pagination',
+            //     type: 'fraction',
+            //     clickable: true,
+            // },
+            navigation: {
+                // prevEl: '.swiper-arrow.left',
+                // nextEl: '.swiper-arrow.right',
+                prevEl: '.swiper-button-prev',
+                nextEl: '.swiper-button-next',
+            },
+        });
 
         // --- Accordion ---
         // DOMs.accordion.rewAccordion();
