@@ -12,6 +12,8 @@ global.$ = {
     notify: require('gulp-notify'),
     concat: require('gulp-concat'),
     imagemin: require('gulp-imagemin'),
+    imageminWebp: require('imagemin-webp'),
+    webp: require('gulp-webp'),
     del: require('del'),
     uglify: require('gulp-uglify'),
     htmlmin: require('gulp-htmlmin'),
