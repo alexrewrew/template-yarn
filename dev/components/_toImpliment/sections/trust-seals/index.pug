@@ -1,0 +1,27 @@
+include ../../../modules/layout/page-section/page-section
+
+mixin page-section-trust-seals()
+	+page-section("trust-seals")
+		.trust-seals
+			.trust-seals__item
+				.trust-seal.trust-seal--money-back-180
+
+			.trust-seals__item
+				.trust-seal.trust-seal--since-2008
+
+			.trust-seals__item
+				.trust-seal.trust-seal--g2-top-50
+
+			.trust-seals__item
+				a.trust-seal.trust-seal--security(name="trustlink",
+				href="http://secure.trust-guard.com/security/9424",
+				rel="nofollow",
+				target="_blank",
+				onclick="var nonwin=navigator.appName!='Microsoft Internet Explorer'?'yes':'no'; window.open(this.href.replace(/https?/, 'https'),'welcome','location='+nonwin+',scrollbars=yes,width=517,height='+screen.availHeight+',menubar=no,toolbar=no'); return false;", oncontextmenu="var d = new Date(); alert('Copying Prohibited by Law - This image and all included logos are copyrighted by trust-guard \251 '+d.getFullYear()+'.'); return false;").trust-seal
+					img(name="trustseal",
+					alt="Security Seals",
+					src="//dw26xg4lubooo.cloudfront.net/seals/security/9424-small.gif")
+
+			.trust-seals__item
+				a.trust-seal.trust-seal--shopper-approved(href="http://www.shopperapproved.com/reviews/PDFfiller.com" onclick="var nonwin=navigator.appName!='Microsoft Internet Explorer'?'yes':'no'; var certheight=screen.availHeight-90; window.open(this.href,'shopperapproved','location='+nonwin+',scrollbars=yes,width=620,height='+certheight+',menubar=no,toolbar=no'); return false;").trust-seal
+					img(src="https://c683207.ssl.cf2.rackcdn.com/10517-r.gif", oncontextmenu="var d = new Date(); alert('Copying Prohibited by Law - This image and all included logos are copyrighted by Shopper Approved \251 '+d.getFullYear()+'.'); return false;")

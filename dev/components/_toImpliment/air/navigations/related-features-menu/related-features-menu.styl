@@ -1,0 +1,84 @@
+.accordion--related-features
+	+above($media-screen-tablet)
+		display none
+
+	.accordion__item
+		margin-bottom 4px
+		padding 0
+		background-color #f9f9f9
+		border-radius 0
+		user-select none
+		-webkit-tap-highlight-color transparent
+		border none
+
+	.accordion__title
+		padding 13px 0 14px 20px
+		font-size 12px
+		font-weight 400
+		color #888888
+		text-transform uppercase
+
+	.accordion__body
+		padding 6px 20px 16px
+		line-height 2.5
+		display flex
+		flex-wrap wrap
+
+	.accordion__title .icon-expand-status
+		position absolute
+		top 49%
+		right 17px
+		width 14px
+		height 9px
+		background url("../images/functionality/functionality-links/small-arrow-icon.svg") no-repeat
+		background-size contain
+		font-size 0
+		transition transform 0.2s
+		transform translateY(-50%) rotate(180deg)
+
+		&::before
+			display none
+
+		&::after
+			display none
+
+	.accordion__title[aria-selected*="true"]
+		.icon-expand-status
+			transform translateY(-50%) rotate(0deg)
+
+	.service-functions-menu__list-item
+		margin-bottom 20px
+
+.related-features
+	display none
+
+	+above($media-screen-tablet)
+		display flex
+		flex-wrap wrap
+		justify-content space-between
+
+.related-features__column
+	width 29%
+	margin-bottom 23px
+
+	+above($media-screen-desktop)
+		width 180px
+
+.related-features__title
+	text-transform uppercase
+	opacity .9
+	font-size 12px
+	color #888888
+	line-height normal
+	margin-bottom 20px
+
+.related-features__list__item
+	width 100%
+	display flex
+	margin-bottom 8px
+	opacity .9
+
+.related-features__list__item__link
+	&:hover
+		color #414141
+		text-decoration underline

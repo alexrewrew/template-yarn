@@ -1,0 +1,537 @@
+include ../../../modules/containers/accordion/index
+
+mixin service-function-menus()
+	-
+		const menus = [
+			{
+				title: {
+					text: "Convert & Compress",
+					link: "/en/categories/pdf-converter.htm"
+				},
+				list: [
+					{ icon: "fl-compress", text: "Compress PDF", link: "/en/functionality/24478-compress-pdf.htm" },
+					{ icon: "fl-converter", text: "PDF Converter", link: "https://pdf-converter.pdffiller.com" },
+					{ icon: "fl-ocr", text: "OCR PDF", link: "/en/ocr-pdf-file.htm" }
+				]
+			},
+			{
+				title: {
+					text: "Split & Merge",
+					link: "/en/split-pdf-pages.htm"
+				},
+				list: [
+					{ icon: "fl-split", text: "Split PDF", link: "/en/split-pdf-pages.htm" },
+					{ icon: "fl-merge", text: "Merge PDF", link: "https://merge-pdf-online.pdffiller.com" },
+					{ icon: "fl-reorder", text: "Combine & Reorder", link: "https://reorder-pdf-pages.pdffiller.com" },
+					{ icon: "fl-extract", text: "Extract Pages", link: "/en/extract-pages-from-pdf.htm" }
+				]
+			},
+			{
+				title: {
+					text: "Convert from PDF",
+					link: "/en/categories/pdf-converter.htm"
+				},
+				list: [
+					{ icon: "fl-to-word", text: "PDF to Word", link: "https://convert-pdf-to-word.pdffiller.com" },
+					{ icon: "fl-to-excel", text: "PDF to Excel", link: "https://convert-pdf-excel.pdffiller.com" },
+					{ icon: "fl-to-ppt", text: "PDF to PPT", link: "https://convert-pdf-ppt.pdffiller.com" },
+					{ icon: "fl-to-jpg", text: "PDF to JPG", link: "https://pdf-to-jpeg.pdffiller.com" }
+				]
+			},
+			{
+				title: {
+					text: "View & Edit",
+					link: "/en/categories/online-pdf-editor.htm"
+				},
+				list: [
+					{ icon: "fl-edit", text: "Edit PDF", link: "https://edit-pdf.pdffiller.com" },
+					{ icon: "fl-delete", text: "Delete Pages", link: "https://delete-pdf-pages.pdffiller.com" },
+					{ icon: "fl-rotate", text: "Rotate PDF", link: "https://rotate-pdf-online.pdffiller.com" },
+					{ icon: "fl-reader", text: "PDF Reader", link: "https://pdf-reader-online.pdffiller.com" },
+					{ icon: "fl-rename", text: "Edit & Fill", link: "https://edit-fill-pdf.pdffiller.com" },
+					{ icon: "fl-number", text: "Page Numbering", link: "https://add-page-numbers.pdffiller.com" },
+					{ icon: "fl-watermark", text: "Watermark", link: "https://pdf-watermark.pdffiller.com" }
+				]
+			},
+			{
+				title: {
+					text: "Convert to PDF",
+					link: "/en/categories/pdf-converter.htm"
+				},
+				list: [
+					{ icon: "fl-word", text: "Word to PDF", link: "https://convert-word-to-pdf.pdffiller.com" },
+					{ icon: "fl-excel", text: "Excel to PDF", link: "https://convert-pdf-excel.pdffiller.com" },
+					{ icon: "fl-ppt-to-pdf", text: "PPT to PDF", link: "https://convert-powerpoint-to-pdf.pdffiller.com" }
+				]
+			},
+			{
+				title: {
+					text: "Sign & Security",
+					link: "/en/categories/sign-online.htm"
+				},
+				list: [
+					{ icon: "fl-e-sign", text: "eSign PDF", link: "https://esign-pdf.pdffiller.com" },
+					{ icon: "fl-protect", text: "Protect PDF", link: "https://secure-pdf.pdffiller.com" }
+				]
+			}
+		];
+		
+	for menu in menus
+		.service-functions-menus__area   
+			.service-functions-menu
+				a(href=menu.title.link).service-functions-menu__title
+					| #{menu.title.text}
+
+				.service-functions-menu__list
+					for item in menu.list
+						a(href=item.link).service-functions-menu__list-item
+							.service-functions-menu__list-item-icon
+								.icon(class=item.icon)
+
+							| #{item.text}
+
+mixin accordion-service-functioni-tems()
+	-
+		const menus = [
+			{
+				title: {
+					text: "Convert & Compress",
+					link: "/en/categories/pdf-converter.htm"
+					},
+				list: [
+						{ icon: "fl-compress", text: "Compress PDF", link: "/en/functionality/24478-compress-pdf.htm" },
+						{ icon: "fl-converter", text: "PDF Converter", link: "https://pdf-converter.pdffiller.com" },
+						{ icon: "fl-ocr", text: "OCR PDF", link: "/en/ocr-pdf-file.htm" }
+					]
+				},
+			{
+				title: {
+					text: "Split & Merge",
+					link: "/en/split-pdf-pages.htm"
+				},
+				list: [
+					{ icon: "fl-split", text: "Split PDF", link: "/en/split-pdf-pages.htm" },
+					{ icon: "fl-merge", text: "Merge PDF", link: "https://merge-pdf-online.pdffiller.com" },
+					{ icon: "fl-reorder", text: "Combine & Reorder", link: "https://reorder-pdf-pages.pdffiller.com" },
+					{ icon: "fl-extract", text: "Extract Pages", link: "/en/extract-pages-from-pdf.htm" }
+				]
+			},
+			{
+				title: {
+					text: "Convert from PDF",
+					link: "/en/categories/pdf-converter.htm"
+				},
+				list: [
+					{ icon: "fl-to-word", text: "PDF to Word", link: "https://convert-pdf-to-word.pdffiller.com" },
+					{ icon: "fl-to-excel", text: "PDF to Excel", link: "https://convert-pdf-excel.pdffiller.com" },
+					{ icon: "fl-to-ppt", text: "PDF to PPT", link: "https://convert-pdf-ppt.pdffiller.com" },
+					{ icon: "fl-to-jpg", text: "PDF to JPG", link: "https://pdf-to-jpeg.pdffiller.com" }
+				]
+			},
+			{
+				title: {
+					text: "View & Edit",
+					link: "/en/categories/online-pdf-editor.htm"
+				},
+				list: [
+					{ icon: "fl-edit", text: "Edit PDF", link: "https://edit-pdf.pdffiller.com" },
+					{ icon: "fl-delete", text: "Delete Pages", link: "https://delete-pdf-pages.pdffiller.com" },
+					{ icon: "fl-rotate", text: "Rotate PDF", link: "https://rotate-pdf-online.pdffiller.com" },
+					{ icon: "fl-reader", text: "PDF Reader", link: "https://pdf-reader-online.pdffiller.com" },
+					{ icon: "fl-rename", text: "Edit & Fill", link: "https://edit-fill-pdf.pdffiller.com" },
+					{ icon: "fl-number", text: "Page Numbering", link: "https://add-page-numbers.pdffiller.com" },
+					{ icon: "fl-watermark", text: "Watermark", link: "https://pdf-watermark.pdffiller.com" }
+				]
+			},
+			{
+				title: {
+					text: "Convert to PDF",
+					link: "/en/categories/pdf-converter.htm"
+				},
+				list: [
+					{ icon: "fl-word", text: "Word to PDF", link: "https://convert-word-to-pdf.pdffiller.com" },
+					{ icon: "fl-excel", text: "Excel to PDF", link: "https://convert-pdf-excel.pdffiller.com" },
+					{ icon: "fl-ppt-to-pdf", text: "PPT to PDF", link: "https://convert-powerpoint-to-pdf.pdffiller.com" }
+				]
+			},
+			{
+				title: {
+					text: "Sign & Security",
+					link: "/en/categories/sign-online.htm"
+				},
+				list: [
+					{ icon: "fl-e-sign", text: "eSign PDF", link: "https://esign-pdf.pdffiller.com" },
+					{ icon: "fl-protect", text: "Protect PDF", link: "https://secure-pdf.pdffiller.com" }
+				]
+			}
+		];
+		
+	for menu in menus
+		+accordion-item(menu.title.text)
+			for item in menu.list
+				a(href=item.link).service-functions-menu__list-item
+					.service-functions-menu__list-item-icon
+						.icon(class=item.icon)
+
+					| #{item.text}	
+
+mixin page-footer()
+	.page-footer(role="nav")
+		.page-footer__section.page-footer__section--functionality
+			.service-functions-menus
+				.service-functions-menus__title
+					| Solve all your PDF problems
+
+				.service-functions-menus__areas
+					+service-function-menus()
+
+			+accordion("footer")
+				+accordion-service-functioni-tems
+
+		.page-footer__section.page-footer__section--primary
+			.page-footer__section-inner
+				.page-footer__column
+					.footer-menu-title
+						a(href="#", role="link")
+							| Features
+
+					ul.footer-menu
+						li.footer-menu__item
+							a(href="#", role="link", rel="nofollow").footer-menu__link
+								| About Us
+
+						li.footer-menu__item
+							a(href="#", role="link", rel="nofollow").footer-menu__link
+								| Leadership
+
+						li.footer-menu__item
+							a(href="#", role="link").footer-menu__link
+								| Blog
+
+						li.footer-menu__item
+							a(href="#", role="link", rel="nofollow").footer-menu__link
+								| Career
+
+						li.footer-menu__item
+							a(href="#", role="link").footer-menu__link
+								| Customer Stories
+
+						li.footer-menu__item
+							a(href="#", role="link", rel="nofollow").footer-menu__link
+								| Contact Us
+
+						li.footer-menu__item
+							a(href="#", role="link", rel="nofollow").footer-menu__link
+								| Terms of Service
+
+						li.footer-menu__item
+							a(href="#", role="link", rel="nofollow").footer-menu__link
+								| Privacy Policy
+
+						li.footer-menu__item
+							a(href="#", role="link", rel="nofollow").footer-menu__link
+								| GDPR Compliance
+
+						li.footer-menu__item
+							a(href="#", role="link").footer-menu__link
+								| Guides
+
+						li.footer-menu__item
+							a(href="#", role="link").footer-menu__link
+								| User Reviews
+
+						li.footer-menu__item
+							a(href="#", role="link").footer-menu__link
+								| Partnership Program
+
+						li.footer-menu__item
+							a(href="#", role="link").footer-menu__link
+								| Press About Us
+
+				.page-footer__column
+					.footer-menu-title
+						a(href="#", role="link")
+							| Forms Library
+
+					ul.footer-menu
+						li.footer-menu__item
+							a(href="#", role="link").footer-menu__link
+								| Top 100 Forms
+
+						li.footer-menu__item
+							a(href="#", role="link").footer-menu__link
+								| PDF Search Engine
+
+						li.footer-menu__item
+							a(href="#", role="link").footer-menu__link
+								| A-Z Listing on Forms
+
+						li.footer-menu__item
+							a(href="#", role="link").footer-menu__link
+								| Forms Catalog
+
+						li.footer-menu__item
+							a(href="#", role="link").footer-menu__link
+								| IRS Tax Forms
+
+						li.footer-menu__item
+							a(href="#", role="link").footer-menu__link
+								| Popular Search
+
+						li.footer-menu__item
+							a(href="#", role="link").footer-menu__link
+								| W-2 Form&nbsp;
+
+							a(href="#", role="link").footer-menu__link
+								| W9
+
+						li.footer-menu__item
+							a(href="#", role="link").footer-menu__link
+								| Form 1099-Misc
+
+						li.footer-menu__item
+							a(href="#", role="link").footer-menu__link
+								| DS11&nbsp;
+
+							a(href="#", role="link").footer-menu__link
+								| DS82&nbsp;
+
+							a(href="#", role="link").footer-menu__link
+								| 1096
+
+						li.footer-menu__item
+							a(href="#", role="link").footer-menu__link
+								| Tax Calendar
+
+						li.footer-menu__item
+							a(href="#", role="link").footer-menu__link
+								| Document Templates
+
+
+					.footer-menu-title
+						| Mobile App
+
+					ul.footer-menu
+						li.footer-menu__item
+							a(href="#", role="link").footer-menu__link
+								| iOS Application
+
+						li.footer-menu__item
+							a(href="#", role="link").footer-menu__link
+								| Android Application
+
+
+				.page-footer__column
+					.footer-menu-title
+						a(href="#", role="link")
+							| Functions
+
+					ul.footer-menu
+						li.footer-menu__item
+							a(href="#", role="link", rel="nofollow").footer-menu__link
+								| edit-pdf.pdffiller.com
+
+						li.footer-menu__item
+							a(href="#", role="link", rel="nofollow").footer-menu__link
+								| LinkToFill
+
+						li.footer-menu__item
+							a(href="#", role="link", rel="nofollow").footer-menu__link
+								| SendToSign
+
+					.footer-menu-title
+						a(href="#")
+							| Comparison
+
+					ul.footer-menu
+						li.footer-menu__item
+							a(href="#", role="link").footer-menu__link
+								| Adobe Acrobat Alternative
+
+						li.footer-menu__item
+							a(href="#", role="link", rel="nofollow").footer-menu__link
+								| DocStoc is Shutting Down
+
+					.footer-menu-title
+						a(href="#")
+							| Integrations
+
+					ul.footer-menu
+						li.footer-menu__item
+							a(href="#", role="link").footer-menu__link
+								| Salesforce
+
+						li.footer-menu__item
+							a(href="#", role="link").footer-menu__link
+								| Dynamics
+
+					.footer-menu-screen-md
+						.footer-menu-title
+							a(href="#", role="link")
+								| Free Resources
+
+						ul.footer-menu
+							li.footer-menu__item
+								a(href="#", role="link").footer-menu__link
+									| altoconvertwordtopdf.com
+
+							li.footer-menu__item
+								a(href="#", role="link").footer-menu__link
+									| Electronic Signature
+
+				.page-footer__column
+					.footer-menu-title
+						a(href="#", role="link", rel="nofollow")
+							| Support
+
+					ul.footer-menu
+						li.footer-menu__item
+							a(href="#", role="link", rel="nofollow").footer-menu__link
+								| FAQ
+
+						li.footer-menu__item
+							a(href="#", role="link", rel="nofollow").footer-menu__link
+								| Tutorial Videos
+
+						li.footer-menu__item
+							a(href="#", role="link", rel="nofollow").footer-menu__link
+								| Pricing
+
+						li.footer-menu__item
+							a(href="#", role="link").footer-menu__link
+								| DMCA
+
+					.footer-menu-title
+						a(href="#", role="link")
+							| For Business
+
+					ul.footer-menu
+						li.footer-menu__item
+							a(href="#", role="link").footer-menu__link
+								| Insurance
+
+						li.footer-menu__item
+							a(href="#", role="link").footer-menu__link
+								| Medical
+
+						li.footer-menu__item
+							a(href="#", role="link").footer-menu__link
+								| Real Estate
+
+						li.footer-menu__item
+							a(href="#", role="link").footer-menu__link
+								| Human Resources
+
+						li.footer-menu__item
+							a(href="#", role="link").footer-menu__link
+								| Tax & Finance
+
+						li.footer-menu__item
+							a(href="#", role="link").footer-menu__link
+								| Legal
+
+					.footer-menu-screen-md
+						.footer-menu-title
+							a(href="#", role="link", rel="nofollow")
+								| Developers
+
+						ul.footer-menu
+							li.footer-menu__item
+								a(href="#", role="link", rel="nofollow").footer-menu__link
+									| Get Started
+
+							li.footer-menu__item
+								a(href="#", role="link", rel="nofollow").footer-menu__link
+									| API documentation
+
+							li.footer-menu__item
+								a(href="#", role="link", rel="nofollow").footer-menu__link
+									| API pricing
+
+				.page-footer__column.page-footer__column--screen-md
+					.footer-menu-title
+						a(href="#", role="link")
+							| Developers
+
+					ul.footer-menu
+						li.footer-menu__item
+							a(href="#", role="link", rel="nofollow").footer-menu__link
+								| Get Started
+
+						li.footer-menu__item
+							a(href="#", role="link", rel="nofollow").footer-menu__link
+								| API documentation
+
+						li.footer-menu__item
+							a(href="#", role="link", rel="nofollow").footer-menu__link
+								| API pricing
+
+					.footer-menu-title
+						a(href="#", role="link")
+							| Free Resources
+
+					ul.footer-menu
+						li.footer-menu__item
+							a(href="#", role="link").footer-menu__link
+								| altoconvertwordtopdf.com
+
+						li.footer-menu__item
+							a(href="#", role="link").footer-menu__link
+								| Electronic Signature
+
+				.page-footer__column
+					.footer-copyright
+						| © 2006-#{new Date().getFullYear()} airSlate Inc. All rights reserved.
+
+					.footer-terms-note
+						| Your use of this site is subject to&nbsp;
+						a(href="#")
+							| Terms of Service
+
+		.page-footer.page-footer--mobile(role="nav")
+			.page-footer__inner
+
+				ul.footer-menu
+					li.footer-menu__item
+						a(href="#", role="external").footer-menu__link
+							| Terms of Service
+
+					li.footer-menu__item
+						a(href="#", role="external").footer-menu__link
+							| PDF Search Engine
+
+					li.footer-menu__item
+						a(href="#", role="external").footer-menu__link
+							| Privacy Policy
+
+					li.footer-menu__item
+						a(href="#", role="external").footer-menu__link
+							| Top 100 Forms
+
+					li.footer-menu__item
+						a(href="#", role="external").footer-menu__link
+							| GDPR Compliance
+
+					li.footer-menu__item
+						a(href="#", role="external").footer-menu__link
+							| Forms Catalog
+
+					li.footer-menu__item
+						a(href="#", role="lexternal").footer-menu__link
+							| About Us
+
+					li.footer-menu__item
+						a(href="#", role="external").footer-menu__link
+							| Blog
+
+					li.footer-menu__item
+						a(href="#", role="external").footer-menu__link
+							| User Reviews
+
+				.footer-copyright
+					| © 2006-#{new Date().getFullYear()} airSlate Inc. All rights reserved.
+
+				.footer-terms-note
+					| Your use of this site is subject to&nbsp;
+					a(href="#").footer-terms-note__link
+						| Terms of Service

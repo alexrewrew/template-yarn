@@ -1,0 +1,39 @@
+.main-menu__list
+	clearfix()
+
+.main-menu__item
+	float left
+
+.main-menu__link
+a.main-menu__link
+	display block
+	padding 18px 12px 16px
+	color #888
+	text-align center
+	text-decoration none
+	text-transform uppercase
+	white-space nowrap
+	font-weight $font-weight-semiBold
+	font-size 12px
+	line-height 20px
+
+	&.is-active
+		color #e74c3c
+
+	&:hover
+		color #e74c3c
+
+// exp. MKT-5104
+.main-menu__item .main-menu__link--free-trial
+	margin-top 10px
+	padding 6px 10px
+	border 2px solid #ff9000
+	border-radius 3px
+	transition border 0.15s
+
+	&:focus
+		box-shadow 0 0 5px 1px rgba(255, 119, 0, 0.51)
+
+	&:hover
+		background #ff9000
+		color #fff

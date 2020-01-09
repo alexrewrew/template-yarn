@@ -1,0 +1,83 @@
+$image-path = "../images/_modules/sections/shared-purpose/"
+
+.page-section--teams-shared-purpose
+	.page-section__inner
+		display flex
+		flex-direction column-reverse
+		padding-top 40px
+		padding-bottom 28px
+
+		+above($media-screen-tablet)
+			padding-top 21px
+			padding-bottom 32px
+
+		+above($media-screen-desktop)
+			flex-direction column
+			padding-top 78px
+			padding-bottom 68px
+
+	.section-title
+		margin-bottom 8px
+		text-align center
+		font-size 14px
+		line-height 1.71
+
+		+above($media-screen-tablet)
+			font-size 16px
+			line-height 1.75
+
+		+above($media-screen-desktop)
+			margin-bottom 16px
+			text-align left
+			font-size 24px
+			line-height 1.42
+
+	.section-subtitle
+		text-align center
+		font-size 12px
+		line-height 1.67
+
+		+above($media-screen-tablet)
+			font-size 14px
+			line-height 1.71
+
+		+above($media-screen-desktop)
+			text-align left
+			font-size 16px
+			line-height 1.75
+
+	.section-content
+		flex-direction column
+
+		+above($media-screen-desktop)
+			position relative
+			z-index 1
+			margin-bottom -145px
+			width 435px
+
+.teams-shared-purpose-decoration
+	margin 0 auto 20px
+	width 288px
+	height 138px
+	background-image url($image-path + "workflow-decoration-sm.png")
+	background-size cover
+
+	+retina()
+		background-image url($image-path + "workflow-decoration-sm@2x.png")
+
+	+above($media-screen-tablet)
+		width 448px
+		height 214px
+		background-image url($image-path + "workflow-decoration-md.png")
+
+		+retina()
+			background-image url($image-path + "workflow-decoration-md@2x.png")
+
+	+above($media-screen-desktop)
+		margin 0 0 0 70px
+		width 936px
+		height 314px
+		background-image url($image-path + "workflow-decoration.png")
+
+		+retina()
+			background-image url($image-path + "workflow-decoration@2x.png")

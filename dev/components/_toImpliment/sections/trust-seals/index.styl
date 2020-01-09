@@ -1,0 +1,113 @@
+$image-path = "../images/_modules/sections/trust-seals/"
+
+.page-section--trust-seals
+	background #f9f9f9
+
+	.page-section__inner
+		padding 35px 16px 11px
+
+		+above($media-screen-tablet)
+			padding 35px 16px
+
+	.section-title
+		font-size 36px
+		line-height 1.44
+
+.trust-seals
+	display flex
+	flex-wrap wrap
+	justify-content space-around
+	align-items center
+	margin auto
+	width 288px
+
+	+above($media-screen-tablet)
+		justify-content space-between
+		width auto
+
+.trust-seals__item
+	margin-bottom 24px
+	user-select none
+
+	+above($media-screen-tablet)
+		margin-bottom 0
+
+.trust-seal--since-2008
+	margin-right 30px
+	width 52px
+	height 53px
+	background-image url($image-path + "business-2008.png")
+	background-size cover
+
+	+retina()
+		background-image url($image-path + "business-2008@2x.png")
+
+	+above($media-screen-tablet)
+		margin-right 0
+
+	+above($media-screen-desktop)
+		width 80px
+		height 81px
+
+.trust-seal--money-back-180
+	margin-right 30px
+	margin-left 30px
+	width 60px
+	height 60px
+	background-image url($image-path + "money-back.png")
+	background-size cover
+
+	+retina()
+		background-image url($image-path + "money-back@2x.png")
+
+	+above($media-screen-tablet)
+		margin-right 0
+		margin-left 0
+
+	+above($media-screen-desktop)
+		width 86px
+		height 86px
+
+.trust-seal--g2-top-50
+	display block
+	margin-right 35px
+	width 45px
+	height 53px
+	background-image url($image-path + "g2-top-50.png")
+	background-size cover
+
+	+retina()
+		background-image url($image-path + "g2-top-50@2x.png")
+
+	+above($media-screen-tablet)
+		margin-right 0
+
+	+above($media-screen-desktop)
+		width 83px
+		height 93px
+
+.trust-seal--security
+	img
+		margin-left 25px
+		width 64px
+		height 38px
+
+		+above($media-screen-tablet)
+			margin-left 0
+
+		+above($media-screen-desktop)
+			width 100px
+			height 60px
+
+.trust-seal--shopper-approved
+	img
+		margin-right 20px
+		width 83px
+		height 32px
+
+		+above($media-screen-tablet)
+			margin-right 0
+
+		+above($media-screen-desktop)
+			width 130px
+			height 50px

@@ -1,0 +1,22 @@
+mixin related-features-menu()
+     .related-features
+          for feature in features
+               .related-features__column
+                    .related-features__title
+                         = feature.title
+                    .related-features__list
+                         for item in feature.list
+                              .related-features__list__item
+                                   a(href="#").related-features__list__item__link.icon-with-text
+                                        img(src="images/global/related-features/" + item.icon + "" title="" alt="").icon-with-text__icon
+                                        = item.text
+
+
+mixin accordion-related-features-menu-items()
+     for feature in features
+          +accordion-item(feature.title)
+               for item in feature.list
+                    .related-features__list__item
+                         a(href="#").related-features__list__item__link.icon-with-text
+                              img(src="images/global/related-features/" + item.icon + "" title="" alt="").icon-with-text__icon
+                              = item.text

@@ -1,0 +1,6 @@
+mixin footer-menu(data)
+	ul.footer-menu&attributes(attributes)
+		each item in data
+			li.footer-menu__item
+				a.footer-menu__link= item
+				

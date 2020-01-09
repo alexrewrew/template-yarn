@@ -1,0 +1,55 @@
+.numbered-list__item
+  margin-bottom 8px
+  color $text-color-darken
+  font-size $font-size-small
+
+  +above($media-screen-tablet)
+    margin-bottom 12px
+    font-size $font-size-base
+
+  +above($media-screen-desktop)
+    display inline-block
+    margin-top 0
+    margin-bottom 16px
+    font-size 16px
+
+  &:last-child
+    margin-bottom 0
+
+.numbered-list__marker
+  position relative
+  float left
+  font-weight $font-weight-extraBold
+  line-height 1.67
+
+  +above($media-screen-tablet)
+    line-height 1.71
+
+  +above($media-screen-desktop)
+    top 2px
+    line-height 1.5
+
+  &::after
+    position absolute
+    bottom 2px
+    left 0
+    width 100%
+    height 1px
+    background-color #e74c3c
+    content ""
+
+    +above($media-screen-tablet)
+      bottom 1px
+
+.numbered-list__description
+  overflow hidden
+  padding-left 13px
+  font-weight $font-weight-normal
+  line-height 1.67
+
+  +above($media-screen-tablet)
+    padding-left 12px
+    line-height 1.71
+
+  +above($media-screen-desktop)
+    line-height 1.75

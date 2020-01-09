@@ -1,0 +1,32 @@
+.section-title
+	@extend .text-centered
+	margin-top 0
+	margin-bottom 4px
+	color $title-color
+	font-weight $font-weight-extraBold
+	font-size 20px
+	line-height 1.6
+
+	+above($media-screen-tablet)
+		margin-bottom 4px
+		font-size 24px
+		line-height 1.5
+
+	+above($media-screen-desktop)
+		margin-bottom 8px
+		font-size 36px
+		line-height 1.44
+
+.section-title--primary
+	margin-bottom 12px
+	font-weight $font-weight-extraBold
+	font-size 24px
+	line-height 1.5
+
+	+above($media-screen-tablet)
+		font-size 28px
+		line-height 1.43
+
+	+above($media-screen-desktop)
+		font-size 40px
+		line-height 1.3

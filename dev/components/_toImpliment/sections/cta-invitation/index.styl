@@ -1,0 +1,109 @@
+.page-section--cta-invitation
+	position relative
+	background-color #4258b4
+
+	+above($media-screen-desktop)
+		overflow hidden
+		margin-top -20px
+
+	&::before
+		+above($media-screen-desktop)
+			position absolute
+			top 0
+			left 0
+			width 100%
+			height 20px
+			background-color $white
+			content ""
+
+	.page-section__inner
+		padding-top 28px
+		padding-bottom 28px
+		text-align center
+
+		+above($media-screen-tablet)
+			padding-top 42px
+			padding-bottom 42px
+			max-width none
+
+		+above($media-screen-desktop)
+			position relative
+			padding-top 56px
+			padding-bottom 56px
+			max-width 960px
+
+		&:before
+			position absolute
+			bottom 0
+			left 0
+			width 55px
+			height 91px
+			background-image url("../images/_modules/sections/cta-invitation/decoration-pattern-mob-1.png")
+			background-size contain
+			background-repeat no-repeat
+			content ""
+
+			+retina()
+				background-image url("../images/_modules/sections/cta-invitation/decoration-pattern-mob-1@2x.png")
+
+			+above($media-screen-tablet)
+				bottom 0
+				left -186px
+				width 400px
+				height 160px
+				background-image url("../images/_modules/sections/cta-invitation/decoration-pattern-3.png")
+
+			+above($media-screen-desktop)
+				left -140px
+
+		&:after
+			position absolute
+			right 0
+			bottom 0
+			width 64px
+			height 171px
+			background-image url("../images/_modules/sections/cta-invitation/decoration-pattern-mob-2.png")
+			background-size contain
+			background-repeat no-repeat
+			content ""
+
+			+retina()
+				background-image url("../images/_modules/sections/cta-invitation/decoration-pattern-mob-2@2x.png")
+
+			+above($media-screen-tablet)
+				right 0
+				bottom 0
+				width 128px
+				height 220px
+				background-image url("../images/_modules/sections/cta-invitation/decoration-pattern-4.png")
+				background-size contain
+				background-repeat no-repeat
+				content ""
+
+				+retina()
+					background-image url("../images/_modules/sections/cta-invitation/decoration-pattern-4@2x.png")
+
+			+above($media-screen-desktop)
+				right -50px
+				bottom 0
+				width 240px
+				height 235px
+				background-image url("../images/_modules/sections/cta-invitation/decoration-pattern-5.png")
+
+				+retina()
+					background-image url("../images/_modules/sections/cta-invitation/decoration-pattern-5@2x.png")
+
+	.section-title
+		position relative
+		z-index 2
+		margin 0 -1px 17px
+		color $white
+
+		+above($media-screen-desktop)
+			margin 0 0 23px
+
+.cta-invitation-button
+	position relative
+	z-index 2
+	display inline-block
+	margin 0 auto

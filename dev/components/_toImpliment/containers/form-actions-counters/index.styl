@@ -1,0 +1,92 @@
+.actions-counters
+	position absolute
+	bottom -102px
+	left 50%
+	width 288px
+	transform translate(-50%, 0)
+
+	+above($media-screen-tablet)
+		position relative
+		bottom auto
+		left auto
+		display block
+		width auto
+		transform none
+
+.actions-counters__date
+	margin-bottom 17px
+	min-height 18px
+	color #999999
+	text-transform uppercase
+	font-weight $font-weight-semiBold
+	font-size 11px
+
+	+above($media-screen-desktop)
+		color #9dabe4
+		font-size 12px
+
+.actions-counters__list
+	display flex
+	justify-content space-between
+
+	+above($media-screen-tablet)
+		display block
+
+	clearfix()
+
+.actions-counters__list-item
+	float left
+	margin-right 23px
+
+	&:last-child
+		margin-right 0
+
+	+above($media-screen-tablet)
+		margin-right 19px
+
+	+above($media-screen-desktop)
+		margin-right 23px
+
+.action-counter
+	clearfix()
+
+.action-counter__icon
+	display none
+
+	+above($media-screen-desktop)
+		display block
+		float left
+		margin-right 12px
+
+.action-counter__details
+	position relative
+	top -7px
+	overflow hidden
+	color white
+
+.action-counter__value
+	color white
+	font-weight 800
+	font-size 20px
+	line-height 1.3
+
+	+above($media-screen-desktop)
+		font-size 25px
+
+.action-counter__caption
+	color white
+	text-transform uppercase
+	font-weight 600
+	font-size 11px
+
+	+above($media-screen-desktop)
+		font-size 12px
+
+.actions-counters--colorful
+	.action-counter__caption
+	.actions-counters__date
+		color #888888
+
+	.action-counter__details
+	.action-counter__value
+		color #414141

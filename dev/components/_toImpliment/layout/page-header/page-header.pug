@@ -1,0 +1,82 @@
+include ../../navigations/main-menu/main-menu
+	
+mixin page-header()
+	.page-header
+		.page-header__inner
+			.page-header__logo
+				a(href="#").header-logo
+					img(src="./images/_global/header/logo-pdffiller.svg" alt="PDFfiller").header-logo__img
+					
+			.page-header__lang-toggler
+				.lang-toggler.main-menu-toggler
+					| En
+
+			.page-header__main-menu
+				+main-menu()
+
+			.page-header__user-icon.js-user-account
+				.user-icon.main-menu-toggler
+				.user-dropdown-menu
+					.user-dropdown-summary
+						.user-dropdown-summary__avatar
+							.user-icon
+								.user-icon__editable
+									| Edit photo
+
+						.user-dropdown-summary__info
+							.user-dropdown-name.is-editable#user-dropdown-name
+								.user-dropdown-name__value Vadim YasinovskiyVadim YasinovskiyVadim Yasinovskiy
+
+								input(type="text" value="Vadim Yasinovskiy" disabled).user-dropdown-name__input
+								
+								span.user-dropdown-name__submit
+
+							.user-dropdown-email
+								| vadim.yasinovskiy@pdffiller.com
+
+					.user-dropdown-details
+						table.user-dropdown-details__table
+							tr
+								td
+									| Account ID:
+
+								td
+									| 10964978
+
+							tr
+								td
+									| Internal email:
+
+								td
+									a(href="#")
+										| u+3375092@pdffiller.com
+
+							tr
+								td
+									| Inbound fax:
+
+								td
+									a(href="#")
+										| Get my Fax Number
+
+							tr
+								td
+									| Subscription:
+
+								td
+									a(href="#")
+										| Monthly Subscription
+
+					.user-dropdown-navmenu
+						.user-dropdown-navmenu__item
+							a(href="#").user-dropdown-menu__link
+								| Settings
+
+						.user-dropdown-navmenu__item
+							a(href="#").user-dropdown-menu__link
+								| Log Out
+					
+			.mobile-menu-trigger(data-offcanvas-trigger="")
+				svg(xmlns='http://www.w3.org/2000/svg', width='20', height='14', viewBox='0 0 20 14')
+					path(d='M0.000,14.000 L0.000,12.000 L20.000,12.000 L20.000,14.000 L0.000,14.000 ZM0.000,6.000 L20.000,6.000 L20.000,8.000 L0.000,8.000 L0.000,6.000 ZM0.000,0.000 L20.000,0.000 L20.000,2.000 L0.000,2.000 L0.000,0.000 Z')
+

@@ -1,0 +1,413 @@
+extends ../../layouts/responsive
+
+include ../../modules/navigations/bread-crumbs/bread-crumbs
+include ../../modules/layout/page-section/page-section
+include ../../modules/containers/accordion/index
+include ../../modules/containers/form-actions-counters/index
+include ../../modules/containers/uploader/index
+include ../../modules/typography/section-title/section-title
+include ../../modules/typography/section-subtitle/section-subtitle
+include ../../modules/elements/button/button
+include ../../modules/elements/video/video
+include ../../modules/elements/numbered-list/numbered-list
+include ../../modules/elements/checked-list/checked-list
+include ../../modules/elements/service-approves/service-approves
+include ../../modules/sections/cta-invitation/index
+
+block head
+	- title = "Functionality | PDFfiller"
+
+block styles
+	link(rel="stylesheet" href=config.path.styles + "/functionality-redesign-v2-page.css")
+
+block scripts
+	script(src=config.path.scripts + "/functionalityPage.js")
+
+block main
+	+page-section("intro")
+		+bread-crumbs(["Home", "Functionality index", "PDF Editor: Edit PDF Document Online", "How To Edit A PDF"]).bread-crumbs-wrapper--reverse
+
+		+section-title()
+			| Online PDF Editor For Free
+
+		+button(size="md").button--upload-docs-mobile.js-upload-documents
+			| Select documents
+		
+		+form-actions-counters()
+
+	+page-section("uploader")
+		+uploader()
+
+		.execution-steps
+			.execution-steps__item
+				.execution-step-figure
+					.execution-step-figure__icon
+						| <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><g fill="none" fill-rule="evenodd"><path d="M0 0h48v48H0z"/><circle cx="27" cy="27" r="21" fill="#C2AFFF" fill-rule="nonzero"/><circle cx="21" cy="21" r="20" stroke="#414141" stroke-width="2"/><text fill="#414141" font-family="OpenSans-Bold, Open Sans" font-size="14" font-weight="bold"><tspan x="13" y="27">01</tspan></text></g></svg>
+
+					.execution-step-figure__caption
+						| Upload your document PDF editor
+
+			.execution-steps__item
+				.execution-step-figure
+					.execution-step-figure__icon
+						| <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><g fill="none" fill-rule="evenodd"><path fill="none" d="M0 0h48v48H0z"/><circle cx="27" cy="27" r="21" fill="#FF8A7E" fill-rule="nonzero"/><circle cx="21" cy="21" r="20" stroke="#414141" stroke-width="2"/><text fill="#414141" font-family="OpenSans-Bold, Open Sans" font-size="14" font-weight="bold"><tspan x="13" y="27">02</tspan></text></g></svg>
+
+					.execution-step-figure__caption
+						| Type anywhere or sign your form
+
+			.execution-steps__item
+				.execution-step-figure
+					.execution-step-figure__icon
+						| <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><g fill="none" fill-rule="evenodd"><path fill="none" d="M0 0h48v48H0z"/><circle cx="27" cy="27" r="21" fill="#A6CDFF" fill-rule="nonzero"/><circle cx="21" cy="21" r="20" stroke="#414141" stroke-width="2"/><text fill="#414141" font-family="OpenSans-Bold, Open Sans" font-size="14" font-weight="bold"><tspan x="13" y="27">03</tspan></text></g></svg>
+
+					.execution-step-figure__caption
+						| Print, email, fax, or export
+
+			.execution-steps__item
+				.execution-step-figure
+					.execution-step-figure__icon
+						| <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><g fill="none" fill-rule="evenodd"><path d="M0 0h48v48H0z"/><circle cx="27" cy="27" r="21" fill="#FFBA00" fill-rule="nonzero"/><circle cx="21" cy="21" r="20" stroke="#414141" stroke-width="2"/><text fill="#414141" font-family="OpenSans-Bold, Open Sans" font-size="14" font-weight="bold"><tspan x="13" y="27">04</tspan></text></g></svg>
+
+					.execution-step-figure__caption
+						| Try it right now! Edit pdf
+
+	+page-section("functionality")
+		+section-title()
+			| How to Edit a PDF
+
+		+section-subtitle()
+			| Get a simple, paperless solution for document editing. Whether your PDF is native, scanned
+			| or image-based, PDFfiller allows your to edit and share important docs in seconds:
+			| from your office, home or even while on the go.
+
+		.functionality-sections
+			.functionality-section.functionality-section--one-video
+				.functionality-section__media
+					+video(
+						previewColor="red",
+						videoId="KXO8qLfvzfg",
+						linkText="How to Edit a PDF Online Using PDFfiller?")
+
+				.functionality-section__content
+					.functionality-description
+						p
+							| PDF is the most widely-used document format in the world due to its
+							| specific advantages over other formats. The most significant being that docs load with the exact same
+							| appearance across all devices and operating systems. Editing PDFs take time and effort. For instance,
+							| a simple procedure of signing a document or completing an application form
+							| requires printing, filling out by hand, scanning and re-saving it in PDF
+							| format. Luckily, there are new ways to avoid these complications.
+
+						p
+							| One solution is to download and install a paid app on your device. By doing so,
+							| you spend your money without knowing the results and may slow down your device’s performance.
+							| Another option, and the most convenient, is to use a web-based PDF editor.
+							| Processing your files online saves time and enables you to work on any device. The
+							| web-based PDFfiller editor runs on most platforms without using up hard disk space
+							| as all files are stored in the cloud.
+
+						p
+							| Regardless if your device is mobile or desktop, or its operating system
+							| is Windows, Mac OS or Android, you can use PDFfiller to edit a doc.
+
+			.functionality-section
+				.functionality-section__content
+					.functionality-section__icon
+						| <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><g fill="none" fill-rule="evenodd"><g fill-rule="nonzero"><path fill="none" d="M0 0h48v48H0z"/><path fill="#C2AFFF" d="M10 23.7c.189 0 .377.012.564.033.663.09 1.29-.32 1.513-.961C13.683 18.123 18.014 15 22.857 15c6.302 0 11.429 5.204 11.429 11.6 0 .534-.046 1.079-.14 1.666a1.45 1.45 0 0 0 .961 1.611C38.034 30.859 40 33.619 40 36.75c0 3.998-3.204 7.25-7.143 7.25H11.221c-1.561 0-2.502-.094-2.512-.094C3.759 43.275 0 38.95 0 33.85 0 28.254 4.486 23.7 10 23.7z"/><path fill="#414141" d="M30 39v-2H18v2h-5.938C6.514 39 2 34.55 2 29.083c0-3.887 2.283-7.36 5.787-8.971a12.353 12.353 0 0 1-.037-.945C7.75 11.357 14.199 5 22.125 5c5.731 0 10.895 3.376 13.167 8.501C42.32 13.623 48 19.296 48 26.25c0 6.409-4.864 11.843-11.316 12.64-.076.008-1.118.11-2.85.11H30zm16-12.75c0-5.848-4.79-10.646-10.742-10.749l-1.276-.022-.518-1.167C31.504 9.89 27.044 7 22.125 7 15.297 7 9.75 12.467 9.75 19.167c0 .254.01.518.032.792l.106 1.388-1.265.582C5.803 23.226 4 26.005 4 29.083 4 33.44 7.612 37 12.063 37h21.77c.726 0 1.375-.018 1.938-.05.33-.017.59-.037.682-.047C41.9 36.223 46 31.64 46 26.25z"/><path fill="#414141" d="M23.004 29.414L20.47 31.95a1 1 0 1 1-1.415-1.414l4.243-4.243a.997.997 0 0 1 1.414 0l4.243 4.243a1 1 0 0 1-1.414 1.414l-2.536-2.536v16.829a1 1 0 1 1-2 0V29.414zM18 39a1 1 0 1 1 0-2 1 1 0 0 1 0 2zm12 0a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/></g></g></svg>
+
+					.functionality-section__title
+						| Upload a PDF using the PDFfiller uploader
+
+					.functionality-section__description
+						| In order to start working with the editor, upload PDF files from your device’s hard drive,
+						| cloud or online storage. You can also import documents from Email or ask another user to send
+						| you a file so you can edit it in PDFfiller. PDFfiller supports PDF, Word, PowerPoint
+						| and Text formats.
+
+				.functionality-section__media
+					img(data-src="images/functionality/bitmap/screens/screen_1.png"
+						data-srcset="images/functionality/bitmap/screens/screen_1@2x.png 2x, images/functionality/bitmap/screens/screen_1@3x.png 3x" class='lazyload')
+
+			.functionality-section.functionality-section--media-first
+				.functionality-section__content
+					.functionality-section__icon
+						| <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><g fill="none" fill-rule="evenodd"><path fill="#FFF" fill-opacity="0" fill-rule="nonzero" d="M0 0h48v48H0z"/><path fill="#FFBA00" fill-rule="nonzero" d="M11 11h34v34H11z"/><path stroke="#414141" stroke-width="2" d="M6 6h32v32H6z"/><path fill="#FFF" fill-rule="nonzero" stroke="#414141" stroke-width="2" d="M4 4h4v4H4zM4 36h4v4H4zM36 4h4v4h-4z"/><path fill="#FFBA00" fill-rule="nonzero" stroke="#414141" stroke-width="2" d="M36 36h4v4h-4z"/><path fill="#414141" fill-rule="nonzero" d="M11 14h21v2H11zM11 26h11v2H11zM11 20h21v2H11z"/></g></svg>
+
+					.functionality-section__title
+						| Insert text boxes, type anywhere on the page and customize text
+
+					.functionality-section__description
+						| Open your document in the editor. Click the «Text» icon to start typing. Use your mouse
+						| or touchpad to drag text and place it anywhere on the page. Change text color and size.
+						| Make it bold, italicized or underlined and adjust text alignment. You can also delete existing
+						| text by using the «Eraser» tool.
+
+				.functionality-section__media
+					img(data-src="images/functionality/bitmap/screens/screen_2.png"
+						data-srcset="images/functionality/bitmap/screens/screen_2@2x.png 2x, images/functionality/bitmap/screens/screen_2@3x.png 3x" class='lazyload')
+
+			.functionality-section
+				.functionality-section__content
+					.functionality-section__icon
+						| <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><g fill="none" fill-rule="evenodd"><g fill-rule="nonzero"><path fill="none" d="M0 0h48v48H0z"/><ellipse cx="26.308" cy="28.037" fill="#A6CDFF" rx="18.077" ry="18.148"/><path stroke="#414141" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6.884 2.142c4.528 4.06 6.792 10.763 6.792 20.108 0 14.017-6.188 18.889-9.565 17.742-2.597-.88-4.32-6.118-2.597-12.98 2.001-7.97 10.938-17.218 16.594-17.218 4.42 0 7.853 4.093 6.953 13.06-.28 2.794-1.715 7.496-4.304 14.107 3.39-7.518 6.254-10.835 8.592-9.95 2.339.886 2.339 3.71 0 8.47 3.1-6.15 5.752-9.226 7.957-9.226 3.308 0 .822 10.69 4.205 9.05 2.255-1.092 3.79-1.964 4.606-2.617"/></g></g></svg>
+
+					.functionality-section__title
+						| Sign documents online
+
+					.functionality-section__description
+						| Easily create a unique electronic sample of your handwritten signature and use
+						| it to sign documents. Open the Signature Wizard and generate your autograph by entering
+						| your name in the respective field. You can also draw it with your mouse, touchpad or upload
+						| a scanned image of your signature.
+						
+				.functionality-section__media
+					img(data-src="images/functionality/bitmap/screens/screen_3.png"
+						data-srcset="images/functionality/bitmap/screens/screen_3@2x.png 2x, images/functionality/bitmap/screens/screen_3@3x.png 3x" class='lazyload')
+
+			.functionality-section.functionality-section--media-first
+				.functionality-section__content
+					.functionality-section__icon
+						| <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><g fill="none" fill-rule="evenodd"><g fill-rule="nonzero"><path fill="#FFF" fill-opacity="0" d="M0 0h48v48H0z"/><path fill="#FF8A7E" d="M11.303 2H41c-.781 4.125-1.612 7.128-2.49 9.007-2.254 4.818-5.983 9.086-7.475 13.91-1.347 4.354-1.737 8.715-1.171 13.083H.167c-.448-4.353.004-8.714 1.355-13.083 1.567-5.064 5.386-8.839 7.745-13.91.797-1.713 1.476-4.716 2.036-9.007z"/><path fill="#FFF" stroke="#414141" stroke-width="2" d="M18.904 11c-.536 3.922-1.18 6.716-1.953 8.42-.794 1.75-1.65 3.216-3.225 5.667a1013.003 1013.003 0 0 1-.92 1.432c-1.792 2.81-2.739 4.618-3.363 6.687C8.253 37.148 7.8 41.078 8.08 45h26.94c-.376-4.132.058-8.259 1.3-12.372.662-2.196 1.668-4.193 3.49-7.22a193.232 193.232 0 0 1 .828-1.367c1.561-2.566 2.308-3.885 3.021-5.449.735-1.61 1.45-4.147 2.13-7.592H18.905z"/><path fill="#414141" d="M14.741 33h17l-.773 2h-17l.773-2zM17 27h17l-1.35 2h-17L17 27zm4-6h16l-1 2H20l1-2z"/></g></g></svg>
+
+					.functionality-section__title
+						| Make your PDF fillable, add pictures, notes and other objects
+
+					.functionality-section__description
+						| Place fillable fields anywhere on a document and make it possible for other users
+						| to fill, sign and submit your document. Insert dropdown menus, lists, checkbox fields, etc. Any
+						| field you create can be easily moved, resized or deleted. Import images, arrows, bookmarks
+						| and sticky notes. Add, remove or rotate pages in your document.
+
+				.functionality-section__media
+					img(data-src="images/functionality/bitmap/screens/screen_4.png"
+						data-srcset="images/functionality/bitmap/screens/screen_4@2x.png 2x, images/functionality/bitmap/screens/screen_4@3x.png 3x" class='lazyload')
+
+			.functionality-section
+				.functionality-section__content
+					.functionality-section__icon
+						| <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><g fill="none" fill-rule="evenodd"><g fill-rule="nonzero"><path fill="none" d="M0 0h48v48H0z"/><path fill="none" d="M0 0h48v48H0z"/><path fill="#FFBA00" d="M26.6 15H46a1 1 0 0 1 1 1v25a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V12a1 1 0 0 1 1-1h16.323a1 1 0 0 1 .928.629L26.6 15z"/><path stroke="#414141" stroke-width="2" d="M40 11H19.923l-1.6-4H2v29h38V11z"/><path stroke="#414141" stroke-width="2" d="M21 24.486V24.1l.75-.193A3.002 3.002 0 0 0 21 18a3 3 0 0 0-.75 5.906l.75.193v.387z"/></g></g></svg>
+
+					.functionality-section__title
+						| Add watermarks and secure your data
+
+					.functionality-section__description
+						| Protect your file from being copied or scanned without your permission. Click the «Add Watermark»
+						| box to place a watermark. Specify its size, opacity and orientation on the page. Organize
+						| large PDFs and improve navigation within your document by adding pages or bates numbering.
+
+				.functionality-section__media
+					img(data-src="images/functionality/bitmap/screens/screen_5.png"
+						data-srcset="images/functionality/bitmap/screens/screen_5@2x.png 2x, images/functionality/bitmap/screens/screen_5@3x.png 3x" class='lazyload')
+
+			.functionality-section.functionality-section--media-first
+				.functionality-section__content
+					.functionality-section__icon
+						| <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><g fill="none" fill-rule="evenodd"><g fill-rule="nonzero"><path fill="none" d="M0 0h48v48H0z"/><path fill="#C2AFFF" d="M45 12.98V46H15V6h23.062z"/><path stroke="#414141" stroke-width="2" d="M10 3v17h25V8.418L29.519 3H10z"/><path fill="#414141" d="M30 8h6v2h-8V2h2v6z"/><path stroke="#414141" stroke-width="2" d="M10 34v5h25v-5H10zM6 20a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h33a1 1 0 0 0 1-1V21a1 1 0 0 0-1-1H6z"/><path fill="#414141" d="M9 24h8v2H9v-2zm0 4h5v2H9v-2z"/></g></g></svg>
+
+					.functionality-section__title
+						| Print, download or share your documents
+
+					.functionality-section__description
+						| Click «Done» to save changes. Instantly download or print edited PDFs, share them
+						| with your business partners and enable them to edit your file by simply providing them with the
+						| link. Send your documents to anyone via USPS, fax, email or even SMS. Send reminders
+						| to recipients and make sure each document is submitted on time.
+
+				.functionality-section__media
+					img(data-src="images/functionality/bitmap/screens/screen_6.png"
+						data-srcset="images/functionality/bitmap/screens/screen_6@2x.png 2x, images/functionality/bitmap/screens/screen_6@3x.png 3x" class='lazyload')
+
+		.functionality-description
+			| PDFfiller is a time-saving and easy-to-operate online editor.
+			| We provide our customers with a full range of up-to-date instruments for editing,
+			| converting, signing and sharing PDF documents. With PDFfiller, there’s always a simple and effective
+			| solution to any paperwork problem. A job that would have previously taken hours can now be done
+			| in seconds. Our platform combines a powerful toolkit with an intuitive interface and
+			| a straightforward feature set. Our 24/7 support team is always available to provide technical
+			| advice or help you with any issues. Use it for any of your PDFs and forget about sorting through
+			| piles of paperwork on your desk for a single document. Streamline your workflow and join the
+			| millions of PDFfiller users worldwide.
+
+	+page-section("tutorial")
+		+section-title()
+			| PDFfiller Google Chrome Extension
+
+		.tutorial
+			.tutorial__media
+				.functionality-section__media
+					+video(
+						previewColor="blue",
+						videoId="KXO8qLfvzfg",
+						linkText="How to Edit a PDF Online Using PDFfiller?")
+
+			.tutorial__steps
+				+numbered-list([
+					'In Gmail, navigate to a PDF attachment and click the «Fill» button.',
+
+					'Use PDFfiller to edit your document and share it via email or SMS.',
+
+					'Search for the document you need and an orange «Fill» button will appear next to any PDFs in the result.',
+
+					'Add a PDF directly from a website. Just click the orange «Fill» button and a linked PDF will open in PDFfiller where you can fill and request a verified and secure signature with SendToSign.',
+
+					'With the new PDFfiller Google Chrome extension, importing, editing and sharing documents from the web in PDFfiller has never been easier!'
+				])
+
+	+page-section("approves")
+		.section-decoration
+			| <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><g fill="none" fill-rule="evenodd"><g fill-rule="nonzero"><path fill="none" d="M0 0h48v48H0z"/><g transform="translate(0 4)"><ellipse cx="14" cy="29" fill="#FFB900" rx="9" ry="10"/><path fill="#414141" d="M9.146 20.071a1 1 0 0 1-.448 1.342c-2.117 1.057-3.203-1.567-1.923-3.508 1.3-1.97 4.267-3.236 8.58-1.956 3.577 1.062 7.072 5.42 6.609 11.124-.525 6.461-6.192 10.34-12.044 9.888-9.536-.737-12.186-10.164-7.964-20.733 2.4-6.01 5.98-11.59 10.731-15.964a1 1 0 0 1 1.355 1.472C9.51 5.907 6.102 11.237 3.812 16.97c-3.793 9.5-1.575 17.392 6.262 17.997 4.798.37 9.465-2.743 9.897-8.056.38-4.693-2.461-8.236-5.185-9.044-1.997-.593-3.578-.528-4.808-.003-.769.328-1.307.8-1.534 1.143a1.62 1.62 0 0 0-.235.512 1 1 0 0 1 .937.552z"/><ellipse cx="38" cy="29" fill="#FFB900" rx="9" ry="10"/><path fill="#414141" d="M33.146 20.071a1 1 0 0 1-.448 1.342c-2.117 1.057-3.203-1.567-1.923-3.508 1.3-1.97 4.267-3.236 8.58-1.956 3.577 1.062 7.072 5.42 6.609 11.124-.525 6.461-6.192 10.34-12.044 9.888-9.536-.737-12.186-10.164-7.964-20.733 2.4-6.01 5.98-11.59 10.731-15.964a1 1 0 0 1 1.355 1.472c-4.532 4.171-7.94 9.501-10.23 15.234-3.793 9.5-1.575 17.392 6.262 17.997 4.798.37 9.465-2.743 9.897-8.056.38-4.693-2.461-8.236-5.185-9.044-1.997-.593-3.578-.528-4.808-.003-.769.328-1.307.8-1.534 1.143a1.62 1.62 0 0 0-.235.512 1 1 0 0 1 .937.552z"/></g></g></g></svg>
+
+		+section-title()
+			| What our customers say about PDFfiller
+
+		+section-subtitle()
+			| See for yourself by reading reviews on the most popular resources:
+
+		+service-approves()
+
+	+page-section("guide")
+		+section-title()
+			| How-to Guide
+
+		+section-subtitle()
+			| How to edit a PDF document using the PDFfiller editor:
+
+		.guide
+			+numbered-list([
+				'Type edit-pdf. pdffiller. com into browser’s address bar.',
+
+				'Select a document on your hard drive and upload it to the editor or import a file from your cloud storage service (i. e. Dropbox, Google Drive, Box or OneDrive).',
+
+				'Once uploaded, open your document in the editor to begin making edits.',
+
+				'Browse the tool panel at the top of the editor for the tool you need. Erase, highlight, blackout text, add a text box or sticky note, draw on your PDF, and more.',
+
+				'Use the menu on the right to add a fillable field, image, watermark, or sign your document electronically.',
+
+				'The menu on the left is for editing the pages of a doc. Use it to add, delete, duplicate, rotate and rearrange pages in your document.',
+
+				'Insert an object or field and require recipients to fill it in before submitting their completed copy.',
+
+				'Use a mouse or touchpad to change the size and location of every object you add.',
+
+				'Click Help if you need assistance or wish to contact our Support team.',
+
+				'Click Done to save your changes and return to the Dashboard.'
+			])
+			
+	+page-section("related-features")
+		.related-features 
+			.related-features__column
+				+section-title()
+					| Related features
+				
+				+checked-list([
+					'Share PDF files with others',
+					'Fill and sign any form',
+					'Create fillable PDF forms',
+					'Review and add comments to PDF',
+					'Convert Word to PDF'
+				])
+				
+			.related-features__column
+				.related-features__image-wrapper
+					img(data-src="images/functionality/bitmap/redesign/related-features.png" class="lazyload")
+	
+	+page-section("trust-seals")
+		+section-title()
+			| Pdf Editor Online: Try Risk Free
+
+		.trust-seals
+			.trust-seals__item
+				.trust-seal.trust-seal--money-back-180
+
+			.trust-seals__item
+				.trust-seal.trust-seal--since-2008
+
+			.trust-seals__item
+				.trust-seal.trust-seal--g2-top-50
+
+			.trust-seals__item
+				.trust-seal.trust-seal--recommended
+
+			.trust-seals__item
+				a.trust-seal.trust-seal--security(name="trustlink",
+					href="http://secure.trust-guard.com/security/9424",
+					rel="nofollow",
+					target="_blank",
+					onclick="var nonwin=navigator.appName!='Microsoft Internet Explorer'?'yes':'no'; window.open(this.href.replace(/https?/, 'https'),'welcome','location='+nonwin+',scrollbars=yes,width=517,height='+screen.availHeight+',menubar=no,toolbar=no'); return false;", oncontextmenu="var d = new Date(); alert('Copying Prohibited by Law - This image and all included logos are copyrighted by trust-guard \251 '+d.getFullYear()+'.'); return false;").trust-seal
+					img(name="trustseal",
+						alt="Security Seals",
+						src="//dw26xg4lubooo.cloudfront.net/seals/security/9424-small.gif")
+
+			.trust-seals__item
+				a.trust-seal.trust-seal--shopper-approved(href="http://www.shopperapproved.com/reviews/PDFfiller.com" onclick="var nonwin=navigator.appName!='Microsoft Internet Explorer'?'yes':'no'; var certheight=screen.availHeight-90; window.open(this.href,'shopperapproved','location='+nonwin+',scrollbars=yes,width=620,height='+certheight+',menubar=no,toolbar=no'); return false;").trust-seal
+					img(src="https://c683207.ssl.cf2.rackcdn.com/10517-r.gif", oncontextmenu="var d = new Date(); alert('Copying Prohibited by Law - This image and all included logos are copyrighted by Shopper Approved \251 '+d.getFullYear()+'.'); return false;")
+
+	+page-section("usage-reasons")
+		+section-title()
+			| 9 Reasons Why You Should Use PDFfiller
+
+		+section-subtitle()
+			| Web-based PDF editors are more convenient and cost-effective than downloadable apps.
+			| PDFfiller is a universal solution known for its straightforward interface and range
+			| of professional editing tools. Forget about installing, downloading and updating software on your
+			| device. Choose PDFfiller and enjoy the highest standard in paperless document management.
+
+		+checked-list([
+			'PDFfiller is an award-winning platform with a network of thousands of users worldwide.',
+
+			'PDFfiller offers a full set of intuitive editing features at a low price.',
+
+			'Enterprise-level security for your documents',
+
+			'Every document you upload to the editor is stored on an encrypted offsite server.',
+
+			'Convert PDFs to other popular file formats such as Word, PPT, Excel, JPG, or Text using PDFfiller.',
+
+			'Electronic signatures created using PDFfiller’s Signature Wizard look smooth and natural.',
+
+			'PDFfiller provides its customers with a variety of ready-to-use templates. Save your time and submit time-sensitive documents in seconds.',
+
+			'Every electronic document you create or redact using the PDFfiller editor is as court-admissible as its paper counterpart.',
+
+			'PDFfiller features a robust and user-friendly interface that allows you to process and share documents even while on the go.'
+		])
+
+	+page-section("faq")
+		.page-section__column.page-section__column--intro
+			+section-title()
+				| For PDFfiller’s FAQs
+
+			+section-subtitle()
+				| Below is a list of the most common customer questions. If you can’t find an answer to your question, please don’t hesitate to reach out to us.
+
+		.page-section__column
+			+accordion()
+				+accordion-item("How do I edit a scanned PDF file without Adobe Acrobat?")
+					| Upload your docs to the PDFfiller editor and perform all the necessary edits directly in your browser.
+					| This will work for any of your PDFs, even scanned or downloaded files from the Web. The app is web-based
+					| and doesn’t require installation. You can access it from your Windows or Mac computer, tablet or mobile device.
+
+				+accordion-item("How do I store a PDF that can be edited?")
+					| First, upload your file to PDFfiller. You can start editing it online right away or click “Done” and store
+					| it for later use. Each document you upload is automatically saved in the MyBox folder of your Dashboard and
+					| can be accessed anytime from any device you use.
+
+				+accordion-item("How do I edit a PDF on a Mac?")
+					| There is no default app for editing PDFs on a Mac. You can go to the AppStore and download one of the
+					| many apps offered without knowing how effective it will be. Or you can use PDFfiller and easily edit your
+					| document online. This way proves to be the most effective for saving time and money.
+
+				+accordion-item("How do I edit a PDF in Google Docs?")
+					| Open your PDF in the PDFfiller online application, go to Dashboard, then click the Mybox tab. Select your
+					| document and choose the “Google” button from the menu on the right. The Google Docs editor will open within
+					| PDFfiller. There you can edit your docs using all standard editing tools.
+
+				+accordion-item("How do I write in a PDF document?")
+					| If you want to add text to a PDF, use the PDFfiller uploader to open your file in the editor. Add simple
+					| text fields or choose one of the other instruments from the toolbar. In both cases, you will be able to
+					| customize your text and drag it to the desired location on the page.
+
+
+	+page-section-cta-invitation("Sign up and try for free", "Start your demo")

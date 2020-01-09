@@ -1,0 +1,82 @@
+mixin form-actions-counters(mode)
+	//- Can accept "reverse mode" to have light text and dark icons
+	-
+		let classes = [];
+		const baseClassName = "actions-counters";
+
+		classes.push(baseClassName);
+		if (mode) {
+			const modifier = baseClassName + "--" + mode;
+
+			classes.push(modifier);
+		}
+
+	div(class=classes)
+		.actions-counters__date#action-counters-current-date
+
+		.actions-counters__list
+			.actions-counters__list-item
+				.action-counter
+					.action-counter__icon
+						if mode === "colorful"
+							svg(xmlns='http://www.w3.org/2000/svg', width='48', height='48', viewBox='0 0 48 48')
+								g(fill-rule='nonzero', fill='none')
+									path(d='M0 0h48v48H0z')
+									path(fill='#FFBA00', d='M10 13h30v30H10z')
+									path(stroke='#414141', stroke-width='2', d='M4 7v30h30V7H4z')
+									path(fill='#414141', d='M18 28V17h-4v1h-2v-3h14v3h-2v-1h-4v11h1v2h-4v-2h1z')
+
+						else
+							svg(xmlns='http://www.w3.org/2000/svg', width='37', height='39', viewBox='0 0 37 39')
+								path(fill='#0A1F77', fill-rule='nonzero', d='M29 18.07v6.051l1.743-1.742a1 1 0 1 1 1.414 1.414L29 26.95v4.98a7.002 7.002 0 0 0 0-13.86zm2 15.418V37a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h27a2 2 0 0 1 2 2v14.512a9.004 9.004 0 0 1 0 16.976zm-2-17.433V2H2v35h27v-3.055a9 9 0 1 1 0-17.89zm0 2.016a7 7 0 1 0 0 13.858v-4.98l-1.207 1.208a1 1 0 0 1-1.414 0l-2.536-2.536a1 1 0 1 1 1.414-1.414l1.829 1.829L29 24.12v-6.05zM8 9h15a1 1 0 0 1 0 2H8a1 1 0 0 1 0-2zm0 5h15a1 1 0 0 1 0 2H8a1 1 0 0 1 0-2zm0 5h6a1 1 0 0 1 0 2H8a1 1 0 0 1 0-2z')
+
+					.action-counter__details
+						.action-counter__value#counter-edit
+							| 0
+
+						.action-counter__caption
+							| Forms filled
+
+			.actions-counters__list-item
+				.action-counter
+					.action-counter__icon
+						if mode === "colorful"
+							svg(xmlns='http://www.w3.org/2000/svg', width='48', height='48', viewBox='0 0 48 48')
+								g(fill-rule='nonzero', fill='none')
+									path(d='M0 0h48v48H0z')
+									path(fill='#FF8A7E', d='M10 13h30v30H10z')
+									path(fill='#414141', d='M17.104 24.877c0 4.684-2.506 7.78-5.081 7.028-1.789-.523-2.482-3.039-1.712-5.68.56-1.919 2.256-3.978 4.114-5.278-.384-.898-.929-1.613-1.631-2.155a1 1 0 0 1 1.222-1.584c.938.724 1.66 1.65 2.168 2.77.584-.231 1.155-.361 1.681-.361 2.604 0 4.151 2.2 3.757 5.582a8.15 8.15 0 0 1-.31 1.38c1.39-.963 2.474-1.312 3.358-1.024.838.273 1.281.844 1.822 1.93l.204.413c.105.209.187.356.25.451.745-.315 1.248-.565 1.483-.726a1 1 0 1 1 1.133 1.648c-.397.273-1.056.595-2.012.994-1.264.527-1.96-.108-2.642-1.472l-.206-.417c-.308-.617-.506-.872-.652-.92-.407-.132-2.044.891-4.442 3.176-.797.759-2.056-.137-1.6-1.138.988-2.17 1.531-3.704 1.627-4.526.267-2.288-.481-3.351-1.77-3.351-.316 0-.677.09-1.061.253.2.913.3 1.916.3 3.007zm-4.873 1.909c-.5 1.716-.13 3.058.352 3.199.3.088.847-.142 1.346-.758.726-.897 1.175-2.368 1.175-4.35 0-.662-.04-1.277-.121-1.846-1.241 1.034-2.378 2.473-2.752 3.755z')
+									path(stroke='#414141', stroke-width='2', d='M4 7v30h30V7H4z')
+
+						else
+							svg(xmlns='http://www.w3.org/2000/svg', width='37', height='39', viewBox='0 0 37 39')
+								path(fill='#0A1F77', fill-rule='nonzero', d='M29 23V2H2v35h27v-4a1 1 0 1 1 2 0v4a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h27a2 2 0 0 1 2 2v21a1 1 0 1 1-2 0zm-9.764 5.786c-.501 1.716-.131 3.058.352 3.199.3.088.847-.142 1.346-.758.725-.897 1.174-2.369 1.174-4.35 0-.662-.04-1.277-.121-1.846-1.241 1.034-2.378 2.473-2.751 3.755zm4.872-1.909c0 4.684-2.506 7.78-5.081 7.028-1.789-.523-2.482-3.039-1.711-5.68.56-1.919 2.255-3.978 4.113-5.278-.383-.898-.928-1.613-1.63-2.155a1 1 0 0 1 1.221-1.584c.938.724 1.66 1.65 2.168 2.77.585-.232 1.155-.361 1.682-.361 2.603 0 4.15 2.2 3.756 5.582a8.15 8.15 0 0 1-.31 1.38c1.39-.963 2.474-1.312 3.358-1.024.838.273 1.282.844 1.822 1.93l.205.413c.104.209.186.355.25.451.744-.315 1.248-.565 1.482-.726a1 1 0 1 1 1.134 1.648c-.397.273-1.056.595-2.013.994-1.263.527-1.96-.108-2.642-1.472l-.206-.417c-.307-.617-.505-.872-.652-.92-.407-.132-2.044.891-4.442 3.176-.796.759-2.056-.137-1.6-1.138.988-2.17 1.532-3.704 1.628-4.527.266-2.287-.482-3.35-1.77-3.35-.316 0-.678.09-1.062.253.2.913.3 1.916.3 3.007zM8 9h15a1 1 0 1 1 0 2H8a1 1 0 1 1 0-2zm0 5h15a1 1 0 1 1 0 2H8a1 1 0 1 1 0-2zm0 5h6a1 1 0 1 1 0 2H8a1 1 0 1 1 0-2z')
+
+					.action-counter__details
+						.action-counter__value#counter-sign
+							| 0
+
+						.action-counter__caption
+							| Forms signed
+
+			.actions-counters__list-item
+				.action-counter
+					.action-counter__icon
+						if mode === "colorful"
+							svg(xmlns='http://www.w3.org/2000/svg', width='48', height='48', viewBox='0 0 48 48')
+								g(fill-rule='nonzero', fill='none')
+									path(fill='none', d='M0 0h48v48H0z')
+									path(fill='#A6CDFF', d='M11 13h30v30H11z')
+									path(stroke='#414141', stroke-width='2', d='M5 7v30h30V7H5z')
+									path(fill='#414141', d='M18.364 24.142l7.192-7.192 1.415 1.414-7.193 7.192-1.414 1.415L14 22.607l1.414-1.415 2.95 2.95z')
+							
+						else
+							svg(xmlns='http://www.w3.org/2000/svg', width='37', height='39', viewBox='0 0 37 39')
+								path(fill='#0A1F77', fill-rule='nonzero', d='M29 19V2H2v35h27v-3H19a2 2 0 0 1-2-2V21a2 2 0 0 1 2-2h10zm2 15v3a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h27a2 2 0 0 1 2 2v17h4a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2h-4zM8 9h15a1 1 0 1 1 0 2H8a1 1 0 1 1 0-2zm0 5h15a1 1 0 1 1 0 2H8a1 1 0 1 1 0-2zm0 5h6a1 1 0 1 1 0 2H8a1 1 0 1 1 0-2zm11 4.035V32h16v-8.534l-6.713 5.469a2 2 0 0 1-2.578-.044L19 23.035zM19.71 21l7.314 6.384L34.86 21H19.71z')
+
+					.action-counter__details
+						.action-counter__value#counter-send
+							| 0
+
+						.action-counter__caption
+							| Forms sent

@@ -1,0 +1,11 @@
+include ../../../modules/layout/page-section/page-section
+include ../../../modules/typography/section-title/section-title
+include ../../../modules/elements/button/button
+
+mixin page-section-cta-invitation(titleText, btnText)
+	+page-section("cta-invitation")
+		+section-title()
+			| !{titleText}
+
+		+button().cta-invitation-button
+			| !{btnText}

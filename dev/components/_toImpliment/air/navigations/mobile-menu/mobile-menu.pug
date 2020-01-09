@@ -1,0 +1,34 @@
+mixin mobile-menu()
+	nav.mobile-menu
+		.mobile-menu__header
+			.mobile-menu__close(data-offcanvas-trigger)
+
+		.mobile-menu__body
+			.mobile-menu__list
+				for navLink in navLinks
+					if navLink.hasDropdown === "true"
+						.mobile-menu__item
+							.mobile-menu__link.main-menu-toggler
+								= navLink.title
+
+							.mobile-menu__dropdown-list
+								for feature in features
+									.mobile-menu__dropdown__item
+										.mobile-menu__dropdown-link.main-menu-toggler
+											= feature.title
+										.mobile-menu__dropdown-list.mobile-menu__dropdown-list--sub-dropdown
+											for item in feature.list
+												.mobile-menu__dropdown__item
+													a(href="#").mobile-menu__dropdown-link.icon-with-text
+														img(src="images/global/related-features/" + item.icon + "" title="" alt="").icon-with-text__icon
+														= item.text
+
+					else if navLink.isActive === "true"
+						.mobile-menu__item.is-active
+							a(href="#").mobile-menu__link
+								= navLink.title
+
+					else
+						.mobile-menu__item
+							a(href="#").mobile-menu__link
+								= navLink.title

@@ -1,0 +1,17 @@
+extends page
+
+include ../modules/layout/page-header/page-header
+include ../modules/layout/page-footer/page-footer
+	
+block page
+	.layout(role="main")
+		.layout__header
+			block header
+				+page-header()
+				
+		.layout__body
+			block main
+
+		.layout__footer
+			block footer
+				+page-footer()

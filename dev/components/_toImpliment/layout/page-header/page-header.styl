@@ -1,0 +1,618 @@
+toggler()
+	width 4px
+	height 4px
+	border 1px solid #444
+	border-width 2px 2px 0 0
+	content ""
+	opacity 0.7
+	transition all 0.2s
+	transform rotate(135deg)
+
+.page-header
+	border-bottom 1px solid #ddd
+	background #fafafa
+	font-family $font-family-sans
+
+	*
+		&:before
+		&:after
+			box-sizing content-box
+
+	.page-header__inner
+		position relative
+		display flex
+		align-items center
+		padding-top 10px
+		padding-bottom 10px
+
+		+above($media-screen-desktop)
+			padding-top 0
+			padding-bottom 0
+
+.page-header__inner
+	container()
+
+.header-logo
+	display block
+	overflow hidden
+	width 45px
+	text-align center
+
+	+above($media-screen-tablet)
+		width 150px
+
+.page-header__user-menu
+	width 40px
+	background black
+
+.page-header__main-menu
+	margin-left auto
+
+.header-logo__img
+	width 150px
+
+.page-header__lang-toggler
+	position relative
+	margin-left 20px
+	padding-left 20px
+
+	&::before
+		position absolute
+		top 0
+		bottom 0
+		left 0
+		display block
+		overflow hidden
+		margin auto 0
+		width 1px
+		height 21px
+		background #ddd
+		content ""
+
+.lang-toggler
+	position relative
+	display inline-block
+	padding-right 17px
+	color #888
+	text-transform uppercase
+	white-space nowrap
+	font-weight 700
+	font-size 10px
+	cursor pointer
+	user-select none
+	-webkit-font-smoothing antialiased
+
+	&.main-menu-toggler
+		&::after
+			position absolute
+			top calc(50% - 3px)
+			right 0
+			transform rotate(135deg) translateY(4px)
+
+	&::before
+		display inline-block
+		margin-right 6px
+		width 16px
+		height 16px
+		background url("../images/_global/header/lang-toggler/en.svg") no-repeat
+		content ""
+		vertical-align middle
+
+.user-icon
+	position relative
+	margin-right 16px
+	width 40px
+	height 40px
+	border-radius 50%
+	background-image url("../images/_global/header/user-icon.svg")
+	background-position center
+	background-size cover
+	cursor pointer
+	transition all 0.2s
+
+	&::before
+		position absolute
+		top -1px
+		left -1px
+		width calc(100% - 2px)
+		height calc(100% - 2px)
+		border 2px solid #ddd
+		border-radius 50%
+		content ""
+		transition all 0.2s
+
+	&:hover
+		&::before
+			border 2px solid #bbb
+
+.main-menu-toggler
+	&::after
+		toggler()
+		position absolute
+		top calc(50% - 3px)
+		right -19px
+
+.page-header__user-icon
+	position relative
+	padding-left 10px
+
+	&.is-open
+		// helper to ease User Menu hover
+		&:before
+			position absolute
+			bottom -10px
+			left -32px
+			display block
+			width 97px
+			height 50px
+			content ""
+			cursor pointer
+
+		.main-menu-toggler
+			&::after
+				backface-visibility hidden
+				opacity 1
+				transform rotate(-45deg) translateY(2px) translateX(-1px)
+
+		.user-dropdown-menu
+			z-index 999
+			visibility visible
+			opacity 1
+
+.user-dropdown-menu
+	position absolute
+	top 48px
+	right -4px
+	z-index -100
+	visibility hidden
+	width 284px
+	border 1px solid #ccc
+	border-radius 3px
+	background #fff
+	box-shadow 0 4px 8px 0 rgba(0, 0, 0, 0.15)
+	opacity 0
+	transition all 0.2s
+
+	&::before
+		position absolute
+		top -8px
+		right 31px
+		z-index 1
+		border-right 8px solid transparent
+		border-bottom 8px solid #f7f7f7
+		border-left 8px solid transparent
+		content ""
+
+	&::after
+		position absolute
+		top -9px
+		right 30px
+		border-right 9px solid transparent
+		border-bottom 9px solid #bbb
+		border-left 9px solid transparent
+		content ""
+
+.user-dropdown-summary
+	position relative
+	display flex
+	align-items center
+	padding 18px 3px 20px 20px
+	border-bottom 1px solid #e7e7e7
+	border-top-left-radius 3px
+	border-top-right-radius 3px
+	background #f7f7f7
+
+.user-dropdown-summary__avatar
+	.user-icon
+		margin-right 5px
+		width 54px
+		height 54px
+
+		&:hover
+			.user-icon__editable
+				visibility visible
+				opacity 1
+
+.user-icon__editable
+	position absolute
+	top 0
+	left 0
+	visibility hidden
+	padding 14px 0 0 1px
+	width 100%
+	height 100%
+	border-radius 50%
+	background rgba(0, 0, 0, 0.4)
+	color #fff
+	text-align center
+	text-transform uppercase
+	letter-spacing 0.04em
+	font bold 11px Arial, sans-serif
+	opacity 0
+	cursor pointer
+	transition all 0.2s
+	pointer-events none
+
+.main-menu__link
+	position relative
+
+	&.main-menu-toggler
+		&::after
+			position relative
+			top -4px
+			right -4px
+			display inline-block
+			margin-right 6px
+			margin-left 4px
+			transform rotate(135deg)
+
+	.is-open &
+		&.main-menu-toggler
+			&::after
+				transform rotate(-45deg) translateY(2px) translateX(-1px)
+
+.user-dropdown-name
+	position relative
+	display inline-block
+	margin-bottom 1px
+	padding-right 0
+	max-width 177px
+	color #444
+	vertical-align top
+	white-space nowrap
+	font-weight bold
+	font-size 12px
+	line-height 1.42857
+	cursor pointer
+
+	&.is-active
+		.user-dropdown-name__value
+			display none
+
+		.user-dropdown-name__input
+		.user-dropdown-name__submit
+			display block
+
+			&:hover
+				&.is-editable
+					&::after
+						visibility visible
+						opacity 1
+
+.user-dropdown-summary__info
+	padding-left 5px
+
+.user-dropdown-name__value
+	position relative
+	display inline-block
+	overflow hidden
+	padding-right 30px
+	padding-left 8px
+	max-width 174px
+	vertical-align middle
+	text-overflow ellipsis
+	font-weight $font-weight-bolder
+	font-size 12px
+	line-height 26px
+
+	&:hover
+		&::after
+			position absolute
+			top 0
+			right 2px
+			width 26px
+			height 26px
+			background url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDIzLjAuMiwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IgoJIHZpZXdCb3g9IjAgMCAyOC4zIDI4LjMiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDI4LjMgMjguMzsiIHhtbDpzcGFjZT0icHJlc2VydmUiPgo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPgoJLnN0MHtlbmFibGUtYmFja2dyb3VuZDpuZXcgICAgO30KCS5zdDF7Y2xpcC1wYXRoOnVybCgjU1ZHSURfMl8pO30KCS5zdDJ7Y2xpcC1wYXRoOnVybCgjU1ZHSURfNF8pO2ZpbGw6IzY2NjY2Njt9Cgkuc3Qze2ZpbGw6IzY2NjY2Njt9Cjwvc3R5bGU+CjxnIGNsYXNzPSJzdDAiPgoJPGRlZnM+CgkJPHBhdGggaWQ9IlNWR0lEXzFfIiBjbGFzcz0ic3QwIiBkPSJNNzQuMSwxMGwtNS43LDUuOGwtMi40LTIuNWMtMC41LTAuNS0xLjItMC41LTEuNywwYy0wLjUsMC41LTAuNSwxLjIsMCwxLjdsMy4zLDMuNAoJCQljMC4yLDAuMiwwLjUsMC40LDAuOCwwLjRjMC4zLDAsMC42LTAuMSwwLjgtMC40bDYuNS02LjdjMC41LTAuNSwwLjUtMS4yLDAtMS43Qzc1LjMsOS41LDc0LjUsOS41LDc0LjEsMTB6Ii8+Cgk8L2RlZnM+Cgk8dXNlIHhsaW5rOmhyZWY9IiNTVkdJRF8xXyIgIHN0eWxlPSJvdmVyZmxvdzp2aXNpYmxlO2ZpbGw6IzY2NjY2NjsiLz4KCTxjbGlwUGF0aCBpZD0iU1ZHSURfMl8iPgoJCTx1c2UgeGxpbms6aHJlZj0iI1NWR0lEXzFfIiAgc3R5bGU9Im92ZXJmbG93OnZpc2libGU7Ii8+Cgk8L2NsaXBQYXRoPgoJPGcgY2xhc3M9InN0MSI+CgkJPGRlZnM+CgkJCTxyZWN0IGlkPSJTVkdJRF8zXyIgeD0iLTMyMC41IiB5PSItNTI0LjkiIHdpZHRoPSI3MTAiIGhlaWdodD0iMjQ3NS43Ii8+CgkJPC9kZWZzPgoJCTx1c2UgeGxpbms6aHJlZj0iI1NWR0lEXzNfIiAgc3R5bGU9Im92ZXJmbG93OnZpc2libGU7ZmlsbDojNjY2NjY2OyIvPgoJCTxjbGlwUGF0aCBpZD0iU1ZHSURfNF8iPgoJCQk8dXNlIHhsaW5rOmhyZWY9IiNTVkdJRF8zXyIgIHN0eWxlPSJvdmVyZmxvdzp2aXNpYmxlOyIvPgoJCTwvY2xpcFBhdGg+CgkJPHJlY3QgeD0iNjEuNCIgeT0iNy4xIiBjbGFzcz0ic3QyIiB3aWR0aD0iMTcuMiIgaGVpZ2h0PSIxNC4yIi8+Cgk8L2c+CjwvZz4KPGc+Cgk8cGF0aCBjbGFzcz0ic3QzIiBkPSJNMTUuNywxMC41bDIuMSwybC02LjMsNi42Yy0wLjQsMC41LTMuMSwxLjctMy4xLDEuN2MtMC4xLDAuMS0wLjMsMC4xLTAuNCwwLjFjMCwwLTAuMSwwLTAuMS0wLjEKCQljLTAuMS0wLjEtMC4xLTAuMywwLTAuNWMwLDAsMS4xLTIuOCwxLjQtMy4yTDE1LjcsMTAuNXoiLz4KCTxwYXRoIGNsYXNzPSJzdDMiIGQ9Ik0yMC4xLDcuOEMxOS42LDcuMywxOC41LDcuNSwxOCw4bC0xLjgsMS44bDIuMSwybDEuNy0xLjhDMjAuNSw5LjYsMjAuNyw4LjQsMjAuMSw3Ljh6Ii8+CjwvZz4KPC9zdmc+Cg==")
+			content ""
+			cursor pointer
+
+.user-dropdown-name__input
+	display none
+	padding-right 32px
+	padding-left 7px
+	width 100%
+	height 26px
+	border 1px solid transparent
+	border-radius 3px
+	background transparent
+	color #444
+	font-weight $font-weight-bolder
+	font-size 12px
+
+	&:focus
+		outline none
+		background white
+		box-shadow 0 0 3px 1px hsla(0, 0, 67%, 0.5)
+
+	&[disabled]
+		border-color #aaaaaa
+		background white
+		box-shadow 0 0 3px 1px hsla(0, 0, 67%, 0.5)
+		transition border-color 0.15s ease-in-out
+
+::-ms-clear
+	display none
+	width 0
+	height 0
+
+::-webkit-search-decoration
+::-webkit-search-cancel-button
+::-webkit-search-results-button
+::-webkit-search-results-decoration
+	display none
+	width 0
+	height 0
+
+.user-dropdown-name__submit
+	position absolute
+	top 5px
+	right -2px
+	z-index 1
+	display none
+	width 26px
+	height 26px
+	background-image url("data:image/svg+xml;charset=utf8,%3C?xml version='1.0' encoding='UTF-8'?%3E%3Csvg width='13px' height='10px' viewBox='0 0 13 10' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3C!-- Generator: Sketch 52.4 (67378) - http://www.bohemiancoding.com/sketch --%3E%3Ctitle%3ESVGID_1_%3C/title%3E%3Cdesc%3ECreated with Sketch.%3C/desc%3E%3Cg id='Page-1' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cg id='ok-icon' transform='translate(-57.000000, -2.000000)' fill='%23666666'%3E%3Cg id='Group' transform='translate(57.000000, 2.000000)'%3E%3Cg id='SVGID_1_-link'%3E%3Cpath d='M10.2,1 L4.5,6.8 L2.1,4.3 C1.6,3.8 0.9,3.8 0.4,4.3 C0,4.8 0,5.6 0.4,6 L3.7,9.4 C3.9,9.6 4.2,9.8 4.5,9.8 C4.8,9.8 5.1,9.7 5.3,9.4 L11.8,2.7 C12.3,2.2 12.3,1.5 11.8,1 C11.5,0.5 10.7,0.5 10.2,1 Z' id='SVGID_1_'%3E%3C/path%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E")
+	background-size 15px 15px
+	background-repeat no-repeat
+	cursor pointer
+	transform translateZ(0)
+
+.user-dropdown-email
+	overflow hidden
+	padding 1px 20px 1px 8px
+	max-width 194px
+	color #666
+	text-overflow ellipsis
+	white-space nowrap
+	font 12px / 14px Arial, sans-serif
+
+.user-dropdown-details
+	padding-top 10px
+
+.user-dropdown-details__table
+	tr
+		&:first-child
+			td
+				&:last-child
+					display inline-block
+					overflow hidden
+					margin-left 10px
+					padding 0 20px 0 0
+					max-width 174px
+					text-align left
+					text-overflow ellipsis
+					white-space nowrap
+					font-weight 400
+
+		&:last-child
+			td
+				&:last-child
+					display inline-block
+					margin-left 10px
+					text-align left
+					font-weight 400
+
+					a
+						margin-left 0
+
+		&:nth-child(3)
+			td
+				&:last-child
+					display inline-block
+					margin-left 10px
+					text-align left
+					font-weight 400
+
+	td
+		float left
+		margin-left 10px
+		padding 0 0 5px
+		width 100px
+		color #666
+		text-align right
+		font-weight 700
+		font-size 12px
+
+		&:last-child
+			width 150px
+
+	a
+		display block
+		overflow hidden
+		padding 0 20px 0 0
+		max-width 174px
+		color #e74c3c
+		text-align left
+		text-decoration none
+		text-overflow ellipsis
+		white-space nowrap
+		font-weight 400
+
+		&:hover
+			text-decoration underline
+
+.user-dropdown-menu__link
+	display block
+	padding 9px 20px
+	border-top 1px solid #e7e7e7
+	color #888
+	text-align center
+	text-decoration none
+	text-transform uppercase
+	font-weight bold
+	font-size 14px
+	line-height 20px
+	transition background 0.2s
+	user-select none
+
+	&:hover
+		background-color #f7f7f7
+		color #888
+
+.main-menu__dropdown
+	position absolute
+	top calc(100% - 5px)
+	right -40px
+	left -60px
+	z-index 220
+	visibility hidden
+	padding-bottom 10px
+	text-align center
+	font-size 0
+	backface-visibility hidden
+	opacity 0
+	transition-delay 0.2s, 0.3s
+	transition-duration 0.1s, 0s
+	transition-property opacity, visibility
+	will-change opacity, visibility
+
+.has-dropdown
+	position relative
+
+	&.is-open
+		.main-menu__dropdown
+			visibility visible
+			opacity 1
+			transition-delay 0.25s, 0.2s
+			transition-duration 0.1s, 0s
+			transition-property opacity, visibility
+
+.main-menu__dropdown-list
+	position relative
+	display inline-block
+	padding-top 5px
+	min-width 160px
+	border 1px solid #ccc
+	border-radius 4px
+	background-color #fff
+	box-shadow 0 2px 10px rgba(0, 0, 0, 0.2)
+	transition all 0.1s 0.05s
+
+	&::before
+		position absolute
+		bottom 100%
+		left 50%
+		display block
+		box-sizing border-box
+		margin-bottom -17px
+		width 20px
+		height 20px
+		border 1px solid #ccc
+		background #fff
+		box-shadow 0 2px 10px rgba(0, 0, 0, 0.2)
+		content ""
+		transform rotate(45deg) translateX(-50%) translateZ(0)
+		will-change transform
+
+	&::after
+		position absolute
+		top 0
+		right 0
+		left 0
+		z-index 1
+		display block
+		height 100%
+		border-radius 4px
+		background #fff
+		content ""
+
+.main-menu__dropdown-link
+	display block
+	padding 10px 14px
+	color #444
+	text-align left
+	text-decoration none
+	font-weight 700
+	font-size 13px
+	line-height 1
+
+	&:hover
+		color #e74c3c
+
+	&.main-menu-toggler
+		&::after
+			right 15px
+			transform rotate(45deg)
+
+.main-menu__dropdown-list-item
+	position relative
+	z-index 2
+
+	&:hover
+		&.has-dropdown
+			.main-menu__dropdown-link
+				background-color #f2f2f2
+
+			.main-menu__sub-dropdown
+				visibility visible
+				opacity 1
+
+			.main-menu-toggler
+				&::after
+					border-color #e74c3c
+
+.main-menu__sub-dropdown
+	position absolute
+	top -1px
+	left calc(100% - 1px)
+	z-index -1
+	visibility hidden
+	font-size 0
+	backface-visibility hidden
+	opacity 0
+	transition all 0.2s ease
+
+.main-menu__sub-dropdown-list
+	position relative
+	display inline-block
+	padding 5px 0
+	min-width 145px
+	border 1px solid #ccc
+	border-radius 0 4px 4px 4px
+	background #f2f2f2
+	box-shadow 0 2px 10px rgba(0, 0, 0, 0.2)
+	font-weight 400
+	font-size 13px
+
+.main-menu__sub-dropdown-link
+	position relative
+	display block
+	padding 6px 15px
+	outline none
+	border-radius 4px 4px 0 0
+	color #444
+	text-align left
+	text-decoration none
+	text-transform none
+	white-space nowrap
+	font-weight 400
+	line-height 1.3
+
+	&:hover
+		color #e74c3c
+
+.page-header__lang-toggler
+.page-header__main-menu
+.page-header__user-icon
+	display none
+
+	+above($media-screen-desktop)
+		display block
+
+.page-header__lang-toggler
+	+above($media-screen-desktop)
+		display none
+
+.header-logo--airslate-pdffiller
+	width auto
+	text-align left
+
+	.header-logo__img
+	.g-logo__image
+		width 90px
+
+		+above($media-screen-tablet)
+			width 110px
+
+		+above($media-screen-desktop)
+			width 120px

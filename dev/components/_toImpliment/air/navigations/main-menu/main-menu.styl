@@ -1,0 +1,192 @@
+toggler()
+	width 4px
+	height 4px
+	border 1px solid $orange-500
+	border-width 2px 2px 0 0
+	content ""
+	transition all .2s
+	transform rotate(135deg)
+
+.main-menu__list
+	clearfix()
+
+.main-menu__item
+	float left
+	margin 27px 16px
+
+	&:last-child
+		margin-right 0
+
+.main-menu__link,
+a.main-menu__link
+	display block
+	padding 1px 0 3px
+	color #fff
+	text-decoration none
+	white-space nowrap
+	font-weight $font-weight-bolder
+	font-size 16px
+	line-height 28px
+	position relative
+
+	&::before
+		content ""
+		display block
+		position absolute
+		bottom 0
+		left 0
+		right 0
+		height 2px
+		background-color $orange-500
+		opacity 0
+		transition all .2s ease
+
+	&.is-active
+		pointer-events none
+		&::before
+			opacity 1
+
+	&:hover
+		color $orange-500
+
+	&.main-menu-toggler
+		&::after
+			position relative
+			top -4px
+			right -7px
+			display inline-block
+			margin-right 11px
+			margin-left 4px
+			transform rotate(135deg)
+
+	.is-open &
+		&.main-menu-toggler
+			&::after
+				transform rotate(-45deg) translateY(2px) translateX(-1px)
+
+.main-menu-toggler
+	&::after
+		toggler()
+		position absolute
+		top calc(50% - 3px)
+		right -19px
+
+.main-menu__dropdown
+	z-index 10
+	backface-visibility hidden
+	transition-delay 0.2s, 0.3s
+	transition-duration 0.1s, 0s
+	transition-property opacity, visibility
+	will-change opacity, visibility
+	position absolute
+	width 100%
+	left 0
+	right 0
+	top 100%
+	padding 27px 0 78px
+	opacity 0
+	visibility hidden
+	border-top 1px solid #d0d0d0
+	background-color #fff
+	box-shadow 0 20px 100px 0 rgba(0, 30, 43, 0.5)
+	transition all .2s ease
+
+	&::before, &::after
+		content ''
+		position absolute
+		display block
+
+	&::before
+		height 27px
+		top -27px
+		left 0
+		right 0
+		z-index 20
+		background-color transparent
+
+	&::after
+		background-color rgba(0, 30, 43, 0.7)
+		left -50vw
+		right -50vw
+		top 32px
+		bottom -50vw
+		z-index -10
+		pointer-events none
+		mix-blend-mode color
+
+.has-dropdown
+	&.is-open
+		.main-menu__link
+		a.main-menu__link
+			color $orange-500
+
+		.main-menu__dropdown
+			visibility visible
+			opacity 1
+			transition-delay 0.25s, 0.2s
+			transition-duration 0.1s, 0s
+			transition-property opacity, visibility
+
+		.is-active
+			&::before
+				bottom -27px
+
+.main-menu__dropdown-container
+	container()
+	display flex
+	justify-content space-between
+	padding 27px 0 78px
+
+.main-menu__dropdown-column
+	width 180px
+
+.main-menu__dropdown-link
+	display flex
+	width 100%
+	position relative
+	&::after
+		content ''
+		display block
+		position absolute
+		border-radius 4px
+		background-color rgba(0, 29, 42, .04)
+		left -2px
+		right -2px
+		bottom -2px
+		top -2px
+		opacity 0
+		transition opacity .2s ease
+
+	&:hover
+		color #414141
+		&::after
+			opacity 1
+
+	&.is-active
+		font-weight $font-weight-bolder
+
+.main-menu__dropdown-title
+	text-transform uppercase
+	opacity .9
+	font-size 12px
+	color #888888
+	line-height normal
+	margin-bottom 20px
+
+.main-menu__dropdown-list__item
+	width 100%
+	display flex
+	margin-bottom 8px
+	opacity .9
+
+// NEW CODE
+
+.icon-with-text
+	display inline-flex
+	align-items center
+	color #414141
+	line-height 16px
+	font-size 12px
+
+.icon-with-text__icon
+	margin-right 4px

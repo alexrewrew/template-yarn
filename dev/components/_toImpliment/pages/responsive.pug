@@ -1,0 +1,25 @@
+extends page
+
+include ../modules/layout/page-header/page-header
+include ../modules/layout/page-footer/page-footer
+include ../modules/navigations/mobile-menu/mobile-menu
+
+block page
+	.layout-responsive(role="main")
+		.layout-responsive__header
+			block header
+				+page-header()
+
+		.layout-responsive__body   
+			block main
+
+		.layout-responsive__footer
+			block footer
+				+page-footer()
+
+		.layout-responsive__mobile-menu(data-offcanvas-menu aria-hidden="true")
+			+mobile-menu()
+
+	.layout-overlay(data-offcanvas-overlay)
+
+	block modals

@@ -1,0 +1,35 @@
+.checked-list__item
+	margin-bottom 12px
+
+	+above($media-screen-desktop)
+		margin-bottom 16px
+
+	&:last-child
+		margin-bottom 0
+
+.checked-list__description
+	position relative
+	padding-left 32px
+	color $text-color-darken
+	font-weight $font-weight-normal
+	font-size $font-size-small
+	line-height 1.67
+
+	+above($media-screen-desktop)
+		padding-left 40px
+		font-size $font-size-base
+		line-height 1.71
+
+	&:before
+		position absolute
+		top 0
+		left 0
+		width 20px
+		height 20px
+		background url("../images/_modules/elements/checked-list/check-icon.svg") no-repeat
+		background-size contain
+		content ""
+
+		+above($media-screen-desktop)
+			width 28px
+			height 28px

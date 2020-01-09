@@ -1,0 +1,70 @@
+$pagination-item = 25px
+
+.pagination
+	text-align center
+	font-size 0
+	user-select none
+
+.pagination__item
+	display inline-block
+	margin-right 1px
+	margin-left 1px
+	vertical-align middle
+	white-space nowrap
+	line-height 1
+
+	&:first-child
+		margin-left 0
+
+	&:last-child
+		margin-right 0
+
+.pagination__link
+.pagination__text
+	display block
+	overflow hidden
+	padding 0 4px
+	min-width $pagination-item
+	height $pagination-item
+	border-radius $pagination-item
+	color #343434
+	text-align center
+	text-decoration none
+	font-weight 400
+	font-size 14px
+	line-height $pagination-item
+
+	&:hover
+		box-shadow 0 0 0 1px $orange-500 inset
+		color #343434
+
+.pagination__item--spacer
+	.pagination__text
+		margin 0
+		padding 0
+		min-width auto
+
+.pagination__text
+	margin-right 4px
+	margin-left 4px
+	cursor default
+	pointer-events none
+
+	.is-active &
+		background $orange-500
+		color $white
+		cursor default
+
+.pagination__link
+	.is-disabled &
+		border-color transparent
+		background none
+		opacity 0.5
+		cursor not-allowed
+		pointer-events none
+
+.pagination__item--backward
+.pagination__item--forward
+	.pagination__link
+		padding-right 10px
+		padding-left 10px

@@ -1,0 +1,14 @@
+include ../../../modules/layout/page-section/page-section
+include ../../../modules/typography/section-title/section-title
+include ../../../modules/typography/section-subtitle/section-subtitle
+
+mixin page-section-shared-purpose()
+	+page-section("teams-shared-purpose")
+		.section-content
+			+section-title()
+				| PDFfiller teams come together on a daily basis with a shared purpose
+
+			+section-subtitle()
+				| We work to promote a welcoming and professional corporate culture and do our best to ensure that every employee has the support they need to succeed.
+
+		.teams-shared-purpose-decoration

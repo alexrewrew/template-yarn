@@ -1,0 +1,44 @@
+mixin drag-n-drop()
+     .drag-n-drop-wrapper
+          .drag-n-drop.wow.fadeIn(data-wow-duration=".5s")
+               .drag-n-drop__progress-wrapper
+                    .drag-n-drop__progress__text
+                         | Uploading...
+
+                    progress.drag-n-drop__progress__bar(max="100" value="0")
+
+               form.drag-n-drop__form(action="" method="post" enctype="multipart/form-data" accept-charset="utf-8")
+                    .drag-n-drop__body
+                         .drag-n-drop__header
+                              .drag-n-drop__ready-to-drop
+                                   .drag-n-drop__header__image.wow.fadeInDown(data-wow-duration=".5s" data-wow-delay=".6s")
+                                        +icon-upload()
+
+                              .drag-n-drop__error-file-type
+                                   .drag-n-drop__header__image
+                                        +icon-error-file-type()
+                                   .drag-n-drop__header__title Whoops, we don’t support that file type 🤔
+                                   .drag-n-drop__header__subtitle Please upload a file type with these extensions: pdf
+
+                              .drag-n-drop__error-file-size
+                                   .drag-n-drop__header__image
+                                        +icon-error-file-size()
+                                   .drag-n-drop__header__title Whoops, file is to large 🤭
+                                   .drag-n-drop__header__subtitle Maximum upload file is 20MB
+
+                              .drag-n-drop__error-connection-lost
+                                   .drag-n-drop__header__image
+                                        +icon-error-connection-lost()
+                                   .drag-n-drop__header__title Whoops, Internet connection lost 😢
+                                   .drag-n-drop__header__subtitle
+                                        | There seems to be problem with your internet connections,
+                                        | please check your settings or switch offline mode
+
+                         .button-file-wrapper.wow.fadeInDown(data-wow-duration=".5s" data-wow-delay=".8s")
+                              +button().button--file
+                                   label.button--file__label
+                                        | Choose a PDF
+                                        input.button--file__label__input-file(type="file" accept="application/pdf")
+
+                         .drag-n-drop__text.wow.fadeInDown(data-wow-duration=".5s" data-wow-delay="1s")
+                              | or Drag & Drop a PDF right here

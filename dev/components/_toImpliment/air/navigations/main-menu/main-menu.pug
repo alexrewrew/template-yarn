@@ -1,0 +1,33 @@
+mixin main-menu()
+	nav.main-menu&attributes(attributes)
+		.main-menu__list
+
+			for navLink in navLinks
+				if navLink.hasDropdown === "true"
+					.main-menu__item.has-dropdown
+						a(href="#").main-menu__link.main-menu-toggler
+							= navLink.title
+
+						.main-menu__dropdown
+							.main-menu__dropdown-container
+								for feature in features
+									.main-menu__dropdown-column
+										.main-menu__dropdown-title
+											= feature.title
+
+										.main-menu__dropdown-list
+											for item in feature.list
+												.main-menu__dropdown-list__item
+													a(href="#").main-menu__dropdown-link.icon-with-text
+														img(src="images/global/related-features/" + item.icon + "" title="" alt="").icon-with-text__icon
+														= item.text
+
+				else if navLink.isActive === "true"
+					.main-menu__item
+						a(href="#").main-menu__link.is-active
+							= navLink.title
+
+				else
+					.main-menu__item
+						a(href="#").main-menu__link
+							= navLink.title

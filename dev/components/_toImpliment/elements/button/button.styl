@@ -1,0 +1,161 @@
+// TODO fix problem with Span not having box shadow on focus
+// TODO fix problem with Not allowed cursor if button = <a>
+.button
+	button-sm()
+	position relative
+	display inline-block
+	border 2px solid $button-color
+	border-radius $border-radius
+	background-color $button-color
+	background-image none
+	color $white
+	vertical-align middle
+	text-align center
+	text-decoration none
+	letter-spacing 0.3px
+	font-weight $font-weight-semiBold
+	cursor pointer
+	transition all 0.15s ease-in
+	user-select none
+	touch-action manipulation
+	-webkit-font-smoothing antialiased
+
+	+above($media-screen-tablet)
+		button-md()
+
+	+above($media-screen-desktop)
+		button-lg()
+
+	&:focus
+		box-shadow 0 0 0 2px $gray-100
+
+	&:active
+	&--active
+		outline none
+		background-image none
+		box-shadow 0 0 0 2px $gray-100
+
+	&.is-disabled
+		&
+		&--custom
+		&:hover
+		&:focus
+		&:active
+			outline none
+			border 2px solid $button-color
+			background $button-color
+			box-shadow none
+			color $white
+			opacity 0.5
+			cursor not-allowed
+	
+	&.is-disabled--custom
+		pointer-events none
+
+.button
+a.button
+	&:hover
+	&:focus
+	&:active
+		outline none
+		border 2px solid $button-hover-color
+		background $button-hover-color
+		color $white
+		text-decoration none
+
+.button--sm
+	button-sm()
+
+	+above($media-screen-tablet)
+		button-sm()
+
+	+above($media-screen-desktop)
+		button-sm()
+
+.button--md
+	+above($media-screen-tablet)
+		button-md()
+
+	+above($media-screen-desktop)
+		button-md()
+
+.button--lg
+	+above($media-screen-desktop)
+		button-lg()
+
+.button--secondary
+	border 2px solid $button-secondary-color
+	background-color $button-secondary-color
+
+	&:focus
+		box-shadow 0 0 0 2px $gray-100
+
+	&:active
+	&--active
+		outline none
+		border 2px solid $button-secondary-active-color
+		background-color $button-secondary-active-color
+		background-image none
+		box-shadow 0 0 0 2px $gray-100
+
+	&.is-disabled
+		&
+		&:hover
+		&:focus
+		&:active
+			outline none
+			border 2px solid $button-secondary-color
+			background $button-secondary-color
+			box-shadow none
+			color $white
+			opacity 0.5
+			cursor not-allowed
+
+.button--secondary
+a.button--secondary
+	&:hover
+	&:focus
+	&:active
+		outline none
+		border 2px solid $button-secondary-hover-color
+		background $button-secondary-hover-color
+		color $white
+		text-decoration none
+
+.button--bordered
+	border solid 2px $button-color
+	background-color transparent
+	color $text-color-darken
+
+	+above($media-screen-tablet)
+		button-md()
+
+	+above($media-screen-desktop)
+		button-lg()
+
+	&:focus
+		border solid 2px $button-hover-color
+		background-color $button-hover-color
+		box-shadow 0 0 0 2px $gray-100
+
+	&:active
+		outline none
+		border solid 2px $orange-600
+		background-color $orange-600
+		box-shadow 0 0 0 2px $gray-100
+
+	&:hover
+		border solid 2px $button-hover-color
+		background-color $button-hover-color
+
+	&.is-disabled
+		&
+		&:hover
+		&:focus
+		&:active
+			outline none
+			border 2px solid $light-orange-600
+			background-color transparent
+			box-shadow none
+			color $gray-800
+			cursor not-allowed

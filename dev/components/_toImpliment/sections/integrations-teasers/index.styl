@@ -1,0 +1,316 @@
+$image-path = "../images/_modules/sections/integrations-teasers/"
+
+.page-section--feature-teasers
+	overflow hidden
+
+	.page-section__inner
+		padding-top 16px
+		padding-bottom 51px
+
+		+above($media-screen-tablet)
+			display flex
+			justify-content space-between
+			padding-top 26px
+			padding-bottom 58px
+
+		+above($media-screen-desktop)
+			padding-top 32px
+			padding-bottom 30px
+
+.feature-teaser
+	position relative
+	margin-bottom 20px
+	padding 20px
+	height 310px
+	border-radius 2px
+
+	&:last-child
+		margin-bottom 0
+
+	+above($media-screen-tablet)
+		margin-right 12px
+		margin-bottom 0
+		width 50%
+
+		&:last-child
+			margin-right 0
+
+	+above($media-screen-desktop)
+		margin-right 0
+		padding 28px
+		width 454px
+		height 470px
+		border-radius 4px
+
+	.section-title
+		margin-bottom 12px
+		color #ffffff
+		text-align left
+		font-weight 800
+		font-size 19px
+		line-height 1.4
+
+		+above($media-screen-desktop)
+			margin-bottom 20px
+			font-size 28px
+			line-height 1.29
+
+.feature-teaser--pdffiller-itegrations
+	display block
+	outline none
+	background-color #5aabe5
+	transition background-color 0.2s ease
+
+	&:hover
+		background-color #62B6F2
+		cursor pointer
+
+		.feature-teaser__action::after
+			transform translate(4px, -50%)
+
+	&:before
+		position absolute
+		bottom 15px
+		left -20px
+		width 111px
+		height 101px
+		background-image url($image-path + "integration-texture.png")
+		background-size cover
+		content ""
+
+		+retina()
+			background-image url($image-path + "integration-texture@2x.png")
+
+		+above($media-screen-desktop)
+			bottom 35px
+			left -55px
+			width 186px
+			height 169px
+
+.feature-teaser__action
+	position relative
+	padding-right 21px
+	color #ffffff
+	font-weight 600
+	font-size 12px
+	line-height 1.67
+
+	+above($media-screen-desktop)
+		font-size 16px
+
+	&:after
+		position absolute
+		top 55%
+		right 0
+		width 16px
+		height 10px
+		background-image url($image-path + "arrow-white.svg")
+		background-size cover
+		content ""
+		transition all 0.2s ease
+		transform translateY(-50%)
+
+.feature-teaser-icon
+	position absolute
+	display flex
+	justify-content center
+	align-items center
+	background-image url($image-path + "cloud.png")
+	background-size cover
+
+	+retina()
+		background-image url($image-path + "cloud@2x.png")
+
+.feature-teaser-icon--dropbox
+	top 39%
+	right 21px
+	width 63px
+	height 57px
+
+	+above($media-screen-desktop)
+		top 30%
+		right 23px
+		width 105px
+		height 96px
+
+	svg
+		width 33px
+		height 28px
+
+		+above($media-screen-desktop)
+			width 55px
+			height 47px
+
+.feature-teaser-icon--slack
+	top 50%
+	left 66px
+	width 59px
+	height 54px
+
+	+above($media-screen-desktop)
+		top 45%
+		left 78px
+		width 98px
+		height 90px
+
+	svg
+		width 28px
+		height 29px
+
+		+above($media-screen-desktop)
+			width 47px
+			height 47px
+
+.feature-teaser-icon--g-mail
+	top 60%
+	left 47%
+	width 43px
+	height 39px
+
+	+above($media-screen-desktop)
+		top 53%
+		left 45%
+		width 72px
+		height 66px
+
+	svg
+		width 20px
+		height 14px
+
+		+above($media-screen-desktop)
+			width 33px
+			height 24px
+
+.feature-teaser-icon--dynamics
+	top 68%
+	left 27px
+	width 40px
+	height 37px
+
+	+above($media-screen-desktop)
+		top 68%
+		left 13px
+		width 67px
+		height 62px
+
+	svg
+		width 14px
+		height 23px
+
+		+above($media-screen-desktop)
+			width 23px
+			height 38px
+
+.feature-teaser-icon--salesforce
+	right 16px
+	bottom 10px
+	width 105px
+	height 96px
+
+	+above($media-screen-desktop)
+		right 15px
+		bottom 16px
+		width 176px
+		height 161px
+
+	svg
+		width 67px
+		height 47px
+
+		+above($media-screen-desktop)
+			width 112px
+			height 78px
+
+.feature-teaser-icon--drive
+	bottom 20px
+	left 34%
+	width 43px
+	height 39px
+
+	+above($media-screen-desktop)
+		bottom 31px
+		left 31%
+		width 72px
+		height 66px
+
+	svg
+		width 23px
+		height 19px
+
+		+above($media-screen-desktop)
+			width 38px
+			height 32px
+
+.feature-teaser--api
+	display block
+	outline none
+	background-color #521c7c
+	transition background-color 0.2s ease
+
+	&:hover
+		background-color #5F238F
+		cursor pointer
+
+		.feature-teaser__action::after
+			transform translate(4px, -50%)
+
+	&:before
+		position absolute
+		bottom -20px
+		left 10px
+		width 111px
+		height 101px
+		background-image url($image-path + "api-texture.png")
+		background-size cover
+		content ""
+
+		+retina()
+			background-image url($image-path + "api-texture@2x.png")
+
+		+above($media-screen-desktop)
+			bottom -30px
+			left 20px
+			width 186px
+			height 169px
+
+	&:after
+		position absolute
+		top 56%
+		right -15px
+		width 117px
+		height 117px
+		background-image url($image-path + "api-oval.png")
+		background-size cover
+		content ""
+		transform translate(0, -50%)
+
+		+retina()
+			background-image url($image-path + "api-oval@2x.png")
+
+		+above($media-screen-desktop)
+			top 51%
+			right -30px
+			width 196px
+			height 195px
+			transform translate(0, -50%)
+
+	.section-title
+		margin-right 20px
+
+.feature-teaser__code
+	position absolute
+	bottom 0
+	left 51px
+	z-index 1
+	width 196px
+	height 142px
+	background-image url($image-path + "code.png")
+	background-size cover
+
+	+retina()
+		background-image url($image-path + "code@2x.png")
+
+	+above($media-screen-desktop)
+		left 69px
+		width 328px
+		height 237px

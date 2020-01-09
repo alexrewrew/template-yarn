@@ -1,0 +1,44 @@
+.service-approves
+	margin-top 20px
+
+	+above($media-screen-tablet)
+		display flex
+		justify-content space-between
+		margin-top 24px
+
+	+above($media-screen-desktop)
+		margin-top 28px
+
+.service-approves__item
+	display flex
+	justify-content center
+	align-items center
+	margin 0 10px 20px 0
+	width 100%
+	height 80px
+	background white
+	box-shadow 0 6px 10px 0 rgba(0, 0, 0, 0.08)
+	transition box-shadow 0.3s ease
+
+	svg
+		+above($media-screen-tablet)
+			margin auto
+			width 80%
+
+		+above($media-screen-desktop)
+			width auto
+
+	&:last-child
+		margin-right 0
+		margin-bottom 0
+
+	&:hover
+		box-shadow 0 10px 25px 0 rgba(0, 0, 0, 0.15)
+
+	+above($media-screen-tablet)
+		justify-content space-between
+		width 21%
+
+	+above($media-screen-desktop)
+		margin-bottom 0
+		width 208px
